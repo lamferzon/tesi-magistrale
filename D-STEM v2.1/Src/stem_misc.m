@@ -1362,5 +1362,36 @@ classdef stem_misc
                   0.557,0.024,0.231];
         end
 
+        function H_inv = compute_H_inv(coord, ntimes, rho)
+            
+            % computing distance matrix
+            npoints = size(coord, 1);
+            dist_mat = pdist2(coord, coord, "euclidean");
+            
+            % computing weights
+            h = zeros(npoints, 1);
+            for i = 1:npoints
+                sum = 1;
+                for j = 1:npoints
+                    if j ~= i
+                        dist_i = dist_mat(i, j);
+                        sum = sum + exp(-dist_i/rho);
+                    end
+                end
+                h(i, 1) = 1/sum;
+            end
+            
+            % computing main diagonal of H
+            H_diag = [];
+            for i = 1:npoints
+                for j = 1:ntimes
+                    H_diag = [H_diag; h(i, 1)];
+                end
+            end
+            
+            % computing inverse of H (sparse matrix)
+            H_inv = inv(speye(npoints*ntimes).*H_diag);
+        end
+
     end
 end
