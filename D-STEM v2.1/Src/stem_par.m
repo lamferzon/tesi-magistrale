@@ -80,7 +80,8 @@ classdef stem_par
         theta_z=[];         %[double]       (1x1|1x2|1xp|2xp) coregionalization theta parameter related to the z latent variable when model_name is 'HDGM' or 'f-HDGM'
         v_z=[];             %[double]       (pxp) coregionalization matrix related to the z latent variable when model_name is 'HDGM' or 'f-HDGM'
         varcov=[];          %[double]       (HxH) parameter variance-covariance matrix at convergence
-        
+        rho=[];             %[double >= 0]  (1x1) interaction parameter between the measurements points
+        H_inv=[];           %[double]       (q*npoints x q*npoints) inverse of H, i.e. the interaction matrix
     end
     
     properties (SetAccess=private)
@@ -337,6 +338,13 @@ classdef stem_par
                 if obj_stem_data.stem_datestamp.irregular==1
                     obj.lambda=1;
                 end
+            end
+
+            % inverse of H computation
+            if obj.stem_modeltype.is('f-HDGM') && obj.stem_modeltype.flag_potential
+                obj.rho = 0;
+                coord = obj_stem_data.stem_gridlist_p.grid{1}.coordinate;
+                obj.H_inv = stem_misc.compute_H_inv(coord, obj.q, obj.rho);
             end
         end
              
