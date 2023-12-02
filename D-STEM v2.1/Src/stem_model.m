@@ -76,7 +76,7 @@ classdef stem_model < handle
         DistMat_p=[];               %[double]   (N_pxN_p)|{d}x(N_pxN_p) distance matrix of the point sites
         DistMat_b=[];               %[double]   (N_bxN_b) distance matrix of the pixel sites
         DistMat_z=[];               %[double]   (N_rxN_r)|{2}x(N_pxN_p) distance matrix of the latent variable z when model_name is 'HDGM' or 'f-HDGM'. It is evaluated only if y and z are not 1:1
-        
+        DistMat_rho=[]              %[double]   (N x N) distance matrix of the point sites for the fp-HDGM model (assumption of fixed measurement points)
         cross_validation=0;         %[boolean]  (1x1) 0: the model has been estimated considering all the data; 1: the model has bee estimated excluding the validation data.
         product_step=-1;            %[integer]  (1x1) the size of blocks when the operation diag(A*B) is performed, where A and B are matrices
         tapering=[];                %[boolean]  (1x1) 0:tapering is not enabled; 1:tapering is enabled on point sites or pixel sites
@@ -4606,6 +4606,13 @@ classdef stem_model < handle
                     disp('Generation ended.');
                 end
             end
+            
+            % initialization of DistMat_rho only for fp-HDGM model
+            if obj.stem_data.stem_modeltype.is('f-HDGM') && obj.stem_data.stem_modeltype.flag_potential
+                npoints = size(obj.stem_data.stem_gridlist_p.grid{1}.coordinate, 1);
+                obj.DistMat_rho = obj.DistMat_z(1:npoints, 1:npoints);
+            end
+
         end     
 
         %Initial values estimation functions 
