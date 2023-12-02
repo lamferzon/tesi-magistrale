@@ -10,7 +10,8 @@ load ../Data/Beijing_O3
 %% Objects creation
 
 %model type
-o_modeltype = stem_modeltype('f-HDGM', false);
+o_modeltype = stem_modeltype('f-HDGM');
+o_modeltype.flag_potential = false;
 
 %A MATLAB structure is used to store spline information for all model terms
 input_fda.spline_type = 'Fourier';

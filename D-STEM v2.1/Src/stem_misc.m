@@ -1362,11 +1362,9 @@ classdef stem_misc
                   0.557,0.024,0.231];
         end
 
-        function H_inv = compute_H_inv(coord, ntimes, rho)
+        function H_inv = compute_H_inv(DistMat, ntimes, rho)
             
-            % computing distance matrix
-            npoints = size(coord, 1);
-            dist_mat = pdist2(coord, coord, "euclidean");
+            npoints = size(DistMat, 1);  % number of measurements points
             
             % computing weights
             h = zeros(npoints, 1);
