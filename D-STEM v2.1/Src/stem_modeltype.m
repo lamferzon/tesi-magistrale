@@ -66,24 +66,17 @@ classdef stem_modeltype < handle
     end
 
     methods
-        function obj = stem_modeltype(model_name, flag_potential)
+        function obj = stem_modeltype(model_name)
             %DESCRIPTION: object constructor
             %
             %INPUT
             %model_name             -   [string]    (1x1) the name of the model,either 'DCM', 'HDGM', 'f-HDGM', 'MBC' or 'Emulator'
-            %flag_potential         -   [boolean]   (1x1) it enables the fp-HDGM model, i.e. the modified version of the f-HDGM which also takes into account the existing interaction between the measurement points
             %
             %OUTPUT
             %obj                    -   [stem_modeltype object] (1x1)    
             
-            % the flag_potential field is set only when the model name is
-            % f-HDGM (otherwise it remains empty)
             if nargin<1
                 error('Not enough input arguments');
-            elseif nargin<2 && strcmpi(model_name, 'f-HDGM')
-                obj.flag_potential = false;
-            elseif nargin==2 && strcmpi(model_name, 'f-HDGM')
-                obj.flag_potential = flag_potential;
             end
 
             obj.model_name=model_name;
@@ -92,6 +85,13 @@ classdef stem_modeltype < handle
                 obj.clustering_type='Monopoles';
                 obj.clustering_error_type='Shared';
             end
+            
+            % the default value of the flag_potential field is false for
+            % the f-HDGM model
+            if strcmpi(obj.model_name, 'f-HDGM')
+                obj.flag_potential = false;
+            end
+
         end
         
         function res = is(obj,model_name)
@@ -141,9 +141,8 @@ classdef stem_modeltype < handle
        
         %Class set methods
         function set.model_name(obj,model_name)
-            % MODIFIED
-            if sum(strcmpi(model_name,{'DCM','HDGM','f-HDGM', 'fp-HDGM', 'MBC','Emulator'}))==0
-                error('The model_name input argument must be either ''DCM'', ''HDGM'', ''f-HDGM'', ''fp-HDGM'', ''MBC'' or ''Emulator''');
+            if sum(strcmpi(model_name,{'DCM','HDGM','f-HDGM','MBC','Emulator'}))==0
+                error('The model_name input argument must be either ''DCM'', ''HDGM'', ''f-HDGM'', ''MBC'' or ''Emulator''');
             end
             obj.model_name=model_name;
         end
@@ -161,6 +160,18 @@ classdef stem_modeltype < handle
             end
             obj.clustering_error_type=clustering_error_type;
         end
+        
+        % check the flag_potential setting
+        function set.flag_potential(obj, flag_potential)
+            if strcmpi(obj.model_name, 'f-HDGM') %#ok<*MCSUP> 
+                obj.flag_potential = flag_potential;
+            else
+                disp(obj.model_name)
+                error("The flag_potential field cannot be set for the " + obj.model_name + ...
+                    " model. It is available only for f-HDGM.")
+            end
+        end
+
     end
     
 end
