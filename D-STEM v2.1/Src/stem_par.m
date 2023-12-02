@@ -81,7 +81,6 @@ classdef stem_par
         v_z=[];             %[double]       (pxp) coregionalization matrix related to the z latent variable when model_name is 'HDGM' or 'f-HDGM'
         varcov=[];          %[double]       (HxH) parameter variance-covariance matrix at convergence
         rho=[];             %[double >= 0]  (1x1) interaction parameter between the measurements points
-        H_inv=[];           %[double]       (q*npoints x q*npoints) inverse of H, i.e. the interaction matrix
     end
     
     properties (SetAccess=private)
@@ -340,11 +339,10 @@ classdef stem_par
                 end
             end
 
-            % inverse of H computation
+            % rho parameter setting only if the model is fp-HDGM (f-HDGM +
+            % flag_potential)
             if obj.stem_modeltype.is('f-HDGM') && obj.stem_modeltype.flag_potential
                 obj.rho = 0;
-                coord = obj_stem_data.stem_gridlist_p.grid{1}.coordinate;
-                obj.H_inv = stem_misc.compute_H_inv(coord, obj.q, obj.rho);
             end
         end
              
@@ -392,7 +390,7 @@ classdef stem_par
         end        
         
         function obj = set.v_b(obj,v_b)
-            if not(obj.stem_par_constraints.pixel_correlated)
+            if not(obj.stem_par_constraints.pixel_correlated) %#ok<*MCSUP> 
                 temp=v_b-eye(size(v_b,1));
                 if sum(temp(:))>0
                     error('v_b must be the identity matrix since the pixel variables are uncorrelated');
@@ -440,6 +438,12 @@ classdef stem_par
         function obj = set.sigma_eps(obj,sigma_eps)
             stem_misc.compare(obj.sigma_eps,sigma_eps,stem_misc.varname(sigma_eps));
             obj.sigma_eps=sigma_eps;
+        end
+        
+        % check the rho setting
+        function obj = set.rho(obj, rho)
+            stem_misc.compare(obj.rho, rho,stem_misc.varname(rho));
+            obj.rho=rho;
         end
         
     end
