@@ -1372,23 +1372,22 @@ classdef stem_misc
                 sum = 1;
                 for j = 1:npoints
                     if j ~= i
-                        dist_i = dist_mat(i, j);
+                        dist_i = DistMat(i, j);
                         sum = sum + exp(-dist_i/rho);
                     end
                 end
                 h(i, 1) = 1/sum;
             end
-            
-            % computing main diagonal of H
-            H_diag = [];
-            for i = 1:npoints
-                for j = 1:ntimes
-                    H_diag = [H_diag; h(i, 1)];
-                end
+
+            % computing inverse of h (sparse matrix)
+            h_inv = inv(speye(npoints).*diag(h));
+
+            % computing block H_inv (sparse matrix)
+            H_inv = cell(ntimes, 1);
+            for i=1:ntimes
+                H_inv{i} = h_inv;
             end
-            
-            % computing inverse of H (sparse matrix)
-            H_inv = inv(speye(npoints*ntimes).*H_diag);
+    
         end
 
     end

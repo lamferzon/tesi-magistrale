@@ -92,7 +92,7 @@ classdef stem_data < handle
                                 %                       {TT}(N x N_r) the full X_z matrices if model_name is 'f-HDGM'
     end
     
-    properties (SetAccess = private) 
+    properties (SetAccess = public) 
         Y=[];                   %[double]     (N x T) the full observation matrix
         X_bp=[];                %[double]     {TT}(N x 1) the full X_bp matrices
         X_p=[];                 %[double]     {TT}(N x K) the full X_p matrices
