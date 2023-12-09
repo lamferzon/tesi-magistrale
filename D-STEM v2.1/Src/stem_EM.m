@@ -135,6 +135,15 @@ classdef stem_EM < EM
             st_EM_result.version=stem_misc.ver;
             exit_file=0;
             model_changed=0;
+            
+            % if model is fp-HDGM, then original observed data are saved in
+            % Y_pot (cell array)
+            Y_pot = {};
+            if obj.stem_model.stem_data.stem_modeltype.is('f-HDGM') && ...
+                obj.stem_model.stem_data.stem_modeltype.flag_potential
+                Y_pot = obj.stem_model.stem_data.stem_varset_p.Y;
+            end
+
             %The EM iterations
             while (delta_par>obj.stem_EM_options.exit_tol_par)&&(delta_logL>obj.stem_EM_options.exit_tol_loglike)&&(iteration<obj.stem_EM_options.max_iterations)&&(exit_file==0)||(model_changed==1)
                 ct1=clock;
@@ -168,10 +177,32 @@ classdef stem_EM < EM
                        end
                    end
                 end
+                
+                % if model is fp-HDGM, then from the observed data is removed
+                % the conditional component thanks to H_inv 
+                if obj.stem_model.stem_data.stem_modeltype.is('f-HDGM') && ...
+                    obj.stem_model.stem_data.stem_modeltype.flag_potential
+                    
+                    % input parameters
+                    ntimes = obj.stem_model.stem_data.stem_varset_p.nvar;
+
+                    % H_inv computation
+                    H_inv = stem_misc.compute_H_inv(obj.stem_model.DistMat_rho, ...
+                        ntimes, obj.stem_model.stem_par.rho);
+                    
+                    % update of Y
+                    Y_new = cell(ntimes, 1);
+                    for i=1:ntimes
+                        Y_new{i} = H_inv{i}*Y_pot{i};
+                    end
+                    obj.stem_model.stem_data.stem_varset_p.Y = Y_new;
+                    obj.stem_model.stem_data.Y = cell2mat(Y_new);
+                end
+
                 %The E step
                 [E_wb_y1,sum_Var_wb_y1,diag_Var_wb_y1,cov_wb_z_y1,E_wp_y1,sum_Var_wp_y1,diag_Var_wp_y1,cov_wp_z_y1,M_cov_wb_wp_y1,cov_wpk_wph_y1,diag_Var_e_y1,E_e_y1,sigma_eps,st_kalmansmoother_result] = obj.E_step();
                 %The M step
-                model_changed = obj.M_step(E_wb_y1,sum_Var_wb_y1,diag_Var_wb_y1,cov_wb_z_y1,E_wp_y1,sum_Var_wp_y1,diag_Var_wp_y1,cov_wp_z_y1,M_cov_wb_wp_y1,cov_wpk_wph_y1,diag_Var_e_y1,E_e_y1,sigma_eps,st_kalmansmoother_result,iteration);
+                model_changed = obj.M_step(E_wb_y1,sum_Var_wb_y1,diag_Var_wb_y1,cov_wb_z_y1,E_wp_y1,sum_Var_wp_y1,diag_Var_wp_y1,cov_wp_z_y1,M_cov_wb_wp_y1,cov_wpk_wph_y1,diag_Var_e_y1,E_e_y1,sigma_eps,st_kalmansmoother_result,iteration,cell2mat(Y_pot));
 
                 %check if at least one of the exit conditions is satisfied
                 if not(isempty(st_kalmansmoother_result))
@@ -358,7 +389,7 @@ classdef stem_EM < EM
             %E_e_y1                         - [double]          (NxT) E[e|Y(1)]
             %sigma_eps                      - [double]          (NxN) sigma_eps
             %st_kalmansmoother_result       - [stem_kalmansmoother_result object] (1x1)
-            
+
             if nargin==1
                 T=obj.stem_model.stem_data.T;
             end
@@ -858,7 +889,7 @@ classdef stem_EM < EM
             disp('');
         end
         
-        function model_changed = M_step(obj,E_wb_y1,sum_Var_wb_y1,diag_Var_wb_y1,cov_wb_z_y1,E_wp_y1,sum_Var_wp_y1,diag_Var_wp_y1,cov_wp_z_y1,M_cov_wb_wp_y1,cov_wpk_wph_y1,diag_Var_e_y1,E_e_y1,sigma_eps,st_kalmansmoother_result,iteration)
+        function model_changed = M_step(obj,E_wb_y1,sum_Var_wb_y1,diag_Var_wb_y1,cov_wb_z_y1,E_wp_y1,sum_Var_wp_y1,diag_Var_wp_y1,cov_wp_z_y1,M_cov_wb_wp_y1,cov_wpk_wph_y1,diag_Var_e_y1,E_e_y1,sigma_eps,st_kalmansmoother_result,iteration,Y_pot)
             %DESCRIPTION: M-step of the EM algorithm
             %
             %INPUT
@@ -879,6 +910,7 @@ classdef stem_EM < EM
             %st_kalmansmoother_result       - [st_kalmansmoother_result object] (1x1)
             %iteration                      - [double]          (1x1) EM iteration number
             %model_changed                  - [boolean]         (1x1) 1: the number of model parameters changed from the previous iteration (can happen with clustering); 0: no change
+            %Y_pot                          - [double]          (NxT) original observed data (only for fp-HDGM)
             %
             %OUTPUT
             %none: the stem_par property of the stem_model object is updated
@@ -1817,7 +1849,6 @@ classdef stem_EM < EM
                 end
             end
             
-            
             model_changed=0;
             if obj.stem_model.stem_data.stem_modeltype.is('MBC')
                 if not(isempty(st_kalmansmoother_result))
@@ -1944,6 +1975,20 @@ classdef stem_EM < EM
                 if obj.stem_model.stem_data.stem_modeltype.is('MBC')
                     obj.stem_model.stem_data.stem_varset_p.Y{1}=obj.stem_model.stem_data.Y;
                 end
+            end
+            
+            %%%%%%%%%%%%%%%%%%%%%%%
+            %    Update of rho    %
+            %%%%%%%%%%%%%%%%%%%%%%%
+            if obj.stem_model.stem_data.stem_modeltype.is('f-HDGM') && ...
+                    obj.stem_model.stem_data.stem_modeltype.flag_potential
+                
+                % computation of the estimated mean value of the density
+                % distribution of H_inv*Y_pot
+                mu = obj.stem_model.stem_data.Y - E_e_y1;
+                
+                % numerical optimization (fminsearch)
+                %st_par_em_step.rho = [];
             end
 
             obj.stem_model.stem_par=st_par_em_step;
