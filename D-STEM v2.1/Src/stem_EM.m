@@ -137,11 +137,11 @@ classdef stem_EM < EM
             model_changed=0;
             
             % if model is fp-HDGM, then original observed data are saved in
-            % Y_pot (cell array)
-            Y_pot = {};
+            % Y_pot 
+            Y_pot = [];
             if obj.stem_model.stem_data.stem_modeltype.is('f-HDGM') && ...
                 obj.stem_model.stem_data.stem_modeltype.flag_potential
-                Y_pot = obj.stem_model.stem_data.stem_varset_p.Y;
+                Y_pot = obj.stem_model.stem_data.Y;
             end
 
             %The EM iterations
@@ -184,25 +184,27 @@ classdef stem_EM < EM
                     obj.stem_model.stem_data.stem_modeltype.flag_potential
                     
                     % input parameters
-                    ntimes = obj.stem_model.stem_data.stem_varset_p.nvar;
+                    T = size(obj.stem_model.stem_data.Y, 2);
+                    n = size(obj.stem_model.stem_data.stem_gridlist_p.grid{1, 1}.coordinate, 1);
+                    q = obj.stem_model.stem_par.q;
 
                     % H_inv computation
                     H_inv = stem_misc.compute_H_inv(obj.stem_model.DistMat_rho, ...
-                        ntimes, obj.stem_model.stem_par.rho);
+                        q, obj.stem_model.stem_par.rho);
                     
                     % update of Y
-                    Y_new = cell(ntimes, 1);
-                    for i=1:ntimes
-                        Y_new{i} = H_inv{i}*Y_pot{i};
+                    Y_new = zeros(size(obj.stem_model.stem_data.Y));
+                    for t=1:T
+                        Y_new(:, t) = H_inv*Y_pot(:, t);
                     end
-                    obj.stem_model.stem_data.stem_varset_p.Y = Y_new;
-                    obj.stem_model.stem_data.Y = cell2mat(Y_new);
+                    obj.stem_model.stem_data.stem_varset_p.Y = mat2cell(Y_new, n.*ones(1, q));
+                    obj.stem_model.stem_data.Y = Y_new;
                 end
 
                 %The E step
                 [E_wb_y1,sum_Var_wb_y1,diag_Var_wb_y1,cov_wb_z_y1,E_wp_y1,sum_Var_wp_y1,diag_Var_wp_y1,cov_wp_z_y1,M_cov_wb_wp_y1,cov_wpk_wph_y1,diag_Var_e_y1,E_e_y1,sigma_eps,st_kalmansmoother_result] = obj.E_step();
                 %The M step
-                model_changed = obj.M_step(E_wb_y1,sum_Var_wb_y1,diag_Var_wb_y1,cov_wb_z_y1,E_wp_y1,sum_Var_wp_y1,diag_Var_wp_y1,cov_wp_z_y1,M_cov_wb_wp_y1,cov_wpk_wph_y1,diag_Var_e_y1,E_e_y1,sigma_eps,st_kalmansmoother_result,iteration,cell2mat(Y_pot));
+                model_changed = obj.M_step(E_wb_y1,sum_Var_wb_y1,diag_Var_wb_y1,cov_wb_z_y1,E_wp_y1,sum_Var_wp_y1,diag_Var_wp_y1,cov_wp_z_y1,M_cov_wb_wp_y1,cov_wpk_wph_y1,diag_Var_e_y1,E_e_y1,sigma_eps,st_kalmansmoother_result,iteration,Y_pot);
 
                 %check if at least one of the exit conditions is satisfied
                 if not(isempty(st_kalmansmoother_result))
@@ -1980,6 +1982,7 @@ classdef stem_EM < EM
             %%%%%%%%%%%%%%%%%%%%%%%
             %    Update of rho    %
             %%%%%%%%%%%%%%%%%%%%%%%
+            disp(sigma_eps{1})
             if obj.stem_model.stem_data.stem_modeltype.is('f-HDGM') && ...
                     obj.stem_model.stem_data.stem_modeltype.flag_potential
                 
@@ -1988,7 +1991,10 @@ classdef stem_EM < EM
                 mu = obj.stem_model.stem_data.Y - E_e_y1;
                 
                 % numerical optimization (fminsearch)
-                %st_par_em_step.rho = [];
+                min_log_rho = fminsearch(@(x) obj.potential_function(x, Y_pot, obj.stem_model.DistMat_rho, ...
+                    mu, diag_Var_e_y1, sigma_eps, obj.stem_model.stem_par.q), log(obj.stem_model.stem_par.rho), ...
+                    optimset('MaxIter', fminsearch_max_iter, 'TolFun', 0.001, 'UseParallel', 'always'));
+                st_par_em_step.rho = exp(min_log_rho);
             end
 
             obj.stem_model.stem_par=st_par_em_step;
@@ -2819,6 +2825,31 @@ classdef stem_EM < EM
             end
         end
         
+        % function to optimize for estimating rho (only for fp-HDGM)
+        function f = potential_function(par, Y_pot, DistMat, mu, diag_Var_e_y1, sigma_eps, q)
+            
+            % input parameters
+            rho = exp(par(1));
+            [N, T] = size(Y_pot);
+            
+            % computation of H_inv
+            H_inv = stem_misc.compute_H_inv(DistMat, q, rho);
+
+            % computation of sum(T, omega_t)
+            sum_omega = zeros(N);
+            for t=1:T
+                L = not(isnan(Y_pot(:, t)));
+                omega_t = zeros(N);
+                E_e_y1_t = H_inv(L, L)*Y_pot(L, t) - mu(L, t);
+                omega_t(L, L) = E_e_y1_t*E_e_y1_t' + diag(diag_Var_e_y1(L, t));
+                omega_t(~L, ~L) = sigma_eps{t}(~L, ~L);
+                sum_omega = sum_omega + omega_t;
+            end
+
+            % definition of the function to minimize
+            f = T*log(det(sigma_eps{1})) + trace((sigma_eps{1}^(-1))*sum_omega);
+        end
+
     end
 end
 
