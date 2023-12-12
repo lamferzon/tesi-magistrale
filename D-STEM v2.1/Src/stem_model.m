@@ -3301,6 +3301,12 @@ classdef stem_model < handle
                 else
                     disp(['diag_G: ',num2str(diag(obj.stem_par.G)')]);
                     disp(['theta_z: ',num2str(obj.stem_par.theta_z(:)')]);
+                    
+                    % visualization of the estimated value of rho
+                    if not(isempty(obj.stem_par.rho))
+                        disp(['rho: ', num2str(obj.stem_par.rho)])
+                    end
+                    
                     disp('v_z: ');
                     disp(obj.stem_par.v_z);
                 end
