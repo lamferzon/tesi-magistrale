@@ -1982,7 +1982,7 @@ classdef stem_EM < EM
             %%%%%%%%%%%%%%%%%%%%%%%
             %    Update of rho    %
             %%%%%%%%%%%%%%%%%%%%%%%
-            disp(sigma_eps{1})
+            
             if obj.stem_model.stem_data.stem_modeltype.is('f-HDGM') && ...
                     obj.stem_model.stem_data.stem_modeltype.flag_potential
                 
@@ -2836,18 +2836,18 @@ classdef stem_EM < EM
             H_inv = stem_misc.compute_H_inv(DistMat, q, rho);
 
             % computation of sum(T, omega_t)
-            sum_omega = zeros(N);
+            sum_diag_omega = zeros(N, 1);
             for t=1:T
                 L = not(isnan(Y_pot(:, t)));
-                omega_t = zeros(N);
+                diag_omega_t = zeros(N, 1);
                 E_e_y1_t = H_inv(L, L)*Y_pot(L, t) - mu(L, t);
-                omega_t(L, L) = E_e_y1_t*E_e_y1_t' + diag(diag_Var_e_y1(L, t));
-                omega_t(~L, ~L) = sigma_eps{t}(~L, ~L);
-                sum_omega = sum_omega + omega_t;
+                diag_omega_t(L) = E_e_y1_t.^2 + diag_Var_e_y1(L, t);
+                diag_omega_t(~L) = sigma_eps{1}(~L, ~L);
+                sum_diag_omega = sum_diag_omega + diag_omega_t;
             end
 
             % definition of the function to minimize
-            f = T*log(det(sigma_eps{1})) + trace((sigma_eps{1}^(-1))*sum_omega);
+            f = T*sum(log(diag(sigma_eps{1}))) + sum(diag(1./sigma_eps{1}).*sum_diag_omega);
         end
 
     end
