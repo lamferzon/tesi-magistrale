@@ -342,7 +342,7 @@ classdef stem_par
             % rho parameter setting only if the model is fp-HDGM (f-HDGM +
             % flag_potential)
             if obj.stem_modeltype.is('f-HDGM') && obj.stem_modeltype.flag_potential
-                obj.rho = 0;
+                obj.rho = 1;
             end
         end
              

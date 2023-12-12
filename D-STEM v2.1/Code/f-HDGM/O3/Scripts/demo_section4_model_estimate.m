@@ -11,7 +11,7 @@ load ../Data/Beijing_O3
 
 %model type
 o_modeltype = stem_modeltype('f-HDGM');
-o_modeltype.flag_potential = false;
+o_modeltype.flag_potential = true;
 
 %A MATLAB structure is used to store spline information for all model terms
 input_fda.spline_type = 'Fourier';
@@ -46,6 +46,7 @@ o_par.sigma_eps = o_model.get_coe_log_sigma_eps0();
 o_par.theta_z = ones(1,n_basis.z)*0.18;
 o_par.G = diag(ones(n_basis.z,1)*0.5);
 o_par.v_z = eye(n_basis.z)*10;
+o_par.rho = 0.0001;
 
 o_model.set_initial_values(o_par);
 
