@@ -1363,7 +1363,7 @@ classdef stem_misc
         end
         
         % computation of the inverse of the matrix H (only for fp-HDGM)
-        function H_inv = compute_H_inv(DistMat, ntimes, rho)
+        function diag_H_inv = compute_H_inv(DistMat, ntimes, rho)
             
             npoints = size(DistMat, 1);  % number of measurements points
             
@@ -1381,7 +1381,7 @@ classdef stem_misc
             end
 
             % computing block H_inv (sparse matrix)
-            H_inv = inv(speye(ntimes*npoints).*diag(repmat(h, ntimes, 1)));
+            diag_H_inv = 1./repmat(h, ntimes, 1);
         end
 
     end
