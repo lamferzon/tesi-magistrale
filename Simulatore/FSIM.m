@@ -2,7 +2,7 @@ classdef FSIM
 
     properties(Access = public)
         Y_sim
-        X {mustBeNumeric}
+        X
         params
         n_basis
         points
@@ -15,8 +15,11 @@ classdef FSIM
         b {mustBeNumeric, mustBePositive, mustBeNonzero}
         T {mustBeNumeric, mustBePositive, mustBeNonzero}
         dist_mat {mustBeNumeric}
-        sigma_eps {mustBeNumeric}
+        diag_sigma_eps {mustBeNumeric}
         sigma_eta {mustBeNumeric}
+        X_beta {mustBeNumeric}
+        X_z {mustBeNumeric}
+        basis_objs
     end
     
     methods (Access = public)
@@ -27,7 +30,7 @@ classdef FSIM
                 points = FSIM.get_points()
                 q (1, 1) {mustBeNumeric, mustBePositive} = 24
                 T (1, 1) {mustBeNumeric, mustBePositive} = 365
-                X.XData {mustBeNumeric} = ones(size(points, 1)*q, 1)
+                X.XData = []
                 params.Parameters = struct()
                 n_basis.NumBasis = struct()
             end
@@ -35,12 +38,17 @@ classdef FSIM
             % parameters setting
             obj.n = size(points, 1);
             obj.q = q;
-            obj.b = size(X.XData, 2);
             obj.T = T;
-            obj.X = X.XData;
+            obj.X = obj.check_X(X.XData);
+            obj.b = size(obj.X{1}, 2);
             obj.n_basis = obj.check_n_basis(n_basis.NumBasis);
             obj.params = obj.check_params(params.Parameters);
             obj.points = points;
+
+            % fda basis objects definition
+            obj.basis_objs.eps = create_fourier_basis([0, q], obj.n_basis.p_eps);
+            obj.basis_objs.beta = create_fourier_basis([0, q], obj.n_basis.p_beta);
+            obj.basis_objs.zeta = create_fourier_basis([0, q], obj.n_basis.p_z);
 
             % computing distance matrix
             obj.dist_mat = obj.get_dist_mat();
@@ -71,6 +79,25 @@ classdef FSIM
             disp("- diag_V: [" + num2str(obj.params.diag_V') + "]")
             disp("- theta: [" + num2str(obj.params.theta') + "]")
 
+            % check fda toolbox
+            path = mfilename('fullpath');
+            filepath = fileparts(path);
+            path = [filepath,'/fda'];
+            fda_file = [filepath,'/fda/create_bspline_basis.m'];
+            
+            if ~exist(path, 'dir') || ~exist(fda_file, 'file')
+                disp(" ")
+                disp('fda toolbox not found. Downloading from FDA webpage by Jim Ramsay...');
+                mkdir(path);
+                options = weboptions('Timeout',Inf);
+                websave([filepath,'/fda/fdaM.zip'],'http://www.psych.mcgill.ca/misc/fda/downloads/FDAfuns/Matlab/fdaM.zip',options);
+                disp('Unzipping fda toolbox...');
+                unzip([filepath,'/fda/fdaM.zip'],[filepath,'/fda']);
+                addpath(genpath(filepath));
+                savepath
+                disp('fda installation completed.');
+            end
+
         end
 
         function obj = run(obj, n_iter)
@@ -84,19 +111,28 @@ classdef FSIM
             obj.Y_sim = cell(n_iter, 1);
             obj.n_iter = n_iter;
 
-            % computing sigma_eps
-            %obj.sigma_eps = sparse(obj.get_sigma_eps());
+            % computing diag_sigma_eps
+            obj.diag_sigma_eps = exp(obj.get_sigma_eps());
             
             % computing sigma_eta
             obj.sigma_eta = sparse(obj.get_sigma_eta());
 
+            % computing X_beta
+            obj.X_beta = obj.get_X_beta();
 
+            % computing X_z
+            obj.X_z = sparse(obj.get_X_z());
+            
+            obj.Y_sim = cell(n_iter, 1);
             for iter=1:n_iter
-                Y_sim = zeros(obj.n*obj.q, obj.T);
+                Y_iter = zeros(obj.n*obj.q, obj.T);
                 Z = obj.simulate_AR1();
+                EPS = mvnrnd(zeros(obj.n*obj.q, 1), ...
+                        speye(obj.n*obj.q).*obj.diag_sigma_eps, obj.T)';
                 for t=1:obj.T
-                    disp("TO DO")
+                    Y_iter(:, t) = obj.X_beta(:, t) + obj.X_z*Z(:, t+1) + EPS(:, t);
                 end
+                obj.Y_sim{iter} = Y_iter; 
             end
 
         end
@@ -104,6 +140,38 @@ classdef FSIM
     end
 
     methods (Access = private)
+
+        function X = check_X(obj, X_temp)
+
+            % X to initialize
+            X = cell(obj.T, 1);
+            if isempty(X_temp)
+                for t=1:obj.T
+                    X{t} = ones(obj.n*obj.q, 1);
+                end
+
+            % X to check
+            else
+                if iscell(X_temp)
+                    if size(X_temp, 1) == obj.T && size(X_temp, 2) == 1
+                        b_temp = size(X_temp{1}, 2);
+                        for t=1:obj.T
+                            if size(X_temp{t}, 1) ~= obj.n*obj.q || ...
+                                    size(X_temp{t}, 2) ~= b_temp
+                                error("Each element of X has to be a [" + ...
+                                    num2str(obj.n*obj.q) + " x " + num2str(b_temp) + "] matrix.")
+                            end
+                        end
+                    else
+                        error("X has to be a [" + num2str(obj.T) + " x 1] cell array")
+                    end
+                else
+                    error("X has to be a cell array.")
+                end
+                X = X_temp;
+            end
+
+        end
         
         function params = check_params(obj, params)
 
@@ -114,7 +182,9 @@ classdef FSIM
 
             % setting c_eps
             if ~isfield(params, "c_eps")
-                params.c_eps = randi([1 100], obj.n_basis.p_eps, 1);
+                params.c_eps = zeros(obj.n_basis.p_eps, 1);
+                params.c_eps(1) = randi([10 30]);
+                params.c_eps(2:end) = normrnd(0, 1, obj.n_basis.p_eps-1, 1);
             end
 
             % setting c_beta
@@ -176,12 +246,64 @@ classdef FSIM
 
         end
 
+        function diag_sigma_eps = get_sigma_eps(obj)
+            
+            % basis evaluation
+            t_domain = repelem(0:1:obj.q-1, obj.n)';
+            basis_eval = full(getbasismatrix(t_domain, obj.basis_objs.eps));
+
+            % computing diag_sigma_eps
+            diag_sigma_eps = basis_eval*obj.params.c_eps;
+
+        end
+
         function sigma_eta = get_sigma_eta(obj)
 
             sigma_eta = zeros(obj.n*obj.n_basis.p_z);
             for i=1:obj.n_basis.p_z
                 block_i = obj.params.diag_V(i).*exp(-obj.dist_mat/obj.params.theta(i));
                 sigma_eta((i-1)*obj.n+1:i*obj.n, (i-1)*obj.n+1:i*obj.n) = block_i;
+            end
+
+        end
+
+        function X_beta = get_X_beta(obj)
+            
+            % basis evaluation
+            t_domain = repelem(0:1:obj.q-1, obj.n)';
+            basis_eval = full(getbasismatrix(t_domain, obj.basis_objs.beta));
+            
+            % computing X_beta
+            X_beta = zeros(obj.n*obj.q, obj.T);
+            for t=1:obj.T
+                X_t = obj.X{t};
+                X_beta_orlated = [];
+                for i=1:obj.b
+                    X_beta_orlated = [X_beta_orlated, ...
+                        repmat(X_t(:, i), 1, obj.n_basis.p_beta).*basis_eval]; %#ok<AGROW> 
+                end
+                X_beta(:, t) = X_beta_orlated*reshape(obj.params.c_beta', obj.b*obj.n_basis.p_beta, 1);
+            end
+
+        end
+
+        function X_z = get_X_z(obj)
+
+            % basis evaluation
+            t_domain = repelem(0:1:obj.q-1, obj.n)';
+            basis_eval = full(getbasismatrix(t_domain, obj.basis_objs.zeta));
+
+            % computing X_z
+            X_z = [];
+            for i=1:obj.n_basis.p_z
+                for j=1:obj.q
+                    if j == 1
+                        v_block = diag(basis_eval((j-1)*obj.n+1:j*obj.n, i));
+                    else
+                        v_block = [v_block; diag(basis_eval((j-1)*obj.n+1:j*obj.n, i))]; %#ok<AGROW>
+                    end 
+                end
+                X_z = [X_z v_block]; %#ok<AGROW> 
             end
 
         end
