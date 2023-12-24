@@ -19,6 +19,7 @@ classdef FSIM
         sigma_eta {mustBeNumeric}
         X_beta {mustBeNumeric}
         X_z {mustBeNumeric}
+        diag_H {mustBeNumeric}
         basis_objs
     end
     
@@ -122,7 +123,11 @@ classdef FSIM
 
             % computing X_z
             obj.X_z = sparse(obj.get_X_z());
+
+            % computing H
+            obj.diag_H = sparse(obj.get_H());
             
+            % running simulation/s
             obj.Y_sim = cell(n_iter, 1);
             for iter=1:n_iter
                 Y_iter = zeros(obj.n*obj.q, obj.T);
@@ -131,6 +136,7 @@ classdef FSIM
                         speye(obj.n*obj.q).*obj.diag_sigma_eps, obj.T)';
                 for t=1:obj.T
                     Y_iter(:, t) = obj.X_beta(:, t) + obj.X_z*Z(:, t+1) + EPS(:, t);
+                    Y_iter(:, t) = obj.diag_H.*Y_iter(:, t);
                 end
                 obj.Y_sim{iter} = Y_iter; 
             end
@@ -305,6 +311,26 @@ classdef FSIM
                 end
                 X_z = [X_z v_block]; %#ok<AGROW> 
             end
+
+        end
+
+        function diag_H = get_H(obj)
+            
+            % computing weights
+            h = zeros(obj.n, 1);
+            for i = 1:obj.n
+                sum = 1;
+                for j = 1:obj.n
+                    if j ~= i
+                        dist_i = obj.dist_mat(i, j);
+                        sum = sum + exp(-dist_i/obj.params.rho);
+                    end
+                end
+                h(i, 1) = 1/sum;
+            end
+            
+            % computing H
+            diag_H = repmat(h, obj.q, 1);
 
         end
 
