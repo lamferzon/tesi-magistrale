@@ -74,7 +74,7 @@ classdef FSIM
             disp("- c_eps: [" + num2str(obj.params.c_eps') + "]")
             for i=1:obj.b
                 disp("- c_beta_" + num2str(i) + ... 
-                    ": [" + num2str(obj.params.c_beta(i, :)) + "]")
+                    ": [" + num2str(obj.params.c_beta(:, i)') + "]")
             end
             disp("- diag_G: [" + num2str(obj.params.diag_G') + "]")
             disp("- diag_V: [" + num2str(obj.params.diag_V') + "]")
@@ -125,10 +125,11 @@ classdef FSIM
             obj.X_z = sparse(obj.get_X_z());
 
             % computing H
-            obj.diag_H = sparse(obj.get_H());
+            obj.diag_H = obj.get_diag_H();
             
             % running simulation/s
             obj.Y_sim = cell(n_iter, 1);
+            disp("Running simulation/s: ")
             for iter=1:n_iter
                 Y_iter = zeros(obj.n*obj.q, obj.T);
                 Z = obj.simulate_AR1();
@@ -138,7 +139,67 @@ classdef FSIM
                     Y_iter(:, t) = obj.X_beta(:, t) + obj.X_z*Z(:, t+1) + EPS(:, t);
                     Y_iter(:, t) = obj.diag_H.*Y_iter(:, t);
                 end
-                obj.Y_sim{iter} = Y_iter; 
+                obj.Y_sim{iter} = Y_iter;
+                disp("- sim. " + num2str(iter) + " of " + num2str(n_iter) + " done.")
+            end
+
+        end
+
+        function data = format_data(obj)
+            
+            disp("Running data formatting: ")
+            data = cell(obj.n_iter, 1); 
+            for iter=1:obj.n_iter
+
+                % cell data processing
+                Y = obj.Y_sim{iter};
+                cell_data = cell(obj.T*obj.n, obj.b+2);
+                
+                count = 1;
+                for t=1:obj.T
+                    Y_t = reshape(Y(:, t), obj.n, obj.q);
+
+                    for i=1:obj.n
+                        cell_data{count, 1} = Y_t(i, :);
+                        cell_data{count, 2} = 0:1:obj.q-1;
+                        
+                        for j=1:obj.b
+                            X_t = reshape(obj.X{t}(:, j), obj.n, obj.q);
+                            cell_data{count, 2+j} = X_t(i, :);
+                        end
+                        
+                        date_vect(count) = datetime(2023, 1, t); %#ok<AGROW> 
+                        count = count + 1;
+                    end
+
+                end
+                
+                % table creation
+                data_i = table();
+                data_i = addvars(data_i, (1:1:obj.n*obj.T)'); % profile
+                data_i = addvars(data_i, repelem('NA', obj.n*obj.T, 1)); % Y name
+                
+                for i = 1:size(cell_data, 2)
+                    data_i = addvars(data_i, cell_data(:, i)); % X beta
+                end
+
+                data_i = addvars(data_i, repmat(obj.points.Latitude, obj.T, 1)); % latitude
+                data_i = addvars(data_i, repmat(obj.points.Longitude, obj.T, 1)); % longitude
+                data_i = addvars(data_i, date_vect'); % time
+                
+                % var. names definition
+                beta_var_names = {};
+                beta_var_names{1} = "X_beta_const";
+                for i=2:obj.b
+                    beta_var_names{i} = "X_beta_" + num2str(i-1); %#ok<AGROW> 
+                end
+                var_names = ["Profile", "Y_name", "Y", "X_h", beta_var_names, "Y_coordinate", ...
+                         "X_coordinate", "Time"];
+                data_i.Properties.VariableNames = var_names;
+
+                data{iter} = data_i;
+                disp("- dataset " + iter + " of " + obj.n_iter + " done.");
+
             end
 
         end
@@ -195,7 +256,7 @@ classdef FSIM
 
             % setting c_beta
             if ~isfield(params, "c_beta")
-                params.c_beta = randi([1 100], obj.b, obj.n_basis.p_beta);
+                params.c_beta = randi([1 100], obj.b, obj.n_basis.p_beta)';
             end
             
             % setting z_0
@@ -288,7 +349,7 @@ classdef FSIM
                     X_beta_orlated = [X_beta_orlated, ...
                         repmat(X_t(:, i), 1, obj.n_basis.p_beta).*basis_eval]; %#ok<AGROW> 
                 end
-                X_beta(:, t) = X_beta_orlated*reshape(obj.params.c_beta', obj.b*obj.n_basis.p_beta, 1);
+                X_beta(:, t) = X_beta_orlated*reshape(obj.params.c_beta, obj.b*obj.n_basis.p_beta, 1);
             end
 
         end
@@ -314,7 +375,7 @@ classdef FSIM
 
         end
 
-        function diag_H = get_H(obj)
+        function diag_H = get_diag_H(obj)
             
             % computing weights
             h = zeros(obj.n, 1);
@@ -389,4 +450,3 @@ classdef FSIM
     end
 
 end
-
