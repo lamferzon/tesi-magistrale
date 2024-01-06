@@ -153,19 +153,20 @@ classdef FSIM
 
                 % cell data processing
                 Y = obj.Y_sim{iter};
-                cell_data = cell(obj.T*obj.n, obj.b+2);
+                cell_data = cell(obj.T*obj.n, obj.b+3);
                 
                 count = 1;
                 for t=1:obj.T
                     Y_t = reshape(Y(:, t), obj.n, obj.q);
 
                     for i=1:obj.n
-                        cell_data{count, 1} = Y_t(i, :);
-                        cell_data{count, 2} = 0:1:obj.q-1;
+                        cell_data{count, 1} = "NA";
+                        cell_data{count, 2} = Y_t(i, :);
+                        cell_data{count, 3} = 0:1:obj.q-1;
                         
                         for j=1:obj.b
                             X_t = reshape(obj.X{t}(:, j), obj.n, obj.q);
-                            cell_data{count, 2+j} = X_t(i, :);
+                            cell_data{count, 3+j} = X_t(i, :);
                         end
                         
                         date_vect(count) = datetime(2023, 1, t); %#ok<AGROW> 
@@ -177,7 +178,6 @@ classdef FSIM
                 % table creation
                 data_i = table();
                 data_i = addvars(data_i, (1:1:obj.n*obj.T)'); % profile
-                data_i = addvars(data_i, repelem('NA', obj.n*obj.T, 1)); % Y name
                 
                 for i = 1:size(cell_data, 2)
                     data_i = addvars(data_i, cell_data(:, i)); % X beta
@@ -187,15 +187,22 @@ classdef FSIM
                 data_i = addvars(data_i, repmat(obj.points.Longitude, obj.T, 1)); % longitude
                 data_i = addvars(data_i, date_vect'); % time
                 
-                % var. names definition
+                % var. names and units definition
                 beta_var_names = {};
                 beta_var_names{1} = "X_beta_const";
+                beta_var_units = {};
+                beta_var_units{1} = "cons";
                 for i=2:obj.b
                     beta_var_names{i} = "X_beta_" + num2str(i-1); %#ok<AGROW> 
+                    beta_var_units{i} = ""; %#ok<AGROW> 
                 end
+
                 var_names = ["Profile", "Y_name", "Y", "X_h", beta_var_names, "Y_coordinate", ...
                          "X_coordinate", "Time"];
                 data_i.Properties.VariableNames = var_names;
+
+                var_units = ["", "", "", "", beta_var_units, "deg", "deg", "d"];
+                data_i.Properties.VariableUnits = var_units;
 
                 data{iter} = data_i;
                 disp("- dataset " + iter + " of " + obj.n_iter + " done.");
