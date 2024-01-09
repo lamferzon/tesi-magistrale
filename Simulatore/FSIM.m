@@ -1,7 +1,8 @@
 classdef FSIM
 
     properties(Access = public)
-        Y_sim
+        Y_sim_pot
+        Y_sim_pure
         X
         params
         n_basis
@@ -109,7 +110,8 @@ classdef FSIM
             end
             
             % parameters setting
-            obj.Y_sim = cell(n_iter, 1);
+            obj.Y_sim_pot = cell(n_iter, 1);
+            obj.Y_sim_pure = cell(n_iter, 1);
             obj.n_iter = n_iter;
 
             % computing diag_sigma_eps
@@ -128,18 +130,20 @@ classdef FSIM
             obj.diag_H = obj.get_diag_H();
             
             % running simulation/s
-            obj.Y_sim = cell(n_iter, 1);
+            obj.Y_sim_pot = cell(n_iter, 1);
             disp("Running simulation/s: ")
             for iter=1:n_iter
-                Y_iter = zeros(obj.n*obj.q, obj.T);
+                Y_iter_pure = zeros(obj.n*obj.q, obj.T);
+                Y_iter_pot = zeros(obj.n*obj.q, obj.T);
                 Z = obj.simulate_AR1();
                 EPS = mvnrnd(zeros(obj.n*obj.q, 1), ...
                         speye(obj.n*obj.q).*obj.diag_sigma_eps, obj.T)';
                 for t=1:obj.T
-                    Y_iter(:, t) = obj.X_beta(:, t) + obj.X_z*Z(:, t+1) + EPS(:, t);
-                    Y_iter(:, t) = obj.diag_H.*Y_iter(:, t);
+                    Y_iter_pure(:, t) = obj.X_beta(:, t) + obj.X_z*Z(:, t+1) + EPS(:, t);
+                    Y_iter_pot(:, t) = obj.diag_H.*Y_iter_pure(:, t);
                 end
-                obj.Y_sim{iter} = Y_iter;
+                obj.Y_sim_pure{iter} = Y_iter_pure;
+                obj.Y_sim_pot{iter} = Y_iter_pot;
                 disp("- sim. " + num2str(iter) + " of " + num2str(n_iter) + " done.")
             end
 
@@ -152,7 +156,7 @@ classdef FSIM
             for iter=1:obj.n_iter
 
                 % cell data processing
-                Y = obj.Y_sim{iter};
+                Y = obj.Y_sim_pot{iter};
                 cell_data = cell(obj.T*obj.n, obj.b+3);
                 
                 count = 1;
@@ -446,11 +450,12 @@ classdef FSIM
             % grid generation
             [lon, lat] = meshgrid(lon_range.LonRange(1):step.Step:lon_range.LonRange(2), ...
                 lat_range.LatRange(1):step.Step:lat_range.LatRange(2));
-            coord = [lon(:) lat(:)];
+            coord = [lat(:) lon(:)];
 
             % random points extraction
             coord = array2table(coord(randperm(length(coord), n), :));
-            coord.Properties.VariableNames = ["Longitude", "Latitude"];
+            coord.Properties.VariableNames = ["Latitude", "Longitude"];
+            coord = sortrows(coord,"Latitude");
 
         end
 
