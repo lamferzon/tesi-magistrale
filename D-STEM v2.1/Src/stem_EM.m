@@ -1990,7 +1990,7 @@ classdef stem_EM < EM
             %    Update of rho    %
             %%%%%%%%%%%%%%%%%%%%%%%
             
-            %{
+            
             if obj.stem_model.stem_data.stem_modeltype.is('f-HDGM') && ...
                     obj.stem_model.stem_data.stem_modeltype.flag_potential
                 
@@ -2004,7 +2004,7 @@ classdef stem_EM < EM
                     optimset('MaxIter', fminsearch_max_iter, 'TolFun', 0.001, 'UseParallel', 'always'));
                 st_par_em_step.rho = exp(min_log_rho);
             end
-            %}
+            
             obj.stem_model.stem_par=st_par_em_step;
             ct2_mstep=clock;
             disp(['  M step ended in ',stem_misc.decode_time(etime(ct2_mstep,ct1_mstep))]);
