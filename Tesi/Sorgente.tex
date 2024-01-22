@@ -1,0 +1,56 @@
+\documentclass[a4paper, 12pt]{scrbook}
+\pdfpagewidth\paperwidth
+\pdfpageheight\paperheight
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	filecolor=magenta,      
+	urlcolor=black,
+	citecolor=black,
+}
+\urlstyle{same}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm, left=3cm, right=3cm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{graphicx}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{textcomp}
+\usepackage{bm}
+\usepackage{subfigure}
+\usepackage{amsmath}
+\usepackage{colortbl}
+\usepackage[table]{xcolor}
+\definecolor{mygreen}{RGB}{60,179,113}
+\usepackage{multirow}
+\setlength{\parskip}{0em}
+\usepackage[binary-units = true]{siunitx}
+\usepackage{nicefrac}
+\usepackage{verbatim}
+\usepackage{array}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{longtable}
+\usepackage{bm}
+\usepackage{nicematrix}
+\usepackage{adjustbox}
+\usepackage{rotating}
+\usepackage{pdfpages}
+\usepackage{placeins}
+\usepackage{float}
+
+\begin{document}
+
+	\tableofcontents
+	\listoffigures
+	\listoftables
+	
+	\mainmatter
+	\include{Capitoli/Prefazione}	\include{Capitoli/Modello base}
+	\include{Capitoli/Bibliografia}
+
+\end{document}

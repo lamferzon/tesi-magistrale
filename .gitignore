@@ -1,3 +1,11 @@
 *.asv
 *.mat
+*.aux
+*.lof
+*.lot
+*.log
+*.out
+*.synctex.gz
+*.toc
 Simulatore/fda
+Tesi/Sorgente.pdf
