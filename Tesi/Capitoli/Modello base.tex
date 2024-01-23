@@ -126,29 +126,29 @@ Alcuni di essi possono essere calcolati in forma chiusa, altri richiedono l'otti
 \par Inoltre, è necessario ricostruire la componente latente, operazione complessa che può essere eseguita integrando il filtro di Kalman (e smoother) nel passo E dell'algoritmo EM.
 
 \section[Cenni sull'algoritmo EM]{Cenni sull'algoritmo EM}
-L'algoritmo EM (Expectation-Maximization) è una tecnica di ottimizzazione iterativa per determinare la stima a massima verosimiglianza (Maximum Likelihood Estimate, o MLE) \textbf{in presenza di dati mancanti o nascosti (variabili latenti)}~\cite{paper_EM}. Nella stima ML si desidera stimare i parametri del modello per i quali i dati osservati risultano essere i più verosimili. \par Ogni iterazione dell'algoritmo EM consiste in un passi:
+L'algoritmo EM (Expectation-Maximization) è una tecnica di ottimizzazione iterativa per determinare la stima a massima verosimiglianza (Maximum Likelihood Estimate, o MLE) \textbf{in presenza di dati mancanti o nascosti (variabili latenti)}~\cite{paper_EM}. Nella stima ML si desidera determinare i parametri del modello per i quali i dati osservati risultano essere i più verosimili. \par Ogni iterazione dell'algoritmo EM consiste in due passi:
 \begin{itemize}
-	\item \textbf{passo E}: a partire dalla stima corrente dei parametri $\boldsymbol{\theta}_i$ e dai dati disponibili, quelli mancanti e/o nascosti vengono stimati usando l'\textit{aspettativa condizionale};
-	\item \textbf{passo M}: la funzione di verosimiglianza $L(\boldsymbol{\theta})$ viene ottimizzata per determinare $\boldsymbol{\theta}_{i+1}$ sotto l'assunzione che i dati mancanti siano noti. Le stime di questi, ottenute precedentemente nel passo E, sono impiegate al posto dei dati mancanti effettivi.
+	\item \textbf{passo E}: a partire dalla stima corrente dei parametri $\boldsymbol{\theta}_n$ e dai dati disponibili $\mathbf{x}$, quelli mancanti e/o nascosti vengono prima stimati e poi impiegati per determinare l'\textit{aspettativa condizionale} $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$, una semplificazione della stima corrente della funzione di verosimiglianza $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$;
+	\item \textbf{passo M}: $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$ viene ottimizzata per determinare $\boldsymbol{\theta}_{n+1}$, assumendo che i dati mancanti siano noti. Le stime di questi, ottenute precedentemente nel passo E, sono impiegate al posto dei dati mancanti effettivi.
 \end{itemize}
 La convergenza dell'algoritmo è garantita dall'aumento della verosimiglianza a ogni iterazione.
 
 \subsection{Derivazione del passo E}
-Sia $\mathbf{x}$ un vettore di dati aleatori appartenenti a una famiglia di modelli parametrizzata. Si desidera trovare il $\boldsymbol{\theta}$ tale che la verosimiglianza $L(\boldsymbol{\theta})=P(\mathbf{x} | \boldsymbol{\theta})$ sia massima; questa è conosciuta come stima a massima verosimiglianza (o  MLE) per $\boldsymbol{\theta}$. L'algoritmo EM garantisce che $L(\boldsymbol{\theta}) > L(\boldsymbol{\theta}_n)$; applicando il logaritmo naturale\footnote{semplificazione che spesse volte viene adottata per trasformare il prodotto di densità di probabilità che caratterizza $L$ (assumendo l'indipendenza tra i campioni) in una somma.}:
+Sia $\mathbf{x}$ un vettore di dati aleatori appartenenti a una famiglia di modelli parametrizzata. Si desidera trovare il valore delle incognite $\boldsymbol{\theta}$ tale che la verosimiglianza $L(\boldsymbol{\theta})=P(\mathbf{x} | \boldsymbol{\theta})$ sia massima. L'algoritmo EM garantisce che $L(\boldsymbol{\theta}) > L(\boldsymbol{\theta}_n)$; applicando il logaritmo naturale\footnote{semplificazione che spesse volte viene adottata per trasformare il prodotto di densità di probabilità che caratterizza $L$ (assumendo l'indipendenza tra i campioni) in una somma.} si ottiene:
 \begin{equation}
 	\ln(P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta}) - P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta}_n)) > 0.
 	\label{eq_dis_verosimiglianza}
 \end{equation}
-Tale risultato deriva dal fatto che $L(\boldsymbol{\theta})$ si può dimostrare essere strettamente positiva. Tuttavia, i dati osservati $\mathbf{x}$ non dipendono soltanto dai parametri da stimare, ma anche dai valori assunti dalle componenti latenti $\mathbf{z}$. Infatti, la probabilità totale $P(\mathbf{x}|\boldsymbol{\theta})$ può essere riscritta in termini di $\mathbf{z}$ come:
+Tale risultato deriva dal fatto che $L(\boldsymbol{\theta})$ si può dimostrare essere strettamente positiva. Tuttavia, i dati osservati $\mathbf{x}$ non dipendono soltanto dai parametri da stimare, ma anche dai valori assunti dalle componenti latenti $\mathbf{z}$ (da ricostruire utilizzando il filtro di Kalman). Infatti, la probabilità totale $P(\mathbf{x}|\boldsymbol{\theta})$ può essere riscritta in termini di $\mathbf{z}$ come:
 \begin{equation}
 	P(\mathbf{x}|\boldsymbol{\theta}) = \sum_{\mathbf{z}}^{}P(\mathbf{x}|\boldsymbol{\theta}, \mathbf{z})\cdot P(\mathbf{z}|\boldsymbol{\theta}).
 \end{equation}
-In seguito, l'equazione \ref{eq_dis_verosimiglianza} può essere riscritta come:
+Di conseguenza, l'equazione \ref{eq_dis_verosimiglianza} diventa:
 \begin{equation}
 	L(\boldsymbol{\theta}) - L(\boldsymbol{\theta}_n) = \ln\sum_{\mathbf{z}}^{} P(\mathbf{x}|\boldsymbol{\theta}, \mathbf{z})\cdot P(\mathbf{z}|\boldsymbol{\theta}) - \ln P(\mathbf{x}|\boldsymbol{\theta}_n).
 	\label{eq_dis_verosimiglianza_completa}
 \end{equation}
-Si ricorda che $L(\boldsymbol{\theta}_n)$ è la stima della della vera funzione di verosimiglianza $L(\boldsymbol{\theta})$ all'iterazione $n$-esima. \par A partire dall'introduzione del termine \textcolor{orange}{$P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)$} nell'equazione \ref{eq_dis_verosimiglianza_completa}, è possibile portare avanti il seguente sviluppo:
+A partire dall'introduzione del termine \textcolor{orange}{$P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)$} nell'equazione \ref{eq_dis_verosimiglianza_completa}, è possibile eseguire la seguente derivazione:
 \begin{equation}
 	\begin{split}
 		L(\boldsymbol{\theta}) - L(\boldsymbol{\theta}_n) & = -\ln P(\mathbf{x}|\boldsymbol{\theta}_n) + \ln\sum_{\mathbf{z}}^{} P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta})\cdot P(\mathbf{z}|\boldsymbol{\theta})\cdot\frac{\textcolor{orange}{P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)}}{\textcolor{orange}{P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)}} \\
@@ -157,20 +157,33 @@ Si ricorda che $L(\boldsymbol{\theta}_n)$ è la stima della della vera funzione 
 		& \geq\sum_{\mathbf{z}}^{}\textcolor{orange}{P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)}\cdot\ln\frac{P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta})\cdot P(\mathbf{z}|\boldsymbol{\theta})}{\textcolor{orange}{P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)}\cdot P(\mathbf{x}|\boldsymbol{\theta}_n)} \triangleq\Delta(\boldsymbol{\theta}|\boldsymbol{\theta}_n);
 	\end{split}
 \end{equation}
-per la disuguaglianza di Jensen. Pertanto:
+per il corollario della disuguaglianza di Jensen\footnote{sia $f$ una funzione concava ($\ln$ lo è) e $\lambda_1,\dots\lambda_n\in [0,1]$ tali che $\sum_{i=1}^{n}\lambda_i = 1$, allora $f(\sum_{i=1}^{n}\lambda_i\cdot x_i)\geq\sum_{i=1}^{n}\lambda_i\cdot f(x_i)$. Il teorema è applicabile perché $\sum_{\mathbf{z}}^{} P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)=1$.}. Pertanto:
 \begin{equation}
 	L(\boldsymbol{\theta})\geq L(\boldsymbol{\theta}_n)+\Delta(\boldsymbol{\theta}|\boldsymbol{\theta}_n)\triangleq l(\boldsymbol{\theta}|\boldsymbol{\theta}_n).
 \end{equation}
+La figura \ref{grafico_verosimiglianza} materializza il risultato appena ottenuto: l'approssimazione di $L(\boldsymbol{\theta})$ in un intorno di $\boldsymbol{\theta}_n$ non sovrastima la vera funzione di verosimiglianza, quindi ottimizzare l'approssimazione comporta la massimizzazione implicita anche di $L(\boldsymbol{\theta})$. Si ricorda, inoltre, che $\boldsymbol{\theta}_n = \text{arg}\,\max\limits_{\boldsymbol{\theta}} \ l(\boldsymbol{\theta}|\boldsymbol{\theta}_{n-1})$.
 
 \begin{figure}[htp]
 	\centering
 	\includegraphics[height=180px]{Immagini/Modello base/Grafico verosimiglianza}
-	\caption[Confronto tra la vera funzione di verosimiglianza $L(\theta)$ e la sua approssimazione in $\theta_n$.]{confronto tra la vera funzione di verosimiglianza $L(\theta)$ e la sua approssimazione in $\theta_n$. Da notare che lo stimatore $l(\theta |\theta_n)$ non sovrastima la funzione reale.}
+	\caption[Confronto tra la vera funzione di verosimiglianza $L(\theta)$ e la sua approssimazione in $\theta_n$.]{confronto tra la vera funzione di verosimiglianza $L(\theta)$ e la sua approssimazione in un intorno di $\theta_n$. Da notare che lo stimatore $l(\theta |\theta_n)$ non sovrastima la funzione reale.}
 	\label{grafico_verosimiglianza}
 \end{figure}
 
-
 \subsection{Derivazione del passo M}
+Dopo aver stimato nel passo E l'approssimazione $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$  della vera funzione di verosimiglianza $L(\boldsymbol{\theta})$, è necessario ottimizzarla per determinare $\boldsymbol{\theta}_{n+1}$. Nello specifico:
+\begin{equation}
+	\begin{split}
+		\boldsymbol{\theta}_{n+1} & = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\  l(\boldsymbol{\theta}|\boldsymbol{\theta}_n) \\
+		& =  \text{arg}\,\max\limits_{\boldsymbol{\theta}}\left\{ \textcolor{orange}{L(\boldsymbol{\theta}_n)} + \sum_{\mathbf{z}}^{} P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)\cdot\ln\frac{P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta})\cdot P(\mathbf{z}|\boldsymbol{\theta})}{\textcolor{orange}{P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)}\cdot\textcolor{orange}{P(\mathbf{x}|\boldsymbol{\theta}_n)}}\right\} \\
+		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\left\{\sum_{\mathbf{z}}^{} P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)\cdot\ln\textcolor{blue}{ P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta})\cdot P(\mathbf{z}|\boldsymbol{\theta})}\right\}\\
+		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\left\{\sum_{\mathbf{z}}^{}P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)\cdot\ln \textcolor{blue}{P(\mathbf{x},\mathbf{z}|\boldsymbol{\theta})}\right\}\\
+		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\left\{\text{E}_{\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n}\ln P(\mathbf{x},\mathbf{z}|\boldsymbol{\theta})\right\}\\
+		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\ Q(\boldsymbol{\theta,\boldsymbol{\theta}_n}).
+	\end{split}
+\label{eq_derivazione_step_M}
+\end{equation}
+I termini in arancione vengono rimossi poiché costanti rispetto a $\boldsymbol{\theta}$, quindi non influenzano la ricerca dell'ottimo, mentre a quelli blu viene applicato il teorema di Bayes. \par Attraverso la riscrittura di $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$ in $Q(\boldsymbol{\theta,\boldsymbol{\theta}_n})$ mediante la derivazione \ref{eq_derivazione_step_M}, è possibile comprendere l'idea che sta alla base dell'algoritmo EM: la log-verosimiglianza viene iterativamente corretta tramite la stima corrente della densità di probabilità delle variabili latenti $\mathbf{z}$, un'approssimazione ottenuta nel passo E a partire dai dati osservati $\mathbf{x}$ e dalla stima corrente dei parametri $\boldsymbol{\theta}_n$. 
 
 
 
