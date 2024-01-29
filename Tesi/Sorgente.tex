@@ -50,7 +50,15 @@
 	\listoftables
 	
 	\mainmatter
-	\include{Capitoli/Prefazione}	\include{Capitoli/Modello base}
-	\include{Capitoli/Bibliografia}
+	\include{Capitoli/0. Introduzione}
+	\include{Capitoli/1. Modello base}
+	\include{Capitoli/2. Nuovo modello}
+	\include{Capitoli/3. Formule di stima}
+	
+	\cleardoublepage
+	\phantomsection
+	\addcontentsline{toc}{chapter}{Bibliografia}
+	\bibliographystyle{plain}
+	\bibliography{Capitoli/Bibliografia.bib}
 
 \end{document}
