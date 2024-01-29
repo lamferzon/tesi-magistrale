@@ -2,46 +2,55 @@
 
 In questo primo capitolo, dopo aver presentato il concetto di analisi funzionale (\textit{Functional Data Analysis}, o \textit{FDA}), viene illustrato il modello spazio-temporale oggetto dell'estensione presentata in questo studio, ossia il \textit{Functional Hidden Dynamic Geostatistical Model} (o \textit{f-HDGM}). Infine, vengono fornite alcune nozioni per comprendere il funzionamento e, in primis, l'idea su cui si basa l'\textit{algoritmo EM}.
 
-\section[Cenni di analisi funzionale dei dati]{Cenni di analisi funzionale dei dati}
+\section[Cenni sull'analisi funzionale dei dati]{Cenni sull'analisi funzionale dei dati}
 
 \subsection[Differenza tra statistica inferenziale e analisi funzionale]{Differenza tra statistica inferenziale e analisi funzionale}
-Fornito un campione di dati $D = (x_1, y_1), (x_2, y_2)\dots (x_N, y_N)$ e un modello $y = f(x, \boldsymbol{\theta}_0)$, l'obiettivo della statistica inferenziale è quello di stimare i parametri $\boldsymbol{\theta}_0$ andando a minimizzare una funzione di costo $J(\boldsymbol{\theta})$, ossia individuare la combinazione di valori stimati dei parametri $\boldsymbol{\hat{\theta}}_N$ tale che $\boldsymbol{\hat{\theta}}_N = \text{arg}\,\min\limits_{\boldsymbol{\theta}} J(\boldsymbol{\theta}, D)$. La funzione di costo cambia a seconda del modello da identificare e della tipologia di stima che viene utilizzata, per esempio OLS o MLE. Inoltre, non sempre è possibile risolvere il problema di minimo in forma chiusa\footnote{impiego di un'espressione matematica, esente da variabili libere, per calcolare il valore del parametro incognito. La ricerca iterativa dell'ottimo tramite un algoritmo non è necessaria.}; spesse volte è necessario ricorrere a tecniche di ottimizzazione numerica, in particolare quando la funzione $J(\boldsymbol{\theta})$ non è convessa. \par Nell'analisi funzionale, invece, l'oggetto della stima non è $\boldsymbol{\theta}$, ma la funzione $f$ continua~\cite{lezione_7}. Le spline sono una delle classi di funzioni più utilizzate in FDA; la possibilità di regolare  la \textit{smoothness} rende loro facilmente generalizzabili.
+Fornito un campione di dati $D = (x_1, y_1), (x_2, y_2)\dots (x_N, y_N)$ e un modello $y = f(x, \boldsymbol{\theta}_0)$, l'obiettivo della statistica inferenziale è quello di stimare i parametri $\boldsymbol{\theta}_0$ andando a minimizzare una funzione di costo $J(\boldsymbol{\theta})$, ossia individuare la combinazione di valori stimati dei parametri $\boldsymbol{\hat{\theta}}_N$ tale che $\boldsymbol{\hat{\theta}}_N = \text{arg}\,\min\limits_{\boldsymbol{\theta}} J(\boldsymbol{\theta}, D)$. La funzione di costo cambia a seconda del modello da identificare e della tipologia di stima che viene utilizzata, per esempio OLS o MLE. Inoltre, non sempre è possibile risolvere il problema di minimo in forma chiusa\footnote{impiego di un'espressione matematica, esente da variabili libere, per calcolare il valore del parametro incognito. La ricerca iterativa dell'ottimo tramite un algoritmo non è necessaria.}; spesse volte è necessario ricorrere a tecniche di ottimizzazione numerica, in particolare quando la funzione $J(\boldsymbol{\theta})$ non è convessa. \par Nell'analisi funzionale, invece, l'oggetto della stima non è $\boldsymbol{\theta}$, ma la funzione $f$ continua. Le spline sono una delle classi di funzioni più utilizzate in FDA; la possibilità di regolare  la \textit{smoothness} rende loro facilmente generalizzabili.
 
 \subsection[Basi di Fourier]{Basi di Fourier}
-Le basi di Fourier sono una classe di spline che viene impiegata per descrivere segnali periodici. Il modello che il toolbox FDA per MATLAB~\cite{fda_toolbox} implementa è:
+Le basi di Fourier sono una classe di spline che viene impiegata per descrivere segnali periodici. Il modello che il toolbox FDA per MATLAB~\cite{paper_FDA_toolbox} implementa è:
 \begin{equation}
 	y(t) = \sqrt{2f}\cdot w(t);
 \end{equation}
 \begin{equation}
-	w(t) = \frac{a_0}{\sqrt{2}} + a_1\cdot k_1(t) +\dots + a_i\cdot k_i(t) + \dots + a_n\cdot k_n(t);
+	w(t) = \frac{a_0}{\sqrt{2}} + \mathbf{a}_1\cdot \mathbf{k}_1(t)^\top +\dots + \mathbf{a}_i\cdot \mathbf{k}_i(t)^\top + \dots + \mathbf{a}_n\cdot \mathbf{k}_n(t)^\top;
 \end{equation}
 \begin{equation}
-	k_i(t) = \sin\left(i\cdot\omega_0\cdot t\right) + \cos\left(i\cdot\omega_0\cdot t\right);
+	\mathbf{a}_i\in\mathbb{R}^{1\times2} =
+	\begin{bmatrix}
+		a_{i, \sin} & a_{i, \cos}
+	\end{bmatrix};
 \end{equation}
-dove $f$ è la frequenza, $n$ indica il numero di armoniche, $\omega_0 = 2\pi\cdot f$ rappresenta la pulsazione dell'armonica fondamentale, mentre $a_0, a_1,\dots a_n$ sono i coefficienti combinatori. Oltre alla parte costante, ciascuna funzione seno e coseno costituisce una base. Una volta scelto il valore di $n$ a seconda del livello di complessità desiderato, l'obiettivo dell'analisi funzionale è quello di calcolare i coefficienti. Nelle figure \ref{esempi_Fourier} e \ref{esempio_Fourier_coef_non_unitari} sono riportati degli esempi sia di funzioni base sia di spline\footnote{combinazione lineare di basi di Fourier.}.
+\begin{equation}
+	\mathbf{k}_i(t)\in\mathbb{R}^{1\times 2} =
+	\begin{bmatrix}
+		\sin\left(i\cdot\omega_0\cdot t\right) & \cos\left(i\cdot\omega_0\cdot t\right)
+	\end{bmatrix}.
+\end{equation}
+$f$ è la frequenza, $n$ indica il numero di armoniche\footnote{il numero di basi è $n\cdot 2 + 1$.}, $\omega_0 = 2\pi\cdot f$ rappresenta la pulsazione dell'armonica fondamentale, mentre $a_0, a_1,\dots a_n$ sono i coefficienti combinatori. Oltre alla parte costante, ciascuna funzione seno e coseno costituisce una base. Una volta scelto il valore di $n$ a seconda del livello di complessità desiderato, l'obiettivo dell'analisi funzionale è quello di calcolare i coefficienti. Nelle figure \ref{esempi_Fourier} e \ref{esempio_Fourier_coef_non_unitari} sono riportati degli esempi sia di funzioni base sia di spline\footnote{combinazione lineare di basi di Fourier.}.
 
 \begin{figure}[htp]
 	\centering
 	\subfigure[]{\label{}\includegraphics[height=158px]{Immagini/Modello base/Basi Fourier}}\quad
 	\subfigure[]{\label{}\includegraphics[height=158px]{Immagini/Modello base/Spline Fourier}}
-	\caption[Confronto tra funzioni base con $n=5$ e tra diverse spline di Fourier]{confronto tra funzioni base con $n = 5$ (a) e tra diverse spline di Fourier (b) i cui coefficienti combinatori sono unitari. Da notare come all'aumentare di $n$ la funzione risultante tenda al livello basso di un'onda quadra.}
+	\caption[Confronto tra funzioni base con $n=2$ e tra diverse spline di Fourier]{confronto tra funzioni base con $n=2$ (a) e tra diverse spline di Fourier (b) i cui coefficienti combinatori sono unitari. Da notare come all'aumentare di $n$ la funzione risultante tenda al livello basso di un'onda quadra.}
 	\label{esempi_Fourier}
 \end{figure}
 \begin{figure}[htp]
 	\centering
 	\includegraphics[height=180px]{Immagini/Modello base/Spline Fourier con coefficienti non unitari}
-	\caption[Esempio di spline di Fourier con $n=5$ i cui coefficienti combinatori sono diversi da \num{1}]{esempio di spline di Fourier (in azzurro) con $n=5$ i cui coefficienti combinatori sono diversi da \num{1}. Nello specifico: $a_0 = 2$, $a_1 = 4$, $a_2 = 8$, $a_3 = 1/2$ e $a_4 = 2$.}
+	\caption[Esempio di spline di Fourier con $n=2$ i cui coefficienti combinatori sono diversi da \num{1}]{esempio di spline di Fourier (in azzurro) con $n=2$ i cui coefficienti combinatori sono diversi da \num{1}. Nello specifico: $a_0 = 2$, $a_{1,\sin} = 4$, $a_{1,\cos} = 8$, $a_{2,\sin} = 1/2$ e $a_{2,\cos} = 2$.}
 	\label{esempio_Fourier_coef_non_unitari}
 \end{figure}
 
 \subsection[Analisi funzionale e dati spazio-tempo]{Analisi funzionale e dati spazio-tempo}
-Si ipotizzi di avere a disposizione i dati di temperatura acquisiti da due sensori collocati in due punti distinti di una stanza, ossia $T(\mathbf{s}_1, t)$ e $T(\mathbf{s}_2, t)$. La correlazione spaziale esistente tra punti, in aggiunta all'autocorrelazione temporale, può essere impiegata per prevedere la temperatura in una terza posizione $\mathbf{s}_3$ all'istante di tempo $t_0$. Per eseguire questa operazione utilizzando un modello non funzionale, tuttavia, è necessario conoscere sia $T(\mathbf{s}_1, t_0)$ sia $T(\mathbf{s}_2, t_0)$, una condizione che potrebbe non verificarsi sempre nel caso in cui i due sensori siano \textit{asincroni}. A questo punto sarebbe necessario ricorrere a una delle tecniche di interpolazione note in letteratura per stimare i dati mancanti, strategie che inevitabilmente introducono del rumore nel modello. \par L'indipendenza dalla sincronia e dalla continuità delle serie storiche rendono i modelli funzionali particolarmente adatti a risolvere situazioni di questa natura; una volta stimata la funzione $f$, è possibile utilizzarla per effettuare predizioni in qualsiasi punto e in qualsiasi istante.
+Si ipotizzi di avere a disposizione i dati di temperatura acquisiti da due sensori collocati in due punti distinti di una stanza, ossia $T(\mathbf{s}_1, t)$ e $T(\mathbf{s}_2, t)$. La correlazione spaziale esistente tra punti, in aggiunta all'autocorrelazione temporale, può essere impiegata per prevedere la temperatura in una terza posizione $\mathbf{s}_3$ all'istante di tempo $t_0$. Per eseguire questa operazione utilizzando un modello non funzionale, tuttavia, è necessario conoscere sia $T(\mathbf{s}_1, t_0)$ sia $T(\mathbf{s}_2, t_0)$, una condizione che potrebbe non verificarsi sempre nel caso in cui i due sensori siano \textit{asincroni}. A questo punto sarebbe necessario ricorrere a una delle tecniche di interpolazione note in letteratura per stimare i dati mancanti, strategie che inevitabilmente introducono del rumore nel modello. \par L'indipendenza dalla sincronia e dalla continuità delle serie storiche rendono i modelli funzionali particolarmente adatti a risolvere situazioni di questa natura; una volta stimata la funzione $f$, infatti, è possibile utilizzarla per effettuare predizioni in qualsiasi punto e in qualsiasi istante.
 
 \section[Il modello f-HDGM]{Il modello f-HDGM}
 Il Functional Hidden Dynamic Geostatistical Model è stato illustrato in un articolo scientifico pubblicato sul Journal of Statistical Software nel settembre del \num{2021}, un paper finalizzato a presentare, oltre al modello, anche D-STEM v2, un software il cui scopo è stimare tramite l'algoritmo EM una serie di modelli spazio-temporali~\cite{paper_f_HDGM}.
 
 \subsection[Equazioni del modello]{Equazioni del modello}
-Sia $\mathbf{s} = (s_{lat}, s_{lon})^\top$ un generico punto spaziale sulla sfera terrestre $\mathbb{S}^2$ e $t\in\mathbb{N}$ un indice temporale discreto. Si assume che la funzione di interesse $f(s, h, t)$, con dominio $H=[ h_1, h_2]\subset\mathbb{R}$, possa essere osservata in ogni $(\mathbf{s}, t)$ e $h\in H$ attraverso delle misurazioni rumorose $y(\mathbf{s}, h, t)$ che seguono il seguente modello matematico:
+Sia $\mathbf{s} = (s_{lat}, s_{lon})^\top$ un generico punto spaziale sulla sfera terrestre $\mathbb{S}^2$ e $t\in\mathbb{N}$ un indice temporale discreto. Si assume che la funzione di interesse $f(\mathbf{s}, h, t)$, con dominio $H=[ h_1, h_2]\subset\mathbb{R}$, possa essere osservata in ogni $(\mathbf{s}, t)$ e $h\in H$ attraverso delle misurazioni rumorose $y(\mathbf{s}, h, t)$ che seguono il seguente modello matematico:
 \begin{equation}
 	y(\mathbf{s}, h, t) = f(\mathbf{s}, t, h) + \epsilon(h);
 	\label{eq_rumore_uscita}
@@ -76,17 +85,17 @@ Nell'equazione \ref{eq_comp_det}, $\mathbf{x}(\mathbf{s}, h, t)\in\mathbb{R}^{b\
 \begin{equation}
 	\beta_j(h) = \Phi(h)^\top\cdot\mathbf{c}_{\beta, j}.
 \end{equation}
-$\Phi(h)\in\mathbb{R}^{n_\beta\times 1}$ sono le $n_\beta$ basi valutate in $h$, mentre $\mathbf{c}_{\beta, j}\in\mathbb{R}^{n_\beta\times 1}$ i rispettivi coefficienti della variabile $j$ da stimare. Piuttosto che considerare un effetto globale tempo-invariante, l'utilizzo delle spline consente di far variare il peso attribuito a un regressore nel dominio $H$. \par Si ipotizzi, per esempio, di voler descrivere la concentrazione di anidride carbonica $y_{CO_2}(\mathbf{s}, h, t)$ rilevata nel tempo da una stazione di misura in funzione dell'umidità relativa $x_{rel}(\mathbf{s}, h, t)$. Probabilmente il loro legame cambia a seconda dell'ora del giorno, un effetto che, inoltre, potrebbe mutare da un giorno all'altro; infatti, non è detto che l'umidità relativa descriva la concentrazione dell'inquinante in oggetto sempre nello stesso modo, sia in estate che in inverno, in tutti i punti spaziali. Per modellare questa variabilità spazio-temporale subentrano i coefficienti $z(\mathbf{s}, t)$, ovvero la componente latente.
+$\Phi(h)\in\mathbb{R}^{n_\beta\times 1}$ sono le $n_\beta$ basi valutate in $h$, mentre $\mathbf{c}_{\beta, j}\in\mathbb{R}^{n_\beta\times 1}$ i rispettivi coefficienti della variabile $j$ da stimare. Piuttosto che considerare un effetto globale tempo-invariante, l'utilizzo delle spline consente di far variare il peso attribuito a ciascun regressore nel dominio $H$. \par Si ipotizzi, per esempio, di voler descrivere la concentrazione di anidride carbonica $y_{CO_2}(\mathbf{s}, h, t)$ rilevata nel tempo da una stazione di misura in funzione dell'umidità relativa $x_{rel}(\mathbf{s}, h, t)$. Probabilmente il loro legame cambia a seconda dell'ora del giorno, un effetto che, inoltre, potrebbe mutare da un giorno all'altro; infatti, non è detto che l'umidità relativa descriva la concentrazione dell'inquinante in oggetto sempre nello stesso modo, sia in estate che in inverno, in tutti i punti spaziali. Per modellare questa variabilità spazio-temporale subentrano i coefficienti $z(\mathbf{s}, t)$, ovvero la componente latente.
 
 \subsection[Componente latente]{Componente latente}
 Nell'equazione \ref{eq_comp_lat}, $z(\mathbf{s}, t)\in \mathbb{R}^{n_z\times 1}$ è una variabile latente spazio-temporale avente una dinamica markoviana descritta da $G\in\mathbb{R}^{n_z\times n_z}$, una matrice di transizione diagonale\footnote{si assume che la cross-covarianza sia nulla.}. Il vettore delle innovazioni $\boldsymbol{\eta}(\mathbf{s}, t)\in\mathbb{R}^{n_z\times 1}$ si ottiene da un processo gaussiano multi-variato, indipendente nel tempo ma correlato nello spazio mediante la seguente matrice di covarianza funzionale:
 \begin{equation}
-	\Gamma(\mathbf{s}, \mathbf{s}';\boldsymbol{\theta})=diag(v_1\cdot\rho(\mathbf{s}, \mathbf{s}';\theta_1),\dots,v_{n_z}\cdot\rho(\mathbf{s}, \mathbf{s}';\theta_{n_z})).
+	\Gamma(\mathbf{s}, \mathbf{s}';\boldsymbol{\theta})=\text{diag}(v_1\cdot\rho(\mathbf{s}, \mathbf{s}';\theta_1),\dots,v_{n_z}\cdot\rho(\mathbf{s}, \mathbf{s}';\theta_{n_z})).
 \end{equation}
 $\mathbf{v}\in\mathbb{R}^{n_z\times 1}$ è un vettore di varianze, mentre $\rho(\mathbf{s}, \mathbf{s}'; \theta_j)$ è una funzione di correlazione spaziale idonea per i punti spaziali $\mathbf{s}, \mathbf{s}'\in\mathbb{S}^2$ parametrizzata tramite $\theta_j$, $\boldsymbol{\theta}\in\mathbb{R}^{n_z\times 1}$ (ogni variabile latente ha la sua parametrizzazione). Per concludere:
 \begin{itemize}
 	\item il vettore $\mathbf{v}$ è la diagonale della matrice diagonale $V\in\mathbb{R}^{n_z\times n_z}$. Infatti, si assume che le $n_z$ variabili latenti siano tra di loro indipendenti (nullità dei termini extra-diagonale), ossia $\eta_1(\mathbf{s}, t)\ \bot\ \eta_2(\mathbf{s}, t)\ \bot\dots\bot \ \eta_{n_z}(\mathbf{s}, t)$;
-	\item un esempio di funzione di correlazione spaziale $\rho$ è quella esponenziale, ossia $\rho(\mathbf{s}, \mathbf{s}'; \theta_j) = e^{-\frac{\lvert\mathbf{s} - \mathbf{s}'\lvert}{\theta_j}}$.
+	\item un esempio di funzione di correlazione spaziale $\rho$ è quella esponenziale, ovvero $\rho(\mathbf{s}, \mathbf{s}'; \theta_j) = e^{-\frac{\lvert\mathbf{s} - \mathbf{s}'\lvert}{\theta_j}}$.
 \end{itemize}
 
 \paragraph{Simulazione di un processo spaziale gaussiano}
@@ -103,7 +112,7 @@ In un contesto spaziale, è possibile interpretare un processo gaussiano come un
 	\right\}.
 \]
 $D\in\mathbb{R}^{n\times n}$ è la matrice delle distanze, $N=n_z\cdot n = 2\cdot 10^4$ rappresenta il numero totale di variabili aleatorie e $I_n\in\mathbb{R}^{n\times n}$ è una matrice identità di ordine $n$.
-\par I coefficienti $\boldsymbol{\theta} = (\theta_1,\theta_2)^\top$ descrivono la velocità con la quale, fissato $\mathbf{s}$, le v.c. collocate nelle altre posizioni spaziali $\mathbf{s}$' tendono ad assumere un valore diverso da quello assunto dal processo gaussiano in $\mathbf{s}$ all'aumentare della distanza $|\mathbf{s} - \mathbf{s}'|$. Nella figura \ref{sim_proc_gaussiano} è possibile notare come la variabilità del processo tenda a diminuire all'aumentare di $\theta$ a causa della maggiore correlazione esistente tra punti vicini, un comportamento osservabile anche nei valori assunti dalla densità di probabilità congiunta della normale bi-variata ottenuta scegliendo due variabili causali.
+\par I coefficienti $\boldsymbol{\theta} = (\theta_1,\theta_2)^\top$ descrivono la velocità con la quale, fissato $\mathbf{s}$, le v.c. collocate nelle altre posizioni spaziali $\mathbf{s}'$ tendono ad assumere un valore diverso da quello assunto dal processo gaussiano in $\mathbf{s}$ all'aumentare della distanza $|\mathbf{s} - \mathbf{s}'|$. Nella figura \ref{sim_proc_gaussiano} è possibile notare come la variabilità del processo tenda a diminuire all'aumentare di $\theta$ a causa della maggiore correlazione esistente tra punti vicini, un comportamento osservabile anche nei valori assunti dalla densità di probabilità congiunta della normale bi-variata ottenuta scegliendo due variabili causali.
 
 \begin{figure}[h!]
 	\centering
@@ -126,17 +135,17 @@ Alcuni di essi possono essere calcolati in forma chiusa, altri richiedono l'otti
 \par Inoltre, è necessario ricostruire la componente latente, operazione complessa che può essere eseguita integrando il filtro di Kalman (e smoother) nel passo E dell'algoritmo EM.
 
 \section[Cenni sull'algoritmo EM]{Cenni sull'algoritmo EM}
-L'algoritmo EM (Expectation-Maximization) è una tecnica di ottimizzazione iterativa per determinare la stima a massima verosimiglianza (Maximum Likelihood Estimate, o MLE) \textbf{in presenza di dati mancanti o nascosti (variabili latenti)}~\cite{paper_EM}. Nella stima ML si desidera determinare i parametri del modello per i quali i dati osservati risultano essere i più verosimili. \par Ogni iterazione dell'algoritmo EM consiste in due passi:
+L'algoritmo EM (Expectation-Maximization) è una tecnica di ottimizzazione iterativa per determinare la stima a massima verosimiglianza (Maximum Likelihood Estimate, o MLE) \textbf{in presenza di dati mancanti o nascosti (variabili latenti)}. Nella stima ML si desidera determinare i parametri del modello per i quali i dati osservati risultano essere i più verosimili~\cite{paper_EM_algorithm}. \par Ogni iterazione dell'algoritmo EM consiste in due passi:
 \begin{itemize}
 	\item \textbf{passo E}: a partire dalla stima corrente dei parametri $\boldsymbol{\theta}_n$ e dai dati disponibili $\mathbf{x}$, quelli mancanti e/o nascosti vengono prima stimati e poi impiegati per determinare l'\textit{aspettativa condizionale} $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$, una semplificazione della stima corrente della funzione di verosimiglianza $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$;
-	\item \textbf{passo M}: $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$ viene ottimizzata per determinare $\boldsymbol{\theta}_{n+1}$, assumendo che i dati mancanti siano noti. Le stime di questi, ottenute precedentemente nel passo E, sono impiegate al posto dei dati mancanti effettivi.
+	\item \textbf{passo M}: $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$ viene ottimizzata per determinare $\boldsymbol{\theta}_{n+1}$, assumendo che i dati mancanti siano noti. Le stime di questi, ottenute precedentemente nel passo E, sono utilizzate al posto dei dati mancanti effettivi.
 \end{itemize}
 La convergenza dell'algoritmo è garantita dall'aumento della verosimiglianza a ogni iterazione.
 
 \subsection{Derivazione del passo E}
 Sia $\mathbf{x}$ un vettore di dati aleatori appartenenti a una famiglia di modelli parametrizzata. Si desidera trovare il valore delle incognite $\boldsymbol{\theta}$ tale che la verosimiglianza $L(\boldsymbol{\theta})=P(\mathbf{x} | \boldsymbol{\theta})$ sia massima. L'algoritmo EM garantisce che $L(\boldsymbol{\theta}) > L(\boldsymbol{\theta}_n)$; applicando il logaritmo naturale\footnote{semplificazione che spesse volte viene adottata per trasformare il prodotto di densità di probabilità che caratterizza $L$ (assumendo l'indipendenza tra i campioni) in una somma.} si ottiene:
 \begin{equation}
-	\ln(P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta}) - P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta}_n)) > 0.
+	\ln(P(\mathbf{x}|\boldsymbol{\theta}) - P(\mathbf{x}|\boldsymbol{\theta}_n)) > 0.
 	\label{eq_dis_verosimiglianza}
 \end{equation}
 Tale risultato deriva dal fatto che $L(\boldsymbol{\theta})$ si può dimostrare essere strettamente positiva. Tuttavia, i dati osservati $\mathbf{x}$ non dipendono soltanto dai parametri da stimare, ma anche dai valori assunti dalle componenti latenti $\mathbf{z}$ (da ricostruire utilizzando il filtro di Kalman). Infatti, la probabilità totale $P(\mathbf{x}|\boldsymbol{\theta})$ può essere riscritta in termini di $\mathbf{z}$ come:
@@ -183,10 +192,4 @@ Dopo aver stimato nel passo E l'approssimazione $l(\boldsymbol{\theta}|\boldsymb
 	\end{split}
 \label{eq_derivazione_step_M}
 \end{equation}
-I termini in arancione vengono rimossi poiché costanti rispetto a $\boldsymbol{\theta}$, quindi non influenzano la ricerca dell'ottimo, mentre a quelli blu viene applicato il teorema di Bayes. \par Attraverso la riscrittura di $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$ in $Q(\boldsymbol{\theta,\boldsymbol{\theta}_n})$ mediante la derivazione \ref{eq_derivazione_step_M}, è possibile comprendere l'idea che sta alla base dell'algoritmo EM: la log-verosimiglianza viene iterativamente corretta tramite la stima corrente della densità di probabilità delle variabili latenti $\mathbf{z}$, un'approssimazione ottenuta nel passo E a partire dai dati osservati $\mathbf{x}$ e dalla stima corrente dei parametri $\boldsymbol{\theta}_n$. 
-
-
-
-
-
-
+I termini in arancione vengono rimossi poiché costanti rispetto a $\boldsymbol{\theta}$, quindi non influenzano la ricerca dell'ottimo, mentre a quelli blu viene applicato il teorema di Bayes. \par Attraverso la riscrittura di $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$ in $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$ mediante la derivazione \ref{eq_derivazione_step_M}, si può comprendere l'idea che sta alla base dell'algoritmo EM: la log-verosimiglianza viene iterativamente corretta tramite la stima corrente della densità di probabilità delle variabili latenti $\mathbf{z}$, un'approssimazione ottenuta nel passo E a partire dai dati osservati $\mathbf{x}$ e dalla stima corrente dei coefficienti $\boldsymbol{\theta}_n$.
