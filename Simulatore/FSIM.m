@@ -425,14 +425,43 @@ classdef FSIM
     end
 
     methods (Static)
-        
-        function coord = get_points(n, lon_range, lat_range, step)
+
+        function coord = get_points(town_names, town_n_points, step, data_path)
+
+            arguments
+                town_names {mustBeNonempty, mustBeText}
+                town_n_points {mustBeNonempty, mustBeNumeric}
+                step.Step (1, 1) {mustBeNumeric} = .01
+                data_path.DataPath (1, 1) {mustBeText} = "Confini amministrativi\Comuni italiani\Com01012023_g_WGS84.shp"
+            end
+            
+            town_shape = shaperead(data_path.DataPath);
+            coord = table();
+            
+            for i = 1:length(town_names)
+                for j = 1:length(town_shape)
+                    if strcmp(town_shape(j).COMUNE, town_names(i))
+                        shape_i = town_shape(j);
+                        break;
+                    end
+                end
+            
+                [lat_range, lon_range]= projinv(shapeinfo(data_path.DataPath).CoordinateReferenceSystem, ...
+                    shape_i.BoundingBox(:, 1), shape_i.BoundingBox(:, 2));
+                temp = FSIM.get_random_sample(town_n_points(i), "LatRange", lat_range, "LonRange", lon_range, ...
+                    "Step", step.Step);
+                coord = vertcat(coord, temp); %#ok<AGROW> 
+            end
+
+        end
+
+        function coord = get_random_sample(n, lon_range, lat_range, step)
 
             arguments
                 n (1, 1) {mustBeNumeric, mustBePositive} = 10
                 lon_range.LonRange (1, 2) {mustBeNumeric} = [8.5, 10.5]
                 lat_range.LatRange (1, 2) {mustBeNumeric} = [44.5, 46.5]
-                step.Step (1, 1) {mustBeNumeric} = .007
+                step.Step (1, 1) {mustBeNumeric} = .005
             end
 
             % longitude range check
@@ -455,7 +484,7 @@ classdef FSIM
             % random points extraction
             coord = array2table(coord(randperm(length(coord), n), :));
             coord.Properties.VariableNames = ["Latitude", "Longitude"];
-            coord = sortrows(coord,"Latitude");
+            coord = sortrows(coord, "Latitude");
 
         end
 
