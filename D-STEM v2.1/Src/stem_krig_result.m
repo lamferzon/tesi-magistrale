@@ -221,7 +221,7 @@ classdef stem_krig_result < handle
             end
         end
         
-        function [y_hat,diag_Var_y_hat] = surface_plot(obj,h,t,X_beta)
+        function [y_hat,diag_Var_y_hat] = surface_plot(obj,h,t,X_beta,rho)
             %DESCRIPTION: surface plot of the kriged variable and its standard deviation 
             %
             %INPUT
@@ -236,6 +236,10 @@ classdef stem_krig_result < handle
 
             if nargin<3
                 error('Not enough input arguments');
+            end
+
+            if nargin < 5
+                rho = 0;
             end
             
             if isempty(obj.stem_fda)
@@ -273,7 +277,7 @@ classdef stem_krig_result < handle
                 b=full(eval_basis(h,basis));
                 s=nan(size(z,1),size(z,2));
                 v=nan(size(z,1),size(z,2));
-               
+                
                 for i=1:size(z,1)
                     s(i,:)=squeeze(z(i,:,t,:))*b';
                     v(i,:)=squeeze(var_z(i,:,t,:))*(b.^2)';
@@ -506,7 +510,8 @@ classdef stem_krig_result < handle
                     end 
                     X_beta = X_beta_tmp;
                 end
-
+                
+                H = obj.get_H(rho);
                 basis = obj.stem_fda.spline_basis_z;
                 b=full(eval_basis(h,basis));
                 s=nan(size(z,1),size(z,2));
@@ -517,7 +522,7 @@ classdef stem_krig_result < handle
                     s(i,:)=squeeze(z(i,:,t,:))*b';
                     v(i,:)=squeeze(var_z(i,:,t,:))*(b.^2)';
                     Xbeta(i,:)=squeeze(X_beta(i,:,:))*obj.stem_par.beta;  
-                    surface1(i,:)=Xbeta(i,:)+s(i,:);
+                    surface1(i,:)=H(i,:).*(Xbeta(i,:)+s(i,:));
                 end
 
                 if nargout==1
@@ -958,6 +963,28 @@ classdef stem_krig_result < handle
                     ax2.PlotBoxAspectRatio=ax1.PlotBoxAspectRatio;
                 end
             end
-        end 
+        end
+
+        function H = get_H(obj, rho)
+
+            % data structures definition
+            krig_coordinates = obj.stem_grid.coordinate;
+            points_coordinates = obj.stem_grid_sites.coordinate;  
+            H_vect = zeros(size(krig_coordinates, 1), 1);
+
+            % H computing
+            for i=1:length(krig_coordinates)
+                point_i = krig_coordinates(i, :);
+                distances_i = distance(point_i, points_coordinates(:, :));
+                sum = 1;
+                for j=1:length(distances_i)
+                    sum = sum + exp(-distances_i(j)/rho);
+                end
+                H_vect(i) = 1/sum;
+            end
+            H = reshape(H_vect, obj.stem_grid.grid_size);
+
+        end
+
     end
 end
