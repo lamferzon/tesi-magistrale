@@ -1,11 +1,38 @@
-\chapter[Formule di stima]{Formule di stima}
+\chapter[Stima del nuovo parametro]{Stima del nuovo parametro}
 
-Dopo aver presentato e descritto nel capitolo precedente il modello fp-HDGM, in questo vengono illustrate le formule di stima. 
+Dopo aver presentato nel capitolo precedente il modello fp-HDGM, in questo vengono illustrate le formule di stima. Innanzitutto viene derivata la funzione di verosimiglianza $L(\boldsymbol{\psi})$, poi la componente $\Omega(t)$ dell'aspettativa condizionale $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$; essa è l'oggetto dell'ottimizzazione svolta nel passo M per stimare il nuovo parametro $\rho$. Per la nomenclatura si rimanda alla sezione \ref{equazioni_modello_base}.
 
 \section[La funzione di verosimiglianza]{La funzione di verosimiglianza}
-\subsection[Notazione matriciale del modello fp-HDGM]{Notazione matriciale del modello fp-HDGM}
-\subsection[Distribuzioni di probabilità delle variabili casuali]{Distribuzioni di probabilità delle variabili casuali}
+La stima dei parametri $\boldsymbol{\psi}$ e dalla variabile latente spazio-temporale $\mathbf{z}(\mathbf{s}, t)$ è basata sull'approccio a massima verosimiglianza (o MLE)~\cite{paper_f_HDGM}.
+
+\subsection[Rappresentazione matriciale del modello fp-HDGM]{Rappresentazione matriciale del modello fp-HDGM}
+Si misuri la variabile $y(\mathbf{s}_i, l_j, t)$ per ogni valore $l_j\in \mathcal{L}$\footnote{per semplicità di notazione, si assume l'assenza di dati mancanti, ovvero $q$ osservazioni per ogni $\mathbf{s}_i$ e $t$.} in uno specifico punto nello spazio $\mathbf{s}_i\in\mathcal{S} = \{(s_{lon,1}, s_{lat,1}),\dots,(s_{lon,n}, s_{lat,n})\}$ e istante temporale $t$. Il vettore risultante è:
+\[
+\mathbf{y}(\mathbf{s}_i, t) = \left[ y(\mathbf{s}_i, l_1, t) \ \dots \ y(\mathbf{s}_i, l_j, t) \ \dots \ y(\mathbf{s}_i, l_q, t) \right]^\top_{q\times 1}.
+\]
+Esso prende il nome di \textit{profilo} osservato. Se si percorrono tutti i punti di misura $\mathcal{S}$, allora si costruisce la seguente matrice:
+\[
+\mathbf{y}_t = \left[ {y}(\mathbf{s}_1, t) \ \dots \ {y}(\mathbf{s}_k, t) \ \dots \ {y}(\mathbf{s}_n, t) \right]^\top_{N\times 1};
+\]
+dove $N=n\cdot q$. Applicando le equazioni alla struttura dati appena definita, si ottiene la seguente rappresentazione matriciale del modello fp-HDGM:
+\begin{equation}
+	\mathbf{y}_t = H\cdot\boldsymbol{\omega}_t;
+\end{equation}
+\begin{equation}
+	\boldsymbol{\omega}_t = \boldsymbol{\mu}_t + \boldsymbol{\epsilon}_t
+\end{equation}
+\begin{equation}
+	\boldsymbol{\mu}_t = \mathbf{X}_t\cdot\boldsymbol{\Phi}_{\beta, t}\cdot\mathbf{c}_\beta + \boldsymbol{\Phi}_{z, t}\cdot\mathbf{z}_t;
+\end{equation}
+\begin{equation}
+	\mathbf{z}_t = \tilde{G}\cdot\mathbf{z}_{t-1} + \boldsymbol{\eta}_t.
+\end{equation}
+$H\in\mathbb{R}^{N\times 1}$ è una matrice diagonale contenente i coefficienti $h_i = \left( 1 + \sum_{\mathbf{s}\in\mathcal{S}/\mathbf{s}_i}^{\mathcal{S}} e^{\frac{|\mathbf{s} - \mathbf{s}_i|}{\rho}}\right)^{-1}$ ripetuti $q$ volte per ogni punto di misura, $X_t\in\mathbb{R}^{N\times b}$ è la matrice delle covariate, $\boldsymbol{\Phi}_{\beta, t}\in\mathbb{R}^{b\times (b\cdot n_\beta)}$ e $\boldsymbol{\Phi}_{z, t}\in\mathbb{R}^{N\times(n\cdot n_z)}$ contengono i valori delle basi rispettivamente per $\boldsymbol{\beta}$ e per $\mathbf{z}$, mentre $\tilde{G}\in\mathbb{R}^{(n\cdot n_z)\times (n\cdot n_z)}$ è una matrice diagonale a blocchi costruita con $G$, ossia la matrice di transizione. Infine, $\boldsymbol{\epsilon}_t\in\mathbb{R}^{N\times 1}$ ed $\boldsymbol{\eta}_t\in\mathbb{R}^{(n\cdot n_z)\times 1}$ sono i vettori delle variabili casuali: il primo descrive il rumore sull'uscita, il secondo la correlazione spaziale.
+
 \subsection[Derivazione della funzione di verosimiglianza]{Derivazione della funzione di verosimiglianza}
+
 \section[L'aspettativa condizionale Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$]{L'aspettativa condizionale Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$}
+
 \subsection[Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$]{Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$}
+
 \subsection[Espressione della matrice $\Omega_t$]{Espressione della matrice $\Omega_t$}
