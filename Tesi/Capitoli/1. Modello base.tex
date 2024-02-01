@@ -9,24 +9,24 @@ Fornito un campione di dati $D = (x_1, y_1), (x_2, y_2)\dots (x_N, y_N)$ e un mo
 
 \subsection[Basi di Fourier]{Basi di Fourier}
 Le basi di Fourier sono una classe di spline che viene impiegata per descrivere segnali periodici. Il modello che il toolbox FDA per MATLAB~\cite{paper_FDA_toolbox} implementa è:
-\begin{equation}
-	y(t) = \sqrt{2f}\cdot w(t);
-\end{equation}
-\begin{equation}
+\[
+	y(t) = \sqrt{2f}\cdot w(t)\\;
+\]
+\[
 	w(t) = \frac{a_0}{\sqrt{2}} + \mathbf{a}_1\cdot \mathbf{k}_1(t)^\top +\dots + \mathbf{a}_i\cdot \mathbf{k}_i(t)^\top + \dots + \mathbf{a}_n\cdot \mathbf{k}_n(t)^\top;
-\end{equation}
-\begin{equation}
+\]
+\[
 	\mathbf{a}_i\in\mathbb{R}^{1\times2} =
 	\begin{bmatrix}
 		a_{i, \sin} & a_{i, \cos}
 	\end{bmatrix};
-\end{equation}
-\begin{equation}
+\]
+\[
 	\mathbf{k}_i(t)\in\mathbb{R}^{1\times 2} =
 	\begin{bmatrix}
 		\sin\left(i\cdot\omega_0\cdot t\right) & \cos\left(i\cdot\omega_0\cdot t\right)
 	\end{bmatrix}.
-\end{equation}
+\]
 $f$ è la frequenza, $n$ indica il numero di armoniche\footnote{il numero di basi è $n\cdot 2 + 1$.}, $\omega_0 = 2\pi\cdot f$ rappresenta la pulsazione dell'armonica fondamentale, mentre $a_0, a_1,\dots a_n$ sono i coefficienti combinatori. Oltre alla parte costante, ciascuna funzione seno e coseno costituisce una base. Una volta scelto il valore di $n$ a seconda del livello di complessità desiderato, l'obiettivo dell'analisi funzionale è quello di calcolare i coefficienti. Nelle figure \ref{esempi_Fourier} e \ref{esempio_Fourier_coef_non_unitari} sono riportati degli esempi sia di funzioni base sia di spline\footnote{combinazione lineare di basi di Fourier.}.
 
 \begin{figure}[htp]
@@ -50,13 +50,14 @@ Si ipotizzi di avere a disposizione i dati di temperatura acquisiti da due senso
 Il Functional Hidden Dynamic Geostatistical Model è stato illustrato in un articolo scientifico pubblicato sul Journal of Statistical Software nel settembre del \num{2021}, un paper finalizzato a presentare, oltre al modello, anche D-STEM v2, un software il cui scopo è stimare tramite l'algoritmo EM una serie di modelli spazio-temporali~\cite{paper_f_HDGM}.
 
 \subsection[Equazioni del modello]{Equazioni del modello}
-Sia $\mathbf{s} = (s_{lat}, s_{lon})^\top$ un generico punto spaziale sulla sfera terrestre $\mathbb{S}^2$ e $t\in\mathbb{N}$ un indice temporale discreto. Si assume che la funzione di interesse $f(\mathbf{s}, h, t)$, con dominio $H=[ h_1, h_2]\subset\mathbb{R}$, possa essere osservata in ogni $(\mathbf{s}, t)$ e $h\in H$ attraverso delle misurazioni rumorose $y(\mathbf{s}, h, t)$ che seguono il seguente modello matematico:
+\label{equazioni_modello_base}
+Sia $\mathbf{s} = (s_{lon}, s_{lat})^\top$ un generico punto spaziale sulla sfera terrestre $\mathbb{S}^2$ e $t\in\mathbb{N}$ un indice temporale discreto. Si assume che la funzione di interesse $f(\mathbf{s}, l, t)$, con dominio $\mathcal{L}=[l_1, l_q]\subset\mathbb{R}$, possa essere osservata in ogni $(\mathbf{s}, t)$ ed $l\in \mathcal{L}$ attraverso delle misurazioni rumorose $y(\mathbf{s}, l, t)$ che seguono il seguente modello matematico:
 \begin{equation}
-	y(\mathbf{s}, h, t) = f(\mathbf{s}, t, h) + \epsilon(h);
+	y(\mathbf{s}, l, t) = f(\mathbf{s}, l, t) + \epsilon(l);
 	\label{eq_rumore_uscita}
 \end{equation}
 \begin{equation}
-	f(\mathbf{s}, h, t) = \mathbf{x}(\mathbf{s}, h, t)^\top\cdot\boldsymbol{\beta}(h) + \Phi(h)^\top\cdot\mathbf{z}(\mathbf{s}, t);
+	f(\mathbf{s}, l, t) = \mathbf{x}(\mathbf{s}, l, t)^\top\cdot\boldsymbol{\beta}(l) + \Phi(l)^\top\cdot\mathbf{z}(\mathbf{s}, t);
 	\label{eq_comp_det}
 \end{equation}
 \begin{equation}
@@ -66,32 +67,32 @@ Sia $\mathbf{s} = (s_{lat}, s_{lon})^\top$ un generico punto spaziale sulla sfer
 Prima di entrare in medias res, è bene introdurre la nomenclatura che successivamente verrà utilizzata per definire nel modello le dimensioni degli oggetti matriciali e vettoriali:
 \begin{itemize}
 	\item $n$ indica il numero di posizioni spaziali (o punti di misura) $\mathbf{s}\in\mathbb{R}^2$ prese in esame;
-	\item $q$ rappresenta la dimensione del dominio (funzionale) $H$ rappresentante l'alta frequenza. Se, per esempio, tramite l'indice discreto $h$ ci si vuole riferire all'ora del giorno, allora $q=24$ (da $0$ a $23$ con risoluzione $1$);
+	\item $q$ rappresenta la dimensione del dominio (funzionale) $\mathcal{L}$ rappresentante l'alta frequenza. Se, per esempio, tramite l'indice discreto $h$ ci si vuole riferire all'ora del giorno, allora $q=24$ (da $0$ a $23$ con risoluzione $1$);
 	\item $T$ indica il numero di campioni in bassa frequenza, ad esempio i giorni. In assenza di dati mancanti, il singolo campione è costituito da $n\cdot q = N$ osservazioni (per ognuna delle $n$ posizioni spaziali sono note tutte le $q$ rilevazioni della variabile $y$, una per ogni ora del giorno);
-	\item $b$ rappresenta il numero di variabili esplicative, ovvero $|\boldsymbol{\beta}(h)| = b$;
-	\item infine, $n_\epsilon$, $n_\beta$ ed $n_z$ indicano il numero di funzioni base utilizzate per modellare rispettivamente $\sigma_\epsilon (h)$, ogni $\beta(h)$ e $\Phi(h)$ per $\mathbf{z}(\mathbf{s}, t)$.
+	\item $b$ rappresenta il numero di variabili esplicative, ovvero $|\boldsymbol{\beta}(l)| = b$;
+	\item infine, $n_\epsilon$, $n_\beta$ ed $n_z$ indicano il numero di funzioni base utilizzate per modellare rispettivamente $\sigma_\epsilon (l)$, ogni $\beta(l)$ e $\Phi(l)$ per $\mathbf{z}(\mathbf{s}, t)$.
 \end{itemize}
-Da sottolineare che attualmente non esiste una versione multi-variata\footnote{$\mathbf{y}(\mathbf{s}, h, t)\in\mathbb{R}^{p\times 1}$, con $p>1$.} dell'f-HDGM.
+Da sottolineare che attualmente non esiste una versione multi-variata\footnote{$\mathbf{y}(\mathbf{s}, l, t)\in\mathbb{R}^{p\times 1}$, con $p>1$.} dell'f-HDGM.
 
 \subsection[Rumore sull'uscita]{Rumore sull'uscita}
-Nell'equazione \ref{eq_rumore_uscita}, $\epsilon (h)\in\mathbb{R}$ è una variabile causale con distribuzione gaussiana avente media nulla ($\mu_\epsilon = 0$), indipendente sia nello spazio sia nel tempo. La sua varianza $\sigma_\epsilon (h)$ è \textit{eteroschedastica}\footnote{dato un campione di variabili casuali, al suo interno esistono delle sotto-popolazioni che hanno diverse varianze.} nel dominio $H$; essa è modellata nel modo seguente:
-\begin{equation}
-	\log(\sigma_\epsilon(h)) = \Phi(h)^\top\cdot\mathbf{c}_\epsilon.
-\end{equation}
-$\Phi(h)\in\mathbb{R}^{n_\epsilon\times 1}$ sono le $n_\epsilon$ funzioni base valutate in $h$, mentre $\mathbf{c}_\epsilon\in\mathbb{R}^{n_\epsilon\times 1}$ i rispettivi coefficienti combinatori da stimare. \par La finalità della modellazione funzionale della varianza consiste nell'adattare il livello di incertezza in base a vari fattori, come ad esempio l'orario del giorno. Ciò è dovuto al fatto che il numero di osservazioni disponibili per ciascuna delle $q$ fasce orarie non rimane costante.
+Nell'equazione \ref{eq_rumore_uscita}, $\epsilon (l)\in\mathbb{R}$ è una variabile causale con distribuzione gaussiana avente media nulla ($\mu_\epsilon = 0$), indipendente sia nello spazio sia nel tempo. La sua varianza $\sigma_\epsilon(l)$ è \textit{eteroschedastica}\footnote{dato un campione di variabili casuali, al suo interno esistono delle sotto-popolazioni che hanno diverse varianze.} nel dominio $\mathcal{L}$; essa è modellata nel modo seguente:
+\[
+	\log(\sigma_\epsilon(l)) = \Phi(l)^\top\cdot\mathbf{c}_\epsilon.
+\]
+$\Phi(l)\in\mathbb{R}^{n_\epsilon\times 1}$ sono le $n_\epsilon$ funzioni base valutate in $l$, mentre $\mathbf{c}_\epsilon\in\mathbb{R}^{n_\epsilon\times 1}$ i rispettivi coefficienti combinatori da stimare. \par La finalità della modellazione funzionale della varianza consiste nell'adattare il livello di incertezza in base a vari fattori, come ad esempio l'orario del giorno. Ciò è dovuto al fatto che il numero di osservazioni disponibili per ciascuna delle $q$ fasce orarie non rimane costante.
 
 \subsection[Componente deterministica]{Componente deterministica}
-Nell'equazione \ref{eq_comp_det}, $\mathbf{x}(\mathbf{s}, h, t)\in\mathbb{R}^{b\times 1}$ è un vettore di variabili esplicative, i cui coefficienti moltiplicativi $\boldsymbol{\beta}(h) = (\beta_1(h),\dots,\beta_b(h))^\top$ sono così espressi:
-\begin{equation}
-	\beta_j(h) = \Phi(h)^\top\cdot\mathbf{c}_{\beta, j}.
-\end{equation}
-$\Phi(h)\in\mathbb{R}^{n_\beta\times 1}$ sono le $n_\beta$ basi valutate in $h$, mentre $\mathbf{c}_{\beta, j}\in\mathbb{R}^{n_\beta\times 1}$ i rispettivi coefficienti della variabile $j$ da stimare. Piuttosto che considerare un effetto globale tempo-invariante, l'utilizzo delle spline consente di far variare il peso attribuito a ciascun regressore nel dominio $H$. \par Si ipotizzi, per esempio, di voler descrivere la concentrazione di anidride carbonica $y_{CO_2}(\mathbf{s}, h, t)$ rilevata nel tempo da una stazione di misura in funzione dell'umidità relativa $x_{rel}(\mathbf{s}, h, t)$. Probabilmente il loro legame cambia a seconda dell'ora del giorno, un effetto che, inoltre, potrebbe mutare da un giorno all'altro; infatti, non è detto che l'umidità relativa descriva la concentrazione dell'inquinante in oggetto sempre nello stesso modo, sia in estate che in inverno, in tutti i punti spaziali. Per modellare questa variabilità spazio-temporale subentrano i coefficienti $z(\mathbf{s}, t)$, ovvero la componente latente.
+Nell'equazione \ref{eq_comp_det}, $\mathbf{x}(\mathbf{s}, l, t)\in\mathbb{R}^{b\times 1}$ è un vettore di variabili esplicative, i cui coefficienti moltiplicativi $\boldsymbol{\beta}(l) = (\beta_1(l),\dots,\beta_b(l))^\top$ sono così espressi:
+\[
+	\beta_j(l) = \Phi(l)^\top\cdot\mathbf{c}_{\beta, j}.
+\]
+$\Phi(l)\in\mathbb{R}^{n_\beta\times 1}$ sono le $n_\beta$ basi valutate in $l$, mentre $\mathbf{c}_{\beta, j}\in\mathbb{R}^{n_\beta\times 1}$ i rispettivi coefficienti della variabile $j$ da stimare. Piuttosto che considerare un effetto globale tempo-invariante, l'utilizzo delle spline consente di far variare il peso attribuito a ciascun regressore nel dominio $\mathcal{L}$. \par Si ipotizzi, per esempio, di voler descrivere la concentrazione di anidride carbonica $y_{CO_2}(\mathbf{s}, l, t)$ rilevata nel tempo da una stazione di misura in funzione dell'umidità relativa $x_{rel}(\mathbf{s}, l, t)$. Probabilmente il loro legame cambia a seconda dell'ora del giorno, un effetto che, inoltre, potrebbe mutare da un giorno all'altro; infatti, non è detto che l'umidità relativa descriva la concentrazione dell'inquinante in oggetto sempre nello stesso modo, sia in estate che in inverno, in tutti i punti spaziali. Per modellare questa variabilità spazio-temporale subentrano i coefficienti $z(\mathbf{s}, t)$, ovvero la componente latente.
 
 \subsection[Componente latente]{Componente latente}
 Nell'equazione \ref{eq_comp_lat}, $z(\mathbf{s}, t)\in \mathbb{R}^{n_z\times 1}$ è una variabile latente spazio-temporale avente una dinamica markoviana descritta da $G\in\mathbb{R}^{n_z\times n_z}$, una matrice di transizione diagonale\footnote{si assume che la cross-covarianza sia nulla.}. Il vettore delle innovazioni $\boldsymbol{\eta}(\mathbf{s}, t)\in\mathbb{R}^{n_z\times 1}$ si ottiene da un processo gaussiano multi-variato, indipendente nel tempo ma correlato nello spazio mediante la seguente matrice di covarianza funzionale:
-\begin{equation}
+\[
 	\Gamma(\mathbf{s}, \mathbf{s}';\boldsymbol{\theta})=\text{diag}(v_1\cdot\rho(\mathbf{s}, \mathbf{s}';\theta_1),\dots,v_{n_z}\cdot\rho(\mathbf{s}, \mathbf{s}';\theta_{n_z})).
-\end{equation}
+\]
 $\mathbf{v}\in\mathbb{R}^{n_z\times 1}$ è un vettore di varianze, mentre $\rho(\mathbf{s}, \mathbf{s}'; \theta_j)$ è una funzione di correlazione spaziale idonea per i punti spaziali $\mathbf{s}, \mathbf{s}'\in\mathbb{S}^2$ parametrizzata tramite $\theta_j$, $\boldsymbol{\theta}\in\mathbb{R}^{n_z\times 1}$ (ogni variabile latente ha la sua parametrizzazione). Per concludere:
 \begin{itemize}
 	\item il vettore $\mathbf{v}$ è la diagonale della matrice diagonale $V\in\mathbb{R}^{n_z\times n_z}$. Infatti, si assume che le $n_z$ variabili latenti siano tra di loro indipendenti (nullità dei termini extra-diagonale), ossia $\eta_1(\mathbf{s}, t)\ \bot\ \eta_2(\mathbf{s}, t)\ \bot\dots\bot \ \eta_{n_z}(\mathbf{s}, t)$;
@@ -149,9 +150,9 @@ Sia $\mathbf{x}$ un vettore di dati aleatori appartenenti a una famiglia di mode
 	\label{eq_dis_verosimiglianza}
 \end{equation}
 Tale risultato deriva dal fatto che $L(\boldsymbol{\theta})$ si può dimostrare essere strettamente positiva. Tuttavia, i dati osservati $\mathbf{x}$ non dipendono soltanto dai parametri da stimare, ma anche dai valori assunti dalle componenti latenti $\mathbf{z}$ (da ricostruire utilizzando il filtro di Kalman). Infatti, la probabilità totale $P(\mathbf{x}|\boldsymbol{\theta})$ può essere riscritta in termini di $\mathbf{z}$ come:
-\begin{equation}
+\[
 	P(\mathbf{x}|\boldsymbol{\theta}) = \sum_{\mathbf{z}}^{}P(\mathbf{x}|\boldsymbol{\theta}, \mathbf{z})\cdot P(\mathbf{z}|\boldsymbol{\theta}).
-\end{equation}
+\]
 Di conseguenza, l'equazione \ref{eq_dis_verosimiglianza} diventa:
 \begin{equation}
 	L(\boldsymbol{\theta}) - L(\boldsymbol{\theta}_n) = \ln\sum_{\mathbf{z}}^{} P(\mathbf{x}|\boldsymbol{\theta}, \mathbf{z})\cdot P(\mathbf{z}|\boldsymbol{\theta}) - \ln P(\mathbf{x}|\boldsymbol{\theta}_n).
@@ -188,7 +189,7 @@ Dopo aver stimato nel passo E l'approssimazione $l(\boldsymbol{\theta}|\boldsymb
 		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\left\{\sum_{\mathbf{z}}^{} P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)\cdot\ln\textcolor{blue}{ P(\mathbf{x}|\mathbf{z},\boldsymbol{\theta})\cdot P(\mathbf{z}|\boldsymbol{\theta})}\right\}\\
 		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\left\{\sum_{\mathbf{z}}^{}P(\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n)\cdot\ln \textcolor{blue}{P(\mathbf{x},\mathbf{z}|\boldsymbol{\theta})}\right\}\\
 		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\left\{\text{E}_{\mathbf{z}|\mathbf{x},\boldsymbol{\theta}_n}\ln P(\mathbf{x},\mathbf{z}|\boldsymbol{\theta})\right\}\\
-		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\ Q(\boldsymbol{\theta,\boldsymbol{\theta}_n}).
+		& = \text{arg}\,\max\limits_{\boldsymbol{\theta}}\ Q(\boldsymbol{\theta},\boldsymbol{\theta}_n).
 	\end{split}
 \label{eq_derivazione_step_M}
 \end{equation}
