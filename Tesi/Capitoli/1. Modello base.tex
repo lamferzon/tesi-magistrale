@@ -31,14 +31,14 @@ $f$ è la frequenza, $n$ indica il numero di armoniche\footnote{il numero di bas
 
 \begin{figure}[htp]
 	\centering
-	\subfigure[]{\label{}\includegraphics[height=158px]{Immagini/Modello base/Basi Fourier}}\quad
-	\subfigure[]{\label{}\includegraphics[height=158px]{Immagini/Modello base/Spline Fourier}}
+	\subfigure[]{\label{}\includegraphics[height=158px]{Immagini/1. Modello base/Basi Fourier}}\quad
+	\subfigure[]{\label{}\includegraphics[height=158px]{Immagini/1. Modello base/Spline Fourier}}
 	\caption[Confronto tra funzioni base con $n=2$ e tra diverse spline di Fourier]{confronto tra funzioni base con $n=2$ (a) e tra diverse spline di Fourier (b) i cui coefficienti combinatori sono unitari. Da notare come all'aumentare di $n$ la funzione risultante tenda al livello basso di un'onda quadra.}
 	\label{esempi_Fourier}
 \end{figure}
 \begin{figure}[htp]
 	\centering
-	\includegraphics[height=180px]{Immagini/Modello base/Spline Fourier con coefficienti non unitari}
+	\includegraphics[height=180px]{Immagini/1. Modello base/Spline Fourier con coefficienti non unitari}
 	\caption[Esempio di spline di Fourier con $n=2$ i cui coefficienti combinatori sono diversi da \num{1}]{esempio di spline di Fourier (in azzurro) con $n=2$ i cui coefficienti combinatori sono diversi da \num{1}. Nello specifico: $a_0 = 2$, $a_{1,\sin} = 4$, $a_{1,\cos} = 8$, $a_{2,\sin} = 1/2$ e $a_{2,\cos} = 2$.}
 	\label{esempio_Fourier_coef_non_unitari}
 \end{figure}
@@ -117,12 +117,12 @@ $D\in\mathbb{R}^{n\times n}$ è la matrice delle distanze, $N=n_z\cdot n = 2\cdo
 
 \begin{figure}[h!]
 	\centering
-	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/Modello base/Sim. proc. gaussiano, theta = 0.5}}\quad
-	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/Modello base/Sim. var. casuali, theta = 0.5}}\quad
-	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/Modello base/Sim. proc. gaussiano, theta = 10}}\quad
-	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/Modello base/Sim. var. casuali, theta = 10}}\quad
-	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/Modello base/Sim. proc. gaussiano, theta = 100}}\quad
-	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/Modello base/Sim. var. casuali, theta = 100}}
+	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/1. Modello base/Sim. proc. gaussiano, theta = 0.5}}\quad
+	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/1. Modello base/Sim. var. casuali, theta = 0.5}}\quad
+	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/1. Modello base/Sim. proc. gaussiano, theta = 10}}\quad
+	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/1. Modello base/Sim. var. casuali, theta = 10}}\quad
+	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/1. Modello base/Sim. proc. gaussiano, theta = 100}}\quad
+	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/1. Modello base/Sim. var. casuali, theta = 100}}
 	\caption[Simulazione di un processo spaziale gaussiano su un piano cartesiano al variare di $\theta$]{simulazione di un processo spaziale gaussiano su un piano cartesiano regolare e rispettiva densità di probabilità congiunta della normale bi-variata riferita ai punti $(50, 50)$ e $(55, 55)$ con $\theta=0.5$ (a, b), \num{10} (c, d) e \num{100} (e, f).}
 	\label{sim_proc_gaussiano}
 \end{figure}
@@ -175,7 +175,7 @@ La figura \ref{grafico_verosimiglianza} materializza il risultato appena ottenut
 
 \begin{figure}[htp]
 	\centering
-	\includegraphics[height=180px]{Immagini/Modello base/Grafico verosimiglianza}
+	\includegraphics[height=180px]{Immagini/1. Modello base/Grafico verosimiglianza}
 	\caption[Confronto tra la vera funzione di verosimiglianza $L(\theta)$ e la sua approssimazione in $\theta_n$.]{confronto tra la vera funzione di verosimiglianza $L(\theta)$ e la sua approssimazione in un intorno di $\theta_n$. Da notare che lo stimatore $l(\theta |\theta_n)$ non sovrastima la funzione reale.}
 	\label{grafico_verosimiglianza}
 \end{figure}
