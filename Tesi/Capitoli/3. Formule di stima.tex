@@ -17,6 +17,7 @@ Esso prende il nome di \textit{profilo} osservato. Se si percorrono tutti i punt
 dove $N=n\cdot q$. Applicando le equazioni alla struttura dati appena definita, si ottiene la seguente rappresentazione matriciale del modello fp-HDGM:
 \begin{equation}
 	\mathbf{y}_t = H\cdot\boldsymbol{\omega}_t;
+	\label{eq_matriciale_y_fp_HDGM}
 \end{equation}
 \begin{equation}
 	\boldsymbol{\omega}_t = \boldsymbol{\mu}_t + \boldsymbol{\epsilon}_t
@@ -26,11 +27,95 @@ dove $N=n\cdot q$. Applicando le equazioni alla struttura dati appena definita, 
 \end{equation}
 \begin{equation}
 	\mathbf{z}_t = \tilde{G}\cdot\mathbf{z}_{t-1} + \boldsymbol{\eta}_t.
+	\label{eq_matriciale_z_fp_HDGM}
 \end{equation}
 $H\in\mathbb{R}^{N\times 1}$ è una matrice diagonale contenente i coefficienti $h_i = \left( 1 + \sum_{\mathbf{s}\in\mathcal{S}/\mathbf{s}_i}^{\mathcal{S}} e^{\frac{|\mathbf{s} - \mathbf{s}_i|}{\rho}}\right)^{-1}$ ripetuti $q$ volte per ogni punto di misura, $X_t\in\mathbb{R}^{N\times b}$ è la matrice delle covariate, $\boldsymbol{\Phi}_{\beta, t}\in\mathbb{R}^{b\times (b\cdot n_\beta)}$ e $\boldsymbol{\Phi}_{z, t}\in\mathbb{R}^{N\times(n\cdot n_z)}$ contengono i valori delle basi rispettivamente per $\boldsymbol{\beta}$ e per $\mathbf{z}$, mentre $\tilde{G}\in\mathbb{R}^{(n\cdot n_z)\times (n\cdot n_z)}$ è una matrice diagonale a blocchi costruita con $G$, ossia la matrice di transizione. Infine, $\boldsymbol{\epsilon}_t\in\mathbb{R}^{N\times 1}$ ed $\boldsymbol{\eta}_t\in\mathbb{R}^{(n\cdot n_z)\times 1}$ sono i vettori delle variabili casuali: il primo descrive il rumore sull'uscita, il secondo la correlazione spaziale.
 
-\subsection[Derivazione della funzione di verosimiglianza]{Derivazione della funzione di verosimiglianza}
+\subsection[Distribuzioni delle variabili casuali]{Distribuzioni delle variabili casuali}
+Pre-moltiplicando per $H^{-1}$ ambo i termini dell'equazione~\ref{eq_matriciale_y_fp_HDGM}, si ottiene:
+\[
+H^{-1}\cdot\mathbf{y}_t  = \boldsymbol{\mu}_t + \boldsymbol{\epsilon}_t.
+\]
+$\boldsymbol{\epsilon}_t$ è un vettore di variabili aleatorie distribuite normalmente con media $\boldsymbol{\mu}_\epsilon\in\mathbb{R}^{N\times1}$ nulla e varianza $\Sigma_\epsilon\in\mathbb{R}^{N\times N}$, una matrice diagonale costruita utilizzando $\sigma_\epsilon(l)$, ossia la varianza funzionale. Di conseguenza:
+\[
+H^{-1}\cdot\mathbf{y}_t\backsim\mathcal{N}_N\left\{\boldsymbol{\mu}_t, \Sigma_\epsilon\right\}.
+\]
+Un discorso simile si può fare per l'equazione~\ref{eq_matriciale_z_fp_HDGM}; $\boldsymbol{\eta}_t$ è anch'esso un vettore di variabili casuali distribuite normalmente con media $\boldsymbol{\mu}_\eta\in\mathbb{R}^{(n\cdot n_z)\times1}$ nulla, tuttavia la sua matrice di varianze e covarianze $\Sigma_\eta\in\mathbb{R}^{(n\cdot n_z)\times(n\cdot n_z)}$ è diagonale a blocchi, costruita utilizzando $\Gamma_\eta\in\mathbb{R}^{n\times n}$, ovvero la matrice di correlazione spaziale. Pertanto:
+\[
+\mathbf{z}_t\backsim\mathcal{N}_{n\cdot n_z}\left\{\tilde{G}\cdot\mathbf{z}_{t-1}, \Gamma_\eta\right\}.
+\]
 
+\subsection[Derivazione della funzione di verosimiglianza]{Derivazione della funzione di verosimiglianza}
+Siano $X$, $Y$ e $Z$ le matrici contenenti rispettivamente i valori assunti dalle covariate, dall'uscita e dalle componenti latenti. Per definizione, la funzione di verosimiglianza ha la seguente espressione:
+\begin{equation}
+	L(\boldsymbol{\psi}; Y,Z,X) = L(\boldsymbol{\psi}; X)\cdot L(\boldsymbol{\psi}; Z|X)\cdot L(\boldsymbol{\psi}; Y|Z,X).
+	\label{eq_gen_verosimiglianza}
+\end{equation}
+La quantità $L(\boldsymbol{\psi}; X)$ è unitaria perché le covariate sono deterministiche, mentre $L(\boldsymbol{\psi}; Z|X) = L(\boldsymbol{\psi}; Z)$ poiché $X$ e $Z$ sono indipendenti tra loro. Quindi, l'equazione~\ref{eq_gen_verosimiglianza} diventa:
+\begin{equation}
+	L(\boldsymbol{\psi}; Y,Z,X) =  L(\boldsymbol{\psi}; Z)\cdot L(\boldsymbol{\psi}; Y|Z,X).
+	\label{eq_gen_verosimiglianza_2}
+\end{equation}
+Nello specifico:
+\begin{equation}
+	\begin{split}
+		L(\boldsymbol{\psi}; Y|Z, X) & = \prod_{t=1}^{T}\left(|\Sigma_\epsilon|^\frac{1}{2}\cdot\left(2\pi\right)^\frac{n\cdot q}{2}\right)^{-1}\cdot e^{-\frac{1}{2}\left(H^{-1}\mathbf{y}_t - \boldsymbol{\mu}_t\right)^\top\Sigma_\epsilon^{-1}\left(H^{-1}\mathbf{y}_t - \boldsymbol{\mu}_t\right)} \\
+		& = \left(|\Sigma_\epsilon|^\frac{1}{2}\cdot\left(2\pi\right)^\frac{n\cdot q}{2}\right)^{-T}\cdot\prod_{t=1}^{T} e^{-\frac{1}{2}\left(H^{-1}\mathbf{y}_t - \boldsymbol{\mu}_t\right)^\top\Sigma_\epsilon^{-1}\left(H^{-1}\mathbf{y}_t - \boldsymbol{\mu}_t\right)};
+	\end{split}
+\end{equation}
+e
+\begin{equation}
+	\begin{split}
+		L(\boldsymbol{\psi}; Z) & = L(\boldsymbol{\psi}; \mathbf{z}_0)\cdot L(\boldsymbol{\psi}; \mathbf{z}_1|\mathbf{z}_0)\cdots L(\boldsymbol{\psi}; \mathbf{z}_T|\mathbf{z}_0, \mathbf{z}_1,\dots\mathbf{z}_{T-1}) \\
+		& = L(\boldsymbol{\psi}; \mathbf{z}_0)\cdot L(\boldsymbol{\psi}; \mathbf{z}_1|\mathbf{z}_0)\cdots L(\boldsymbol{\psi}; \mathbf{z}_T|\mathbf{z}_{T-1})\\
+		& = L(\boldsymbol{\psi}; \mathbf{z}_0)\cdot\prod_{t=1}^{T}L(\boldsymbol{\psi};\mathbf{z}_t|\mathbf{z}_{t-1});
+	\end{split}
+	\label{eq_verosimiglianza_y}
+\end{equation}
+poiché l'autocorrelazione del processo gaussiano è a un passo ($\tau = 1$). Da segnalare, inoltre, che l'operatore $|\cdot|$ indica il determinante. Aumentando il livello di dettaglio si ottiene:
+\begin{equation}
+	L(\boldsymbol{\psi}; \mathbf{z}_0) = \left(|\Sigma_0|^\frac{1}{2}\cdot\left(2\pi\right)^\frac{n\cdot n_z}{2}\right)^{-1}\cdot e^{-\frac{1}{2}\left(\mathbf{z}_0 - \boldsymbol{\mu}_0 \right)^\top\Sigma_0^{-1}\left(\mathbf{z}_0 - \boldsymbol{\mu}_0 \right)};
+\end{equation}
+e
+\begin{equation}
+	\begin{split}
+		\prod_{t=1}^{T}L(\boldsymbol{\psi};\mathbf{z}_t|\mathbf{z}_{t-1}) & = \prod_{t=1}^{T}\left(|\Sigma_\eta|^\frac{1}{2}\cdot\left(2\pi\right)^\frac{n\cdot n_z}{2}\right)^{-1}\cdot e^{-\frac{1}{2}\left(\mathbf{z}_t - \tilde{G}\boldsymbol{z}_{t-1} \right)^\top\Sigma_\eta^{-1}\left(\mathbf{z}_t - \tilde{G}\boldsymbol{z}_{t-1} \right)}\\
+		& = \left(|\Sigma_\eta|^\frac{1}{2}\cdot\left(2\pi\right)^\frac{n\cdot n_z}{2}\right)^{-T}\cdot\prod_{t=1}^{T}e^{-\frac{1}{2}\left(\mathbf{z}_t - \tilde{G}\boldsymbol{z}_{t-1} \right)^\top\Sigma_\eta^{-1}\left(\mathbf{z}_t - \tilde{G}\boldsymbol{z}_{t-1} \right)}.
+	\end{split}
+\end{equation}
+Per rimuovere i prodotti e per predisporre la funzione di verosimiglianza alla minimizzazione, all'equazione~\ref{eq_gen_verosimiglianza_2} viene applicato il logaritmo naturale negato, ossia:
+\begin{equation}
+	-2\ln L(\boldsymbol{\psi}; Y, Z, X) = -2\ln L(\boldsymbol{\psi}; Z) - 2\ln L(\boldsymbol{\psi}; Y|Z,X);
+\end{equation}
+con:
+\begin{equation}
+	\begin{split}
+		- 2\ln L(\boldsymbol{\psi}; Y|Z,X) & = T\ln|\Sigma_\epsilon| +\sum_{t=1}^{T}+\left(H^{-1}\mathbf{y}_t - \boldsymbol{\mu}_t\right)^\top\Sigma_\epsilon^{-1}\left(H^{-1}\mathbf{y}_t - \boldsymbol{\mu}_t\right);
+	\end{split}
+\end{equation}
+\begin{equation}
+	\begin{split}
+		- 2\ln L(\boldsymbol{\psi}; \mathbf{z}_0) & = T\ln|\Sigma_0| + \left(\mathbf{z}_0 - \boldsymbol{\mu}_0 \right)^\top\Sigma_0^{-1}\left(\mathbf{z}_0 - \boldsymbol{\mu}_0 \right);
+	\end{split}
+\end{equation}
+e
+\begin{equation}
+	\begin{split}
+		- 2\ln\prod_{t=1}^{T} L(\boldsymbol{\psi}; \mathbf{z}_t|\mathbf{z}_{t-1}) & = T\ln|\Sigma_\eta| +\sum_{t=1}^{T} \left(\mathbf{z}_t - \tilde{G}\mathbf{z}_{t-1} \right)^\top\Sigma_\eta^{-1}\left(\mathbf{z}_t - \tilde{G}\mathbf{z}_{t-1} \right).
+	\end{split}
+\end{equation}
+I termini $T(n\cdot q)\ln 2\pi$, $(n\cdot n_z)\ln 2\pi$ e $T(n\cdot n_z)\ln 2\pi$ sono stati rimossi poiché sono costanti, quindi non influenzano la ricerca di $\hat{\boldsymbol{\psi}}=\text{arg}\,\min\limits_{\boldsymbol{\psi}} -2\ln L(\boldsymbol{\psi}; Y, Z, X)$. \par Riassumendo ed esplicitando i singoli termini di $\boldsymbol{\psi}$ (in arancione), si ottiene:
+\begin{equation}
+	\begin{split}
+		-2\ln L(\boldsymbol{\psi}; Y, Z, X) & =  T\ln|\Sigma_\epsilon\left(\textcolor{orange}{\mathbf{c}_\epsilon^\top}\right)| \\
+		& + \sum_{t=1}^{T} \left(H^{-1}(\textcolor{orange}{\rho})\cdot\mathbf{y}_t - \boldsymbol{\mu}_t(\textcolor{orange}{\mathbf{c}_\beta^\top})\right)^\top\Sigma_\epsilon^{-1}\left(H^{-1}(\textcolor{orange}{\rho})\cdot\mathbf{y}_t - \boldsymbol{\mu}_t(\textcolor{orange}{\mathbf{c}_\beta^\top}\right) \\
+		& + \ln|\Sigma_0| \\
+		& + (\mathbf{z}_0 - \boldsymbol{\mu}_0)^\top\Sigma_0^{-1}(\mathbf{z}_0 - \boldsymbol{\mu}_0) \\
+		& + T\ln |\Sigma_\eta(\textcolor{orange}{\mathbf{v}^\top,\boldsymbol{\theta}^\top})| \\
+		& + \sum_{t=1}^{T}\left(\mathbf{z_t}-\tilde{G}(\textcolor{orange}{\mathbf{g}^\top})\cdot\mathbf{z}_{t-1}\right)^\top\Sigma_\eta^{-1}(\textcolor{orange}{\mathbf{v}^\top,\boldsymbol{\theta}^\top})\left(\mathbf{z_t}-\tilde{G}(\textcolor{orange}{\mathbf{g}^\top})\cdot\mathbf{z}_{t-1}\right).
+	\end{split}
+\end{equation}
+Il secondo addendo è quello che dev'essere minimizzato per determinare $\rho$.
 \section[L'aspettativa condizionale Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$]{L'aspettativa condizionale Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$}
 
 \subsection[Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$]{Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$}
