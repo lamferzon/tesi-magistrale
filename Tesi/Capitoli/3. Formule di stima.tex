@@ -23,7 +23,7 @@ dove $N=n\cdot q$. Applicando le equazioni alla struttura dati appena definita, 
 	\boldsymbol{\omega}_t = \boldsymbol{\mu}_t + \boldsymbol{\epsilon}_t
 \end{equation}
 \begin{equation}
-	\boldsymbol{\mu}_t = \mathbf{X}_t\cdot\boldsymbol{\Phi}_{\beta, t}\cdot\mathbf{c}_\beta + \boldsymbol{\Phi}_{z, t}\cdot\mathbf{z}_t;
+	\boldsymbol{\mu}_t = \mathbf{X}_t\cdot\Phi_{\beta, t}\cdot\mathbf{c}_\beta + \Phi_{z, t}\cdot\mathbf{z}_t;
 \end{equation}
 \begin{equation}
 	\mathbf{z}_t = \tilde{G}\cdot\mathbf{z}_{t-1} + \boldsymbol{\eta}_t.
@@ -114,10 +114,54 @@ I termini $T(n\cdot q)\ln 2\pi$, $(n\cdot n_z)\ln 2\pi$ e $T(n\cdot n_z)\ln 2\pi
 		& + T\ln |\Sigma_\eta(\textcolor{orange}{\mathbf{v}^\top,\boldsymbol{\theta}^\top})| \\
 		& + \sum_{t=1}^{T}\left(\mathbf{z_t}-\tilde{G}(\textcolor{orange}{\mathbf{g}^\top})\cdot\mathbf{z}_{t-1}\right)^\top\Sigma_\eta^{-1}(\textcolor{orange}{\mathbf{v}^\top,\boldsymbol{\theta}^\top})\left(\mathbf{z_t}-\tilde{G}(\textcolor{orange}{\mathbf{g}^\top})\cdot\mathbf{z}_{t-1}\right).
 	\end{split}
+	\label{eq_fin_verosimiglianza}
 \end{equation}
 Il secondo addendo è quello che dev'essere minimizzato per determinare $\rho$.
-\section[L'aspettativa condizionale Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$]{L'aspettativa condizionale Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$}
+
+\section[L'aspettativa condizionale]{L'aspettativa condizionale}
+L'aspettativa condizionale $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$ è l'oggetto della massimizzazione\footnote{minimizzazione se viene applicato il logaritmo naturale negato alla funzione di verosimiglianza.} compiuta dal passo M per determinare $\boldsymbol{\psi}_n$, ossia la stima all'iterazione $n$ dei parametri da identificare. Il ricorso all'algoritmo EM è necessario poiché nel modello compaiono delle variabili latenti $\mathbf{z}$ che devono essere ricostruite, di conseguenza non si può minimizzare direttamente la funzione~\ref{eq_fin_verosimiglianza}.
 
 \subsection[Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$]{Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$}
+L'espressione dell'aspettativa condizionale è la seguente~\cite{paper_GRASPA}:
+\begin{equation}
+	\begin{split}
+		Q(\boldsymbol{\psi},\boldsymbol{\psi}_n) & = \text{E}_{\boldsymbol{\psi}_n}\left\{T\ln|\Sigma_0| + \text{tr}\left(\Sigma_0^{-1}\left(\mathbf{z}_0 - \boldsymbol{\mu}_0\right)\left(\mathbf{z}_0 - \boldsymbol{\mu}_0\right)^\top\right)\bigg| Y^{(1)}\right\} \\
+		& + \text{E}_{\boldsymbol{\psi}_n}\left\{T\ln|\Sigma_\eta| + \text{tr}\left(\Sigma_\eta^{-1}\sum_{t=1}^{T}\left(\mathbf{z}_t - \tilde{G}\mathbf{z}_{t-1}\right)\left(\mathbf{z}_t - \tilde{G}\mathbf{z}_{t-1}\right)^\top\right)\bigg| Y^{(1)}\right\} \\
+		& + \text{E}_{\boldsymbol{\psi}_n}\left\{T\ln|\Sigma_\epsilon| + \text{tr}\left(\Sigma_\epsilon^{-1}\sum_{t=1}^{T}\mathbf{e}_t\cdot\mathbf{e}_t^\top\right)\bigg| Y^{(1)}\right\};
+	\end{split}
+	\label{eq_Q}
+\end{equation}
+dove $\mathbf{e}_t = H^{-1}(\rho)\cdot\mathbf{y}_t - \boldsymbol{\mu}_t$ e $Y^{(1)}$ rappresenta le osservazioni disponibili\footnote{si ricorda che l'algoritmo EM è in grado stimare $\mathbf{y}_t$ nei punti e negli istanti in cui essa è ignota.}. Il terzo addendo dell'equazione~\ref{eq_Q} viene rinominato in $f(\rho)$; nello specifico:
+\begin{equation}
+	\begin{split}
+		f(\rho) & = \text{E}_{\boldsymbol{\psi}_n}\left\{T\ln|\Sigma_\epsilon| \ \bigg|Y^{(1)}\right\} + \text{E}_{\boldsymbol{\psi}_n}\left\{\text{tr}\left(\Sigma_\epsilon^{-1}\sum_{t=1}^{T}\mathbf{e}_t\cdot\mathbf{e}_t^\prime\right)\bigg|Y^{(1)}\right\} \\
+		& = T\ln|\Sigma_\epsilon| + \text{tr}\left(\text{E}_{\boldsymbol{\psi}_n}\left\{\Sigma_\epsilon^{-1}\sum_{t=1}^{T}\mathbf{e}_t\cdot\mathbf{e}_t^\prime \ \bigg|Y^{(1)}\right\}\right) \\
+		& = T\ln|\Sigma_\epsilon| + \text{tr}\left(\Sigma_\epsilon^{-1}\sum_{t=1}^{T}E_{\boldsymbol{\psi}_n}\left\{\mathbf{e}_t\cdot\mathbf{e}_t^\prime \ \bigg| Y^{(1)}\right\}\right).
+	\end{split}
+\end{equation}
+La quantità $f(\rho)$ dell'aspettativa condizionale $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$ è l'unica che dipende da $\rho$, l'unica che dev'essere ottimizzata per stimare il nuovo parametro.
 
 \subsection[Espressione della matrice $\Omega_t$]{Espressione della matrice $\Omega_t$}
+Sia $\text{E}_{\boldsymbol{\psi}_n}\left\{\mathbf{e}_t\cdot\mathbf{e}_t^\top \ \bigg|Y^{(1)}\right\} = \Omega_t\in\mathbb{R}^{(n\cdot q)\times(n\cdot q)}$, allora~\cite{paper_TS_book}:
+\begin{equation}
+	\begin{split}
+		\Omega_t & = \begin{bmatrix}
+			H^{-1(1)}\cdot\mathbf{y}_t^{(1)} - X_t^{(1)}\cdot\Phi_{\beta, t}\cdot\mathbf{c}_\beta - \Phi_{z, t}\cdot\mathbf{z}_t \\
+			R_{21, t}\cdot R_{11,t}^{-1}\cdot\mathbf{e}_t^{(1)}
+		\end{bmatrix}_{(n\times q)\times 1} \cdot \begin{bmatrix}
+		\mathbf{e}_t \\
+		R_{21,t}\cdot R_{11, t}^{-1}\cdot\mathbf{e}_t^{(1)}
+	\end{bmatrix}^\prime_{(n\times q)\times 1} \\
+	& + \begin{bmatrix}
+		\Phi_{z,t}^{(1)} \\
+		R_{21, t}\cdot R_{11, t}^{-1}\cdot\Phi_{z,t}^{(1)}
+	\end{bmatrix}\cdot\Sigma_{\eta, t}^{(1)}\cdot \begin{bmatrix}
+		\Phi_{z,t}^{(1)} \\
+	R_{21, t}\cdot R_{11, t}^{-1}\cdot\Phi_{z,t}^{(1)}
+	\end{bmatrix}^\prime \\
+	& + \begin{bmatrix}
+		\mathbf{0} & \mathbf{0}\\
+		\mathbf{0} & R_{22,t} - R_{21,t}\cdot R_{11,t}^{-1}\cdot R_{11, t}
+	\end{bmatrix}
+	\end{split}
+\end{equation}
