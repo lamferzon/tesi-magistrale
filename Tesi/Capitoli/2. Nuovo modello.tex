@@ -1,7 +1,6 @@
 \chapter[Il concetto di geo-potenziale condizionato e il modello fp-HDGM]{Il concetto di geo-potenziale condizionato e definizione del modello fp-HDGM}
-
-\textcolor{red}{Introduzione al capitolo\dots}
-
+%\textcolor{red}{Introduzione al capitolo\dots}
+Nel secondo capitolo, viene introdotto il concetto di geo-potenziale condizionato, delineando le sue distinzioni rispetto al geo-potenziale puro. Successivamente, si procede con la presentazione del modello \textit{fp-HDGM}, il quale rappresenta un'espansione dell'\textit{f-HDGM} per l'analisi dei dati spazio-temporali con interazioni tra le stazioni di osservazione. In questo contesto, vengono esplicitate le equazioni del modello e i parametri da stimare. Infine, viene condotta la simulazione di un modello \textit{fp-HDGM} al fine di concretizzare i concetti trattati nel capitolo.
 \section[Il geo-potenziale condizionato]{Il geo-potenziale condizionato}
 %\textcolor{red}{Concetto generale di geo-potenziale condizionato e spiegazione della matrice $H$ e dei suoi termini, ovvero $h_i$ e $\rho$\dots}
 L' \textit{f-HDGM}, discusso nel capitolo precedente, risulta essere un ottimo modello funzionale per l'analisi di dati spazio-temporali, il quale output $y(\mathbf{s}, l, t)$ rappresenta il geo-potenziale puro nel punto $\mathbf{s}$, al tempo $t$ e istante ad alta frequenza $l$.
@@ -56,7 +55,7 @@ Dopo aver presentato la funzione d'interazione, si è in grado di delineare la s
 
 \section[Il modello fp-HDGM]{Il modello fp-HDGM}
 %\textcolor{red}{Finalità del nuovo modello\dots}
-Il Functional and Potential Hidden Dynamic Geostatistical Model (fp-HDGM) si propone di espandere l'applicazione dell'f-HDGM all'analisi di dati spazio-temporali in cui è presente interazione tra i punti di misurazione. Questo modello parte dal presupposto che il fenomeno oggetto di studio abbia, anche se minima, una componente di interazione tra le stazioni di osservazione.
+Il Functional and Potential Hidden Dynamic Geostatistical Model (\textit{fp-HDGM}) si propone di espandere l'applicazione dell'\textit{f-HDGM}all'analisi di dati spazio-temporali in cui è presente interazione tra i punti di misurazione. Questo modello parte dal presupposto che il fenomeno oggetto di studio abbia, anche se minima, una componente di interazione tra le stazioni di osservazione.
 \par L'output del processo, indicato come $y(\mathbf{s}, l, t,\mathbf{S})$ rappresenta il valore atteso misurato al tempo $t$ e istante ad alta frequenza $l$ nella posizione spaziale $\mathbf{s} \in D$, simultaneamente misurato in una collezione di posizioni $\mathbf{S} = \{\mathbf{s_1}, \ldots, \mathbf{s_N}\}$,  con $s_i \in D, N \geq 1$. In altre parole, si tratta della definizione di geo-potenziale condizionato.
 
 \subsection[Equazioni del modello]{Equazioni del modello}
@@ -87,12 +86,61 @@ Un osservazione interessante emerge esaminando il modello al variare del paramet
 \begin{equation}
 	\lim_{\rho \to 0} y(\mathbf{s}, l, t,\mathbf{S}) = w(\mathbf{s}, l, t)
 \end{equation}
-Questa considerazione porta a vedere il modello \textit{f-HDGM} come un caso particolare del nuovo modello \textit{fp-HDGM}, quello con $\rho=0$.
+Questa considerazione porta a vedere il modello \textit{f-HDGM} come un caso particolare del nuovo modello \textit{fp-HDGM},ossia quello con $\rho=0$.
 \subsection[Parametri da stimare]{Parametri da stimare}
-\textcolor{red}{Sono quelli del modello f-HDGM e $\rho$\dots}
+%\textcolor{red}{Sono quelli del modello f-HDGM e $\rho$\dots}
+In definitiva, si presenta il vettore dei parametri da stimare $\boldsymbol{\psi}\in\mathbb{R}^{(n_\epsilon + n_\beta\cdot b + 3\cdot n_z+1)\times 1}$:
+\begin{equation}
+	\boldsymbol{\psi} = (\mathbf{c}_\epsilon^\top, \mathbf{c}_\beta^\top, \mathbf{g}^\top, \mathbf{v}^\top, \boldsymbol{\theta}^\top, \rho)^\top.
+\end{equation}
+Analogamente a come precedentemente discusso per il modello f-HDGM, non tutti i parametri possono essere stimati attraverso formule chiuse, ma necessitano di essere risolti mediante ottimizzazione numerica, .
+
 
 \paragraph[Differenza tra $\theta$ e $\rho$]{Differenza tra $\theta$ e $\rho$}
 
 \subsection[Simulazione di una mappa di geo-potenziale]{Simulazione di una mappa di geo-potenziale}
-\textcolor{red}{Grafico del pontenziale puro ($\rho=0$)\dots}\\
-\textcolor{red}{Grafici sotto forma di sotto-figure del potenziale condizionato con diversi valori di $\rho$ (\si{\kilo\meter})\dots}
+%\textcolor{red}{Grafico del pontenziale puro ($\rho=0$)\dots}\\
+%\textcolor{red}{Grafici sotto forma di sotto-figure del potenziale condizionato con diversi valori di $\rho$ (\si{\kilo\meter})\dots}
+Al fine di concretizzare le nozioni riportate nel capitolo, con l'utilizzo del software MATLAB, è stata compiuta una simulazione della realizzazione di un processo descritto secondo un \textit{fp-HDGM}. La simulazione è stata condotta nell'area della provincia di Bergamo. Per garantire la pertinenza del caso di studio con un contesto realistico, sono stati distribuiti i punti di misurazione in cluster localizzati in alcune aree urbane della provincia. 
+\begin{figure}[htp]
+	\centering
+	\includegraphics[height=260px]{Immagini/2. Nuovo modello/Mappa stazioni simulate_png}
+	\caption[ Distribuzione dei punti di misurazione della simulazione.] {Distribuzione dei punti di misurazione della simulazione. Sono stati definiti 7 cluster di punti di vendita nei comuni di Bergamo, Treviglio, San Pellegrino Terme, Sovere, Sorisole, Antegnate, e Parzanica di numerosità pari a 15, 10, 5 2, 3, 5 e 5 rispettivamente.}
+	\label{mappa_stazioni_simulate}
+\end{figure}
+Di seguito viene riportata la numerosità dei parametri scelti per la simulazione:
+\begin{itemize}
+	\item numero di stazioni di misura, $n=45$;
+	\item numero di covariante globali, $b=1$;
+	\item dimensione del dominio funzionale ad alta frequenza, $l=24$;
+	\item numero di campioni in bassa frequenza, $T=365$ ;
+	\item numero di funzioni base utilizzate per modellizzare  $\sigma_\epsilon (l)$,  $n_\epsilon =5$;
+	\item numero di funzioni base utilizzate per modellizzare $\beta(l)$ $n_\beta=5$;
+	\item numero di funzioni base utilizzate per modellizzare $\Phi(l)$ $n_z=5$;
+\end{itemize}
+
+Infine si espongono i valori fissati del set di parametri:
+\begin{itemize}
+	\item $\rho = \SI{1100}{\meter}$
+	\item $C_\epsilon = \begin{bmatrix} 2 & -2 & -10 & 0.5 & 2 \end{bmatrix}$
+	\item $C_\beta = \begin{bmatrix} 2 & 4 & 8 & 0.5 & 2 \end{bmatrix}$
+	\item $\theta = \begin{bmatrix} 0.05 & 0.05  & 0.05 & 0.05  & 0.05  \end{bmatrix}$
+	\item $G = 
+	\begin{bmatrix}
+		0.26 & 0 & 0 & 0 & 0 \\
+		0 & 0.41 & 0 & 0 & 0 \\
+		0 & 0 & 0.6 & 0 & 0 \\
+		0 & 0 & 0 & 0.26 & 0 \\
+		0 & 0 & 0 & 0 & 0.6 \\
+	\end{bmatrix}
+	$
+	\item $V = 
+	\begin{bmatrix}
+		8 & 0 & 0 & 0 & 0 \\
+		0 & 3 & 0 & 0 & 0 \\
+		0 & 0 & 2 & 0 & 0 \\
+		0 & 0 & 0 & 3 & 0 \\
+		0 & 0 & 0 & 0 & 4 \\
+	\end{bmatrix}
+	$
+\end{itemize}
