@@ -155,13 +155,33 @@ Sia $\text{E}_{\boldsymbol{\psi}_n}\left\{\mathbf{e}_t\cdot\mathbf{e}_t^\top \ \
 	& + \begin{bmatrix}
 		\Phi_{z,t}^{(1)} \\
 		R_{21, t}\cdot R_{11, t}^{-1}\cdot\Phi_{z,t}^{(1)}
-	\end{bmatrix}\cdot\Sigma_{\eta, t}^{(1)}\cdot \begin{bmatrix}
+	\end{bmatrix}_{(n\cdot q)\times(n\cdot n_z)}\cdot\Sigma_{\eta, t}^{(1)}\cdot \begin{bmatrix}
 		\Phi_{z,t}^{(1)} \\
 	R_{21, t}\cdot R_{11, t}^{-1}\cdot\Phi_{z,t}^{(1)}
-	\end{bmatrix}^\prime \\
+	\end{bmatrix}^\prime_{(n\cdot n_z)\times(n\cdot q)} \\
 	& + \begin{bmatrix}
 		\mathbf{0} & \mathbf{0}\\
 		\mathbf{0} & R_{22,t} - R_{21,t}\cdot R_{11,t}^{-1}\cdot R_{11, t}
-	\end{bmatrix}
+	\end{bmatrix}_{(n\cdot q)\times(n\cdot q)}.
+	\end{split}
+	\label{eq_omega_1}
+\end{equation}
+\[
+	R_t = \Sigma_{\epsilon, t} = \begin{bmatrix}
+		R_{11, t} & R_{12, t} \\ R_{21, t} & R_{22, t}
+	\end{bmatrix}_{(n\cdot q)\times(n\cdot q)}
+\]
+è la matrice di varianze e covarianze relativa al rumore sull'uscita; $R_{11, t}$ rappresenta la componente di $\Sigma_{\epsilon, t}$ relativa ai siti spaziali presso i quali si hanno delle osservazioni, mentre $R_{22, t}$ quelli per i quali si hanno dati mancanti. Si assume che $\boldsymbol{\epsilon}_t$ sia indipendente e identicamente distribuito, ovvero $R_{12, t} = R_{21, t} = \mathbf{0} \ \forall t$; quindi l'espressione~\ref{eq_omega_1} si semplifica e diventa:
+\begin{equation}
+	\begin{split}
+		\Omega_t & = \begin{bmatrix}
+			\mathbf{e}_t^{(1)}\cdot\mathbf{e}_t^{(1)\prime} + \Phi_{z, t}^{(1)}\cdot\Sigma_{\eta, t}^\prime\cdot\Phi_{z, t}^{(1)\prime} & \mathbf{0} \\
+			\mathbf{0} & R_{22}
+		\end{bmatrix}_{(n\cdot q)\times(n\cdot q)} \\
+	 & = \begin{bmatrix}
+	 	\Omega_t^{(1)} & \mathbf{0} \\
+	 	\mathbf{0} & R_{22}
+	 \end{bmatrix}_{(n\cdot q)\times(n\cdot q)}.
 	\end{split}
 \end{equation}
+Da notare che sia $R_{11}$ sia $R_{22}$ non variano nel tempo $t$ poiché si assume che $\boldsymbol{\epsilon}_t$ sia eteroschedastico solo in $\mathcal{L}$ (assenza di autocorrelazione in $t$).
