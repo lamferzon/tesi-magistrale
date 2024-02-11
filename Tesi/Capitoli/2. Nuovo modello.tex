@@ -1,130 +1,123 @@
 \chapter[Il concetto di geo-potenziale condizionato e il modello fp-HDGM]{Il concetto di geo-potenziale condizionato e definizione del modello fp-HDGM}
-%\textcolor{red}{Introduzione al capitolo\dots}
-Nel secondo capitolo, viene introdotto il concetto di geo-potenziale condizionato, delineando le sue distinzioni rispetto al geo-potenziale puro. Successivamente, si procede con la presentazione del modello \textit{fp-HDGM}, il quale rappresenta un'espansione dell'\textit{f-HDGM} per l'analisi dei dati spazio-temporali con interazioni tra le stazioni di osservazione. In questo contesto, vengono esplicitate le equazioni del modello e i parametri da stimare. Infine, viene condotta la simulazione di un modello \textit{fp-HDGM} al fine di concretizzare i concetti trattati nel capitolo.
+Nel secondo capitolo, viene introdotto il concetto di geo-potenziale condizionato, delineando le sue distinzioni rispetto al geo-potenziale puro. Successivamente, si procede con la presentazione del \textit{Functional and Potential Hidden Dynamic Geostatistical Model} (o \textit{fp-HDGM}), il quale rappresenta un'espansione del modello f-HDGM per l'analisi dei dati spazio-temporali con interazioni tra le stazioni di osservazione. In questo contesto, vengono esplicitate le equazioni del modello e i parametri da stimare. Infine, viene condotta la simulazione di un modello fp-HDGM al fine di concretizzare i concetti trattati nel capitolo.
+
 \section[Il geo-potenziale condizionato]{Il geo-potenziale condizionato}
-%\textcolor{red}{Concetto generale di geo-potenziale condizionato e spiegazione della matrice $H$ e dei suoi termini, ovvero $h_i$ e $\rho$\dots}
-L' \textit{f-HDGM}, discusso nel capitolo precedente, risulta essere un ottimo modello funzionale per l'analisi di dati spazio-temporali, il quale output $y(\mathbf{s}, l, t)$ rappresenta il geo-potenziale puro nel punto $\mathbf{s}$, al tempo $t$ e istante ad alta frequenza $l$.
-\par Si prenda ora in considerazione come esemplificazione il potenziale di mercato spaziale. Il potenziale di mercato spaziale è la distribuzione spaziale del potenziale di mercato\footnote{il potenziale di mercato rappresenta il volume di vendite previsto quando un determinato prodotto viene commercializzato.} su un'area di scambio.
+Il modello f-HDGM, discusso nel capitolo precedente, risulta essere un ottimo modello funzionale per l'analisi di dati spazio-temporali, il quale output $y(\mathbf{s}, l, t)$ rappresenta il geo-potenziale puro nel punto $\mathbf{s}$, al tempo $t$ e all'istante ad alta frequenza $l\in\mathcal{L}$.
+\par Si prenda ora in considerazione come esemplificazione il potenziale di mercato spaziale. Quest'ultimo è la distribuzione spaziale del potenziale di mercato\footnote{rappresenta il volume di vendite previsto quando un determinato prodotto viene commercializzato.} su un'area di scambio.
 Le vendite sono previste essere elevate se un negozio viene aperto in una posizione caratterizzata da un alto potenziale di mercato spaziale, mentre si prevede una riduzione in presenza di un basso potenziale di mercato nella collocazione spaziale.
 Al fine di ottenere una stima riguardo al volume degli scambi commerciali, la valutazione del potenziale di mercato spaziale emerge come un aspetto cruciale.
 \par Nell'ambito di questa ricerca, si ipotizza che il prodotto sia già sul mercato e che siano disponibili i dati di vendita o noleggio relativi ai negozi distribuiti nello spazio. Di conseguenza, l'obiettivo è quello di stimare il potenziale di mercato spaziale attraverso l'analisi dei dati di vendita, delle caratteristiche spaziali dell'area di scambio assumendo che il fenomeno sottostante implichi, anche se in modo marginale, una qualche forma di relazione o connessione tra le stazioni di osservazione. La reciproca influenza tra i negozi, dove il volume delle vendite di ciascun punto è influenzato dalla presenza degli altri, rende imprescindibile considerare tale interazione al fine di stimare correttamente il potenziale di mercato spaziale.
 
-\par Un approccio geostatistico per l'analisi di dati caratterizzati da interazione spaziale può essere trovato in 
-%\citet{paper_GPM}
-Francesco Finazzi \cite{paper_GPM}, il modello potenziale geostatistico (\textit{GPM}) risulta essere uno strumento statistico idoneo per l'analisi di dati spaziali derivanti da misurazioni simultanee in presenza di interazione tra i punti di misurazione.
-\par Sia $\mathbf{s} = (s_{lon}, s_{lat})^\top$ un generico punto spaziale nella superficie di interesse $D$, $\mathbf{S} = \{\mathbf{s_1}, \ldots, \mathbf{s_N}\}$ i punti in cui è stata misurata la variabile d'interesse al tempo $t$ e istante ad alta frequenza $l$. La funzione di interazione è così descritta:
+\par Un approccio geo-statistico per l'analisi di dati caratterizzati da interazione spaziale può essere trovato in Francesco Finazzi~\cite{paper_GPM}; il \textit{Potential Geostatistical Model} (o \textit{GPM}) risulta essere uno strumento statistico idoneo per l'analisi di dati spaziali derivanti da misurazioni simultanee in presenza di interazione tra i punti di misurazione.
+\par Sia $\mathbf{s} = (s_{lon}, s_{lat})^\top$ un generico punto spaziale nella superficie di interesse $D$, $\mathbf{S} = \{\mathbf{s}_1, \ldots, \mathbf{s}_ N\}$ i punti in cui è stata misurata la variabile d'interesse al tempo $t$ e istante ad alta frequenza $l$. La funzione di interazione è così descritta:
 \begin{equation}
-	h_\rho(w(\mathbf{s}, l, t), \mathbf{s}, \mathbf{S}) = w(\mathbf{s}, l, t) \cdot \left(1 + \sum_{\mathbf{s'} \in \mathbf{S}} f_\rho(\mathbf{s}, \mathbf{s'})\right)^{-1};
+	y(\mathbf{s}, l, t; \mathbf{S}) = w(\mathbf{s}, l, t) \cdot h_\rho(\mathbf{s}; \mathbf{S});
 	\label{funzione di interazione}
 \end{equation}
 \begin{equation}
-	f_\rho(\mathbf{s}, \mathbf{s'}) = f_\rho(\|\mathbf{s} - \mathbf{s'}\|) = \exp\left(-\frac{{\|\mathbf{s} - \mathbf{s'}\|}}{{\rho}}\right).
+	h_\rho(\mathbf{s};\mathbf{S}) = \left(1 + \sum_{\mathbf{s}' \in \mathbf{S}} f_\rho(\mathbf{s}, \mathbf{s}')\right)^{-1};
+	\label{funzione di interazione_2}
+\end{equation}
+\begin{equation}
+	f_\rho(\mathbf{s}, \mathbf{s}') = f_\rho(\|\mathbf{s} - \mathbf{s}'\|) = \exp\left(-\frac{{\|\mathbf{s} - \mathbf{s}'\|}}{{\rho}}\right).
 	\label{nonnegative binary function}
 \end{equation}
-Dalla quale si osservano i seguenti elementi:
+Nello specifico:
 \begin{itemize}
-	\item $w(\mathbf{s}, l, t)$, il potenziale di un campo casuale spaziale definito in una regione  $D \subset \mathbb{R}^2$, al tempo $t$ e istante ad alta frequenza $l$;
-	\item $f_\rho(\|\mathbf{s} - \mathbf{s'}\|)$ è una funzione non negativa definita in $ \mathbb{R}^2 \times \mathbb{R}^2 \rightarrow \mathbb{R}^+$;
-	\item $\|\mathbf{s} - \mathbf{s'}\|$, la distanza euclidea tra due punti nello spazio;
+	\item $w(\mathbf{s}, l, t)$ + il potenziale puro di un campo casuale spaziale definito in una regione  $D \subset \mathbb{R}^2$, al tempo $t$ e istante ad alta frequenza $l\in\mathcal{L}$;
+	\item $f_\rho(\|\mathbf{s} - \mathbf{s}'\|)$ è una funzione non negativa definita in $ \mathbb{R}^2 \times \mathbb{R}^2 \rightarrow \mathbb{R}^+$;
+	\item $\|\mathbf{s} - \mathbf{s}'\|$ è la distanza euclidea tra due punti nello spazio;
 	\item infine $\rho \in \mathbb{R}^+$ è il parametro che descrive la potenza di interazione tra i punti di misura nella regione spaziale $D$.
 \end{itemize}
-Per comprendere appieno il comportamento della funzione in esame, esploriamo il suo valore in due estremi fondamentali. Si consideri il parametro $\rho$, si osserva che:
+Per comprendere appieno il comportamento della funzione in esame, esploriamo il suo valore in due estremi fondamentali. Si consideri il parametro $\rho$; si osserva che:
 \begin{equation}
-	\lim_{\rho \to 0} f_\rho(\|\mathbf{s} - \mathbf{s'}\|) = 0
-		 \Rightarrow \lim_{\rho \to 0} h_\rho(w(\mathbf{s}, l, t), \mathbf{s}, \mathbf{S}) = w(\mathbf{s}, l, t) ; \label{limite_per_rho_tendente_a_0}
+	\lim_{\rho \to 0} f_\rho(\|\mathbf{s} - \mathbf{s}'\|) = 0
+		 \Rightarrow \lim_{\rho \to 0} y(\mathbf{s}, l, t; \mathbf{S}) = w(\mathbf{s}, l, t)\cdot 1; \label{limite_per_rho_tendente_a_0}
 \end{equation}
 \begin{equation}
-	\lim_{\rho \to \infty} f_\rho(\|\mathbf{s} - \mathbf{s'}\|) = 1
-	\Rightarrow \lim_{\rho \to \infty} h_\rho(w(\mathbf{s}, l, t), \mathbf{s}, \mathbf{S}) = \frac{w(\mathbf{s}, l, t)}{\mathbf{N} + 1} .
+	\lim_{\rho \to \infty} f_\rho(\|\mathbf{s} - \mathbf{s}'\|) = 1
+	\Rightarrow \lim_{\rho \to \infty} y(\mathbf{s}, l, t; \mathbf{S}) = w(\mathbf{s}, l, t)\cdot\frac{1}{N + 1} .
 	\label{limite_per_rho_tendente_a_inf}
 \end{equation}
-Quando $\rho$ tende ad assumere il valore minimo del dominio di definizione \ref{limite_per_rho_tendente_a_0}, la funzione raggiunge il suo massimo assoluto, lasciando il termine $w(\mathbf{s}, l, t)$ inalterato. Inoltre, quando 
-$\rho$ tende a $\infty$  \ref{limite_per_rho_tendente_a_inf}, la funzione tende a decrescere fino al limite inferiore di $h_\rho(w(\mathbf{s}, l, t), \mathbf{s}, \mathbf{S})$, segnalando una tendenza significativa del sistema studiato. Queste due condizioni estreme forniscono un'importante comprensione del comportamento della funzione in relazione al parametro $\rho$ e possono avere profonde implicazioni per l'analisi e l'interpretazione del fenomeno studiato.
+Quando $\rho$ tende ad assumere il valore minimo del dominio di definizione (espressione~\ref{limite_per_rho_tendente_a_0}), la funzione di interazione spaziale $h_\rho(\mathbf{s};\mathbf{S})$ raggiunge il suo massimo assoluto, ovvero \num{1}, lasciando così il termine $w(\mathbf{s}, l, t)$ inalterato. Viceversa, quando 
+$\rho$ tende a infinito (espressione~\ref{limite_per_rho_tendente_a_inf}), $h_\rho(\mathbf{s};\mathbf{S})$ tende a decrescere fino al suo limite inferiore pari a $\frac{1}{N+1}$, penalizzando significativamente il potenziale puro $w(\mathbf{s}, l, t)$.\par Queste due condizioni estreme forniscono un'importante comprensione del comportamento della funzione di interazione in relazione al parametro $\rho$; esse possono avere profonde implicazioni per l'analisi e l'interpretazione del fenomeno studiato.
 
 \subsection[Differenza tra geo-potenziale puro e condizionato]{Differenza tra geo-potenziale puro e condizionato}
-%\textcolor{red}{Avvalersi del caso di studio inerente il potenziale di vendita \dots}
 Dopo aver presentato la funzione d'interazione, si è in grado di delineare la seguente divergenza:
 \begin{itemize}
-	\item il \textbf{geo-potenziale puro} è definito come  il valore atteso osservato quando $y(\mathbf{s}, l, t)$ viene misurato al tempo $t$ e istante ad alta frequenza $l$, nella posizione spaziale $\mathbf{s} \in D$ ;
-	\item il \textbf{geo-potenziale condizionato} è il valore atteso osservato quando $y(\mathbf{s}, l, t, \mathbf{S})$
-	viene misurato al tempo $t$ e istante ad alta frequenza $l$, nella posizione spaziale $\mathbf{s} \in D$, dato che viene contemporaneamente misurato nella collezione di posizioni $\mathbf{S} = \{\mathbf{s_1}, \ldots, \mathbf{s_N}\}$,  con $s_i \in D, N \geq 1$.
+	\item il \textbf{geo-potenziale puro} è definito come  il valore atteso osservato quando $y(\mathbf{s}, l, t)$ viene misurato al tempo $t$ e istante ad alta frequenza $l$, nella posizione spaziale $\mathbf{s} \in D$. Esso non è condizionato dalle rilevazioni svolte presso gli altri punti di misura;
+	\item il \textbf{geo-potenziale condizionato}, invece, è il valore atteso osservato quando $y(\mathbf{s}, l, t; \mathbf{S})$
+	viene misurato al tempo $t$ e istante ad alta frequenza $l$, nella posizione spaziale $\mathbf{s} \in D$, dato che viene contemporaneamente misurato nella collezione di posizioni $\mathbf{S} = \{\mathbf{s}_1, \ldots, \mathbf{s}_N\}$,  con $s_i \in D, N \geq 1$. Esso è il potenziale spaziale tenente conto anche dell'influenza reciproca esistente tra i punti di osservazione.
 \end{itemize}
-	Si prenda come esempio il potenziale di mercato spaziale in  una rete di attività commerciali. Il geo-potenziale puro potrebbe dare delle stime promettenti nell'intorno di un generico punto di misurazione $s_i \in S$, poiché non tiene in considerazione dell'interazione delle altre stazioni di misurazione $\mathbf{s_1}, \ldots, \mathbf{s_N}$, in particolare di $s_i$.
-	\par Viceversa, il geo-potenziale condizionato ottiene valori inferiori nell'intorno di $s_i$ in quanto rappresenta il potenziale che sarebbe osservato con l'aggiunta di una  nuova stazione di misura, se quest'ultima fosse posizionata nelle prossimità di $s_i$.Tale osservazione è fondamentale per comprendere il motivo per il quale si necessita di un nuovo modello di previsione che tenga in considerazione il geo-potenziale condizionato.
-
+Si prenda come esempio il potenziale di mercato spaziale in  una rete di attività commerciali. Il geo-potenziale puro potrebbe dare delle stime promettenti nell'intorno di un generico punto di misurazione $s_i \in\mathbf{S}$, poiché non tiene in considerazione dell'interazione delle altre stazioni di misurazione $\mathbf{s}_1, \ldots, \mathbf{s}_N$, in particolare di $\mathbf{s}_i$. Viceversa, il geo-potenziale condizionato ottiene valori inferiori nell'intorno di $\mathbf{s}_i$ in quanto rappresenta il potenziale che sarebbe osservato con l'aggiunta di una  nuova stazione di misura, se quest'ultima fosse posizionata nelle prossimità di $\mathbf{s}_i$.\par In parole povere, l'apertura di una nuova edicola nelle vicinanze di un'altra preesistente comporterà probabilmente una riduzione delle vendite per entrambe a causa della concorrenza tra attività commerciali. Tale osservazione è fondamentale per comprendere il motivo per il quale il modello f-HDGM dev'essere esteso affinché tenga in considerazione il geo-potenziale condizionato e, di conseguenza, possa essere utilizzato per modellare contesti in cui c'è concorrenza commerciale (e non solo).
 
 \section[Il modello fp-HDGM]{Il modello fp-HDGM}
-%\textcolor{red}{Finalità del nuovo modello\dots}
-Il Functional and Potential Hidden Dynamic Geostatistical Model (\textit{fp-HDGM}) vuole espandere l'applicazione dell'\textit{f-HDGM}all'analisi di dati spazio-temporali in cui è presente interazione tra i punti di misurazione. Questo modello parte dal presupposto che il fenomeno oggetto di studio abbia, anche se minima, una componente di interazione tra le stazioni di osservazione.
-\par L'output del processo, indicato come $y(\mathbf{s}, l, t,\mathbf{S})$ rappresenta il valore atteso misurato al tempo $t$ e istante ad alta frequenza $l$, nella posizione spaziale $\mathbf{s} \in D$, simultaneamente misurato in una collezione di posizioni $\mathbf{S} = \{\mathbf{s_1}, \ldots, \mathbf{s_N}\}$,  con $s_i \in D, N \geq 1$. In altre parole, si tratta della definizione di geo-potenziale condizionato.
+Il Functional and Potential Hidden Dynamic Geostatistical Model (o fp-HDGM) vuole espandere l'applicazione dell'f-HDGM all'analisi di dati spazio-temporali in cui è presente interazione tra i punti di misurazione. Questo modello parte dal presupposto che il fenomeno oggetto di studio abbia, anche se minima, una componente di interazione tra le stazioni di osservazione.
+\par L'output del processo, indicato come $y(\mathbf{s}, l, t; \mathbf{S})$ rappresenta il valore atteso misurato al tempo $t$ e all'istante istante ad alta frequenza $l\in\mathcal{L}$, nella posizione spaziale $\mathbf{s} \in D$, simultaneamente misurato in una collezione di posizioni $\mathbf{S} = \{\mathbf{s}_1, \ldots, \mathbf{s}_N\}$, con $\mathbf{s}_i\in D, N \geq 1$. In altre parole, si tratta della definizione di geo-potenziale condizionato (equazione~\ref{funzione di interazione}).
 
 \subsection[Equazioni del modello]{Equazioni del modello}
-%\textcolor{red}{Due equazioni, $y$ e $w$ (output del modello base)\dots}
 Il nuovo modello proposto viene così definito dalla seguente gerarchia di equazioni:
 \begin{equation}
-	y(\mathbf{s}, l, t,\mathbf{S}) = h_\rho(w(\mathbf{s}, l, t), \mathbf{s}, \mathbf{S});
-	\label{eq_rumore_uscita}
+	y(\mathbf{s}, l, t; \mathbf{S}) = w(\mathbf{s}, l, t)\cdot h_\rho(\mathbf{s};\mathbf{S});
+	\label{eq_rumore_uscita_HDGM}
 \end{equation}
 \begin{equation}
 	w(\mathbf{s}, l, t)= f(\mathbf{s}, l, t) + \epsilon(l);
-	\label{eq_rumore_uscita}
+	\label{eq_rumore_uscita_fp_HDGM}
 \end{equation}
 \begin{equation}
-	f(\mathbf{s}, l, t) = \mathbf{x}(\mathbf{s}, l, t)^\top\cdot\boldsymbol{\beta}(l) + \Phi(l)^\top\cdot\mathbf{z}(\mathbf{s}, t);
-	\label{eq_comp_det}
+	f(\mathbf{s}, l, t) = \mathbf{x}(\mathbf{s}, l, t)^\top\cdot\boldsymbol{\beta}(l) + \Phi_z(l)^\top\cdot\mathbf{z}(\mathbf{s}, t);
+	\label{eq_comp_det_fp-HDGM}
 \end{equation}
 \begin{equation}
 	\mathbf{z}(\mathbf{s}, t) = G\cdot \mathbf{z}(\mathbf{s}, t-1) + \boldsymbol{\eta}(\mathbf{s}, t).
-	\label{eq_comp_lat}
+	\label{eq_comp_lat_fp-HDGM}
 \end{equation}
-la comprensione delle equazioni è più accessibile di quanto possa inizialmente sembrare:
+La comprensione delle equazioni è più accessibile di quanto possa inizialmente sembrare:
 \begin{itemize}
-	\item $y(\mathbf{s}, l, t,\mathbf{S})$ rappresenta il geo-potenziale condizionato, ottenuto applicando la funzione di interazione \ref{funzione di interazione} al processo $w(\mathbf{s}, l, t)$ 
-	\item $w(\mathbf{s}, l, t)$ è essenzialmente il geo-potenziale puro descritto dal modello \textit{f-HDGM}, al quale è stato applicato un cambiamento di variabile $y \longrightarrow w$ alle equazioni \ref{equazioni_modello_base}.
+	\item $y(\mathbf{s}, l, t; \mathbf{S})$ rappresenta il geo-potenziale condizionato, ottenuto applicando la funzione di interazione \ref{funzione di interazione_2} al processo $w(\mathbf{s}, l, t)$;
+	\item $w(\mathbf{s}, l, t)$ è essenzialmente il geo-potenziale puro descritto dal modello f-HDGM, al quale è stato applicato un cambiamento di variabile $y \rightarrow w$ alle equazioni \ref{equazioni_modello_base}.
 \end{itemize}
-Un osservazione interessante emerge esaminando il modello al variare del parametro $\rho$, secondo le considerazioni fatte riguardo alle equazioni \ref{limite_per_rho_tendente_a_0} e \ref{limite_per_rho_tendente_a_inf}. Nel dettaglio, si nota che:
+Un'osservazione interessante emerge esaminando il modello al variare del parametro $\rho$, secondo le considerazioni fatte riguardo alle equazioni \ref{limite_per_rho_tendente_a_0} e \ref{limite_per_rho_tendente_a_inf}. Nel dettaglio, si nota che:
 \begin{equation}
-	\lim_{\rho \to 0} y(\mathbf{s}, l, t,\mathbf{S}) = w(\mathbf{s}, l, t) \label{limite_geo-potenziale_condizionato_rho_a_0}
+	\lim_{\rho \to 0} y(\mathbf{s}, l, t; \mathbf{S}) = w(\mathbf{s}, l, t) \label{limite_geo-potenziale_condizionato_rho_a_0}
 \end{equation}
-Questa considerazione porta a vedere il modello \textit{f-HDGM} come un caso particolare del nuovo modello \textit{fp-HDGM},ossia quello con $\rho=0$.
+Questa osservazione porta a vedere il modello f-HDGM come un caso particolare di quello nuovo, ovvero con $\rho=0$.
+
 \subsection[Parametri da stimare]{Parametri da stimare}
-%\textcolor{red}{Sono quelli del modello f-HDGM e $\rho$\dots}
 In definitiva, si presenta il vettore dei parametri da stimare $\boldsymbol{\psi}\in\mathbb{R}^{(n_\epsilon + n_\beta\cdot b + 3\cdot n_z+1)\times 1}$:
 \begin{equation}
 	\boldsymbol{\psi} = (\mathbf{c}_\epsilon^\top, \mathbf{c}_\beta^\top, \mathbf{g}^\top, \mathbf{v}^\top, \boldsymbol{\theta}^\top, \rho)^\top.
 \end{equation}
-Analogamente a come precedentemente discusso per il modello f-HDGM, non tutti i parametri possono essere stimati attraverso formule chiuse, ma necessitano di essere risolti mediante ottimizzazione numerica, .
+Analogamente a come precedentemente discusso per il modello f-HDGM, non tutti i parametri possono essere stimati attraverso formule chiuse, ma necessitano di essere risolti mediante ottimizzazione numerica.
 
+\paragraph[Differenza tra $\theta$ e $\rho$]{Differenza tra $\theta$ e $\rho$} Nonostante $\theta$ e $\rho$ siano parametri dalla stessa funzione di correlazione spaziale \footnote{$f_i(\|\mathbf{s} - \mathbf{s}'\|)=\exp(-\frac{\|\mathbf{s} - \mathbf{s}'\|}{i})$.}, differiscono nel loro scopo fondamentale. Il $\theta$ è progettato per modellare l'interazione naturale tra tutti i punti nello spazio, mentre il $\rho$ insiste sull'interazione tra le stazioni di misura presenti nello spazio. 
+In termini chiari, il parametro $\theta$ condiziona entrambi i geo-potenziali, viceversa $\rho$ influenza solo geo-potenziale condizionato.
 
-\paragraph[Differenza tra $\theta$ e $\rho$]{Differenza tra $\theta$ e $\rho$} Nonostante $\theta$ e $\rho$ siano parametri dalla stessa funzione di correlazione spaziale \footnote{entrambi sono parametri dalla funzione di correlazione spaziale esponenziale $f(i)=e^{-\frac{\lvert\mathbf{s} - \mathbf{s}'\lvert}{i}}$.}, differiscono nel loro scopo fondamentale. Il $\theta$ è progettato per modellare l'interazione naturale tra tutti i punti nello spazio, mentre il $\rho$ insiste sull'interazione tra le stazioni di misura presenti nello spazio. 
-In termini chiari, il parametro $\theta$ condiziona il geo-potenziale puro, viceversa il parametro $\rho$ influenza il geo-potenziale condizionato.
 \subsection[Simulazione di una mappa di geo-potenziale]{Simulazione di una mappa di geo-potenziale}
-%\textcolor{red}{Grafico del pontenziale puro ($\rho=0$)\dots}\\
-%\textcolor{red}{Grafici sotto forma di sotto-figure del potenziale condizionato con diversi valori di $\rho$ (\si{\kilo\meter})\dots}
-Al fine di concretizzare le nozioni riportate nel capitolo, con l'utilizzo del software MATLAB, è stata compiuta una simulazione della realizzazione di un processo descritto secondo un \textit{fp-HDGM}. La simulazione è stata condotta nell'area della provincia di Bergamo. Per garantire la pertinenza del caso di studio con un contesto realistico, sono stati distribuiti i punti di misurazione in cluster localizzati in alcune aree urbane della provincia. 
+Al fine di concretizzare le nozioni riportate nel capitolo, con l'utilizzo del software MATLAB, è stata compiuta una simulazione della realizzazione di un processo descritto secondo un fp-HDGM. La simulazione è stata condotta nell'area della provincia di Bergamo. Per garantire la pertinenza del caso di studio con un contesto realistico, sono stati distribuiti i punti di misurazione in cluster localizzati in alcune aree urbane della provincia (figura~\ref{mappa_stazioni_simulate}). 
 \begin{figure}[htp]
 	\centering
 	\includegraphics[height=260px]{Immagini/2. Nuovo modello/Mappa stazioni simulate_png}
-	\caption[ Distribuzione dei punti di misurazione della simulazione.] {Distribuzione dei punti di misurazione della simulazione. Sono stati definiti 7 cluster di stazioni di misurazione nei comuni di Bergamo, Treviglio, San Pellegrino Terme, Sovere, Sorisole, Antegnate, e Parzanica di numerosità pari a 15, 10, 5, 2, 3, 5 e 5 rispettivamente.}
+	\caption[Distribuzione dei punti di misurazione della simulazione.] {distribuzione dei punti di misurazione della simulazione. Sono stati definiti 7 cluster di stazioni di misurazione nei comuni di Bergamo, Treviglio, San Pellegrino Terme, Sovere, Sorisole, Antegnate e Parzanica di numerosità pari a \num{15}, \num{10}, \num{5}, \num{2}, \num{3}, \num{5} e \num{5} rispettivamente.}
 	\label{mappa_stazioni_simulate}
 \end{figure}
-Di seguito viene riportata la numerosità dei parametri scelti per la simulazione:
+Di seguito è riportata la numerosità dei parametri scelti per la simulazione:
 \begin{itemize}
 	\item numero di stazioni di misura, $n=45$;
-	\item numero di covariante globali, $b=1$;
-	\item dimensione del dominio funzionale ad alta frequenza, $l=24$;
-	\item numero di campioni in bassa frequenza, $T=365$ ;
-	\item numero di funzioni base utilizzate per modellizzare  $\sigma_\epsilon (l)$,  $n_\epsilon =5$;
-	\item numero di funzioni base utilizzate per modellizzare $\beta(l)$, $n_\beta=5$;
-	\item numero di funzioni base utilizzate per modellizzare $\Phi(l)$, $n_z=5$;
+	\item numero di covariante globali, $b=1$;                               
+	\item dimensione del dominio funzionale ad alta frequenza, $q=24,\ \mathcal{L}=[0, 23]$;
+	\item numero di campioni in bassa frequenza, $T=365$;
+	\item numero di funzioni base utilizzate per modellare  $\sigma_\epsilon (l)$,  $n_\epsilon =5$;
+	\item numero di funzioni base utilizzate per modellare $\beta(l)$, $n_\beta=5$;
+	\item numero di funzioni base utilizzate per modellare $\Phi_z(l)$, $n_z=5$;
 \end{itemize}
-
-Infine si espongono i valori fissati del set di parametri:
+Infine, si espongono i valori fissati del set di parametri:
 \begin{itemize}
-	\item $\rho = \SI{1100}{\meter}$
-	\item $C_\epsilon = \begin{bmatrix} 2 & -2 & -10 & 0.5 & 2 \end{bmatrix}$
-	\item $C_\beta = \begin{bmatrix} 2 & 4 & 8 & 0.5 & 2 \end{bmatrix}$
-	\item $\theta = \begin{bmatrix} 0.05 & 0.05  & 0.05 & 0.05  & 0.05  \end{bmatrix}$
+	\item $\rho = \SI{1100}{\meter}$;
+	\item $\mathbf{c}_\epsilon = \begin{bmatrix} 2 & -2 & -10 & 0.5 & 2 \end{bmatrix}$;
+	\item $\mathbf{c}_\beta = \begin{bmatrix} 2 & 4 & 8 & 0.5 & 2 \end{bmatrix}$
+	\item $\boldsymbol{\theta} = \begin{bmatrix} 0.05 & 0.05  & 0.05 & 0.05  & 0.05  \end{bmatrix}$
 	\item $G = 
 	\begin{bmatrix}
 		0.26 & 0 & 0 & 0 & 0 \\
@@ -144,16 +137,15 @@ Infine si espongono i valori fissati del set di parametri:
 	\end{bmatrix}
 	$
 \end{itemize}
-Una volta eseguita la simulazione del processo, è stata applicata la tecnica di Kriging\footnote{Il kriging è un metodo di regressione usato in geo-statistica che, minimizzando l'errore quadratico medio, permette di interpolare una grandezza nello spazio.} allo scopo di rappresentare la mappa del potenziale condizionato al variare del parametro $\rho$. Da sottolineare la circostanza con $\rho = 0$, ossia il caso in cui il geo-potenziale condizionato è pari al geo-potenziale puro per le considerazioni fatte nella \ref{limite_geo-potenziale_condizionato_rho_a_0} .
+Una volta eseguita la simulazione del processo, è stata applicata la tecnica di Kriging\footnote{Il kriging è un metodo di regressione usato in geo-statistica che, minimizzando l'errore quadratico medio, permette di interpolare una grandezza nello spazio.} allo scopo di rappresentare la mappa del potenziale condizionato al variare del parametro $\rho$. Da sottolineare la circostanza con $\rho = 0$, ossia il caso in cui il geo-potenziale condizionato è pari al geo-potenziale puro per le considerazioni fatte sul limite~\ref{limite_geo-potenziale_condizionato_rho_a_0}.
 
 \begin{figure}[h!]
 	\centering
-	\subfigure[]{\label{}\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0}\label{sim_fp-HDGM_a}}\quad
-	\subfigure[]{\label{}\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.005}\label{sim_fp-HDGM_b}}\quad
-	\subfigure[]{\label{}\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.01}\label{sim_fp-HDGM_c}}\quad
-	\subfigure[]{\label{}\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.02}\label{sim_fp-HDGM_d}}\quad
-	\caption[Simulazione di un processo \textit{fp-HDGM} al variare di $\rho$]{simulazione di un processo \textit{fp-HDGM} fissati $l$ e $t$, con $\rho=$ \SI{0}{\meter} (a), \SI{555}{\meter} (b) \SI{1100}{\meter} (c) e \SI{2200}{\meter} (d).}
+	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0}\label{sim_fp-HDGM_a}}\quad
+	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.005}\label{sim_fp-HDGM_b}}\quad
+	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.01}\label{sim_fp-HDGM_c}}\quad
+	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.02}\label{sim_fp-HDGM_d}}\quad
+	\caption[Simulazione di un processo fp-HDGM al variare di $\rho$]{simulazione di un processo fp-HDGM, fissati gli indici $l$ e $t$, con $\rho=$ \SI{0}{\meter} (a), \SI{555}{\meter} (b), \SI{1100}{\meter} (c) e \SI{2200}{\meter} (d).}
 	\label{sim_fp-HDGM}
 \end{figure}
-Si osserva che il geo-potenziale condizionato diminuisce all'aumentare di $\rho$, specialmente nelle zone con una forte densità di stazioni di misurazione.
-\par Si prenda ora come ipotesi che le stazioni di misurazione possano rappresentare dei punti di vendita di un prodotto, valgono le considerazioni fatte riguardo al potenziale di mercato spaziale. Infatti, se si decidesse di aggiungere un punto di vendita nell'intorno del punto con coordinate $(\SI{45.75}{\degree} \text{N}, \SI{9.70}{\degree} \text{W})$, il geo-potenziale puro previsto in questa area risulta essere promettente ma forviante in quanto vicino ad altri punti di vendita \ref{sim_fp-HDGM_a}. Con $\rho \geq \SI{555}{\meter}$ \ref{sim_fp-HDGM_b} \ref{sim_fp-HDGM_c} \ref{sim_fp-HDGM_d}, è facile osservare che il geo-potenziale condizionato è previsto basso nell'area presa in considerazione, ossia il punto di vendita verrebbe collocato in una zona caratterizzata da un basso potenziale di mercato spaziale.
+Nella figura~\ref{sim_fp-HDGM} si osserva come il geo-potenziale condizionato diminuisca all'aumentare di $\rho$, specialmente nelle zone con una forte densità di stazioni di misurazione. Si prenda ora come ipotesi che le stazioni di misurazione possano rappresentare dei punti di vendita di un prodotto; valgono le considerazioni fatte riguardo al potenziale di mercato spaziale. Infatti, se si decidesse di aggiungere un punto di vendita nei pressi delle coordinate $(\SI{45.75}{\degree} \text{N}, \SI{9.70}{\degree} \text{W})$, il geo-potenziale puro previsto in questa area risulta essere promettente ma forviante in quanto vicino ad altri punti di vendita, figura~\ref{sim_fp-HDGM_a}. Con $\rho \geq \SI{555}{\meter}$, figure~\ref{sim_fp-HDGM_b}, \ref{sim_fp-HDGM_c} e \ref{sim_fp-HDGM_d}, è facile osservare che il geo-potenziale condizionato è previsto basso nell'area presa in esame, ovvero il punto di vendita verrebbe collocato in un'area caratterizzata da un basso potenziale di mercato spaziale.
