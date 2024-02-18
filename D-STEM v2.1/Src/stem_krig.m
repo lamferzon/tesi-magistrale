@@ -1054,7 +1054,34 @@ classdef stem_krig < handle
                     enable_varcov_computation=0;
                     partitions=0;
                     %note that, for kriging, partitioning is disabled despite what happened in model estimation
-                    [st_kalmansmoother_result,sigma_eps,sigma_W_b,sigma_W_p,sigma_Z,sigma_geo,aj_bp,M] = st_kalman.smoother(compute_logL,enable_varcov_computation,[],[],partitions);
+                    
+                    % ONLY FOR FP-HDGM
+                    if obj.stem_model.stem_data.stem_modeltype.flag_potential == 1
+
+                        % parameters
+                        T = size(obj.stem_model.stem_data.Y, 2);
+                        n = size(obj.stem_model.stem_data.stem_gridlist_p.grid{1, 1}.coordinate, 1);
+                        q = obj.stem_model.stem_par.q;
+                        Y = obj.stem_model.stem_data.Y;
+                    
+                        % removal of the interaction
+                        diag_H_inv = stem_misc.compute_H_inv(obj.stem_model.DistMat_rho, ...
+                            q, obj.stem_model.stem_par.rho);
+                        Y_pot = zeros(size(obj.stem_model.stem_data.Y));
+                        for t=1:T
+                            Y_pot(:, t) = diag_H_inv.*Y(:, t);
+                        end
+                        obj.stem_model.stem_data.stem_varset_p.Y = mat2cell(Y_pot, n.*ones(1, q));
+                        obj.stem_model.stem_data.Y = Y_pot;
+                        [st_kalmansmoother_result,sigma_eps,sigma_W_b,sigma_W_p,sigma_Z,sigma_geo,aj_bp,M] = st_kalman.smoother(compute_logL,enable_varcov_computation,[],[],partitions);
+                        
+                        % restoration of the original data
+                        obj.stem_model.stem_data.stem_varset_p.Y = mat2cell(Y, n.*ones(1, q));
+                        obj.stem_model.stem_data.Y = Y;
+                    else
+                        [st_kalmansmoother_result,sigma_eps,sigma_W_b,sigma_W_p,sigma_Z,sigma_geo,aj_bp,M] = st_kalman.smoother(compute_logL,enable_varcov_computation,[],[],partitions);
+                    end
+
                 else
                     [sigma_eps,sigma_W_b,sigma_W_p,sigma_geo,sigma_Z,~,~,aj_bp,M] = obj.stem_model.get_sigma();
                     st_kalmansmoother_result=obj.stem_model.stem_EM_result.stem_kalmansmoother_result;
@@ -1278,6 +1305,12 @@ classdef stem_krig < handle
                     %update E(e|y1)
                     temp=st_kalmansmoother_result.zk_s(:,t+1);
                     y_hat(:,t)=y_hat(:,t)+X_z_orlated*temp;
+                    
+                    % ONLY FOR FP-HDGM
+                    if obj.stem_model.stem_data.stem_modeltype.flag_potential == 1
+                        y_hat(:, t) = (1./diag_H_inv).*y_hat(:, t);
+                    end
+
                 end
 
                 if not(isempty(obj.stem_model.stem_data.X_bp))||not(isempty(obj.stem_model.stem_data.X_p))
