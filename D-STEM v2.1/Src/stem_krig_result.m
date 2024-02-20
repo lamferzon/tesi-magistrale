@@ -221,7 +221,7 @@ classdef stem_krig_result < handle
             end
         end
         
-        function [y_hat,diag_Var_y_hat] = surface_plot(obj,h,t,X_beta,rho)
+        function [map_fig, y_hat, diag_Var_y_hat] = surface_plot(obj,h,t,X_beta,rho)
             %DESCRIPTION: surface plot of the kriged variable and its standard deviation 
             %
             %INPUT
@@ -295,7 +295,8 @@ classdef stem_krig_result < handle
                   
                 lat=reshape(obj.stem_grid.coordinate(:,1),obj.stem_grid.grid_size(1),obj.stem_grid.grid_size(2));
                 lon=reshape(obj.stem_grid.coordinate(:,2),obj.stem_grid.grid_size(1),obj.stem_grid.grid_size(2));
-
+                
+                %map_fig = nan;
                 if global_idx
 
                     f1=figure;
@@ -613,11 +614,11 @@ classdef stem_krig_result < handle
                     geoshow(obj.stem_grid_sites.coordinate(:,1),obj.stem_grid_sites.coordinate(:,2),'DisplayType','multipoint','Marker','*','MarkerEdgeColor','k');
 
                     if min(temp(:))*max(temp(:))>0
-                        colormap(f2,flipud(stem_misc.get_s_colormap()))
+                        colormap(f2, flipud(stem_misc.get_s_colormap()))
                         cl = colorbar;
-                        cl.Limits=[min(temp(:)) max(temp(:))]; 
+                        cl.Limits=[min(temp(:)) max(temp(:))];
                     else
-                        colormap(f2,stem_misc.get_d_colormap())
+                        colormap(f2, stem_misc.get_d_colormap())
                         colorbar;
                         caxis( [-max(abs(temp(:))) max(abs(temp(:)))] ); 
                     end
@@ -628,19 +629,17 @@ classdef stem_krig_result < handle
                     set(gcf, 'renderer', 'zbuffer');
                 else
                     
-                    figure;
-                    ax1=subplot(1,2,1); 
+                    figure
+                    map_fig = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+                    nexttile
                     hold on
-
-                    temp1=strsplit(obj.variable_name,'_');
-                    title([temp1{1},' on ',datestr(obj.stem_datestamp.stamp(t)),...
-                        ' @ h=',num2str(h)],'FontSize',14);
+                    grid on
 
                     hh = geoshow(lat,lon,surface1,'DisplayType','texturemap');
                     set(hh,'FaceColor','flat');
                     if not(isempty(obj.shape))
                         try
-                            geoshow(obj.shape,'FaceColor','none');
+                            geoshow(obj.shape, 'FaceColor', 'None');
                         catch
                             geoshow(obj.shape);
                         end
@@ -651,32 +650,40 @@ classdef stem_krig_result < handle
                     ylim([min(lat(:)),max(lat(:))]);
 
                     if strcmp(obj.stem_grid.unit,'deg')
-                        xlabel('Longitude [deg]','FontSize',14);
-                        ylabel('Latitude [deg]','FontSize',14);
+                        xlabel('Longitudine', 'Interpreter', 'latex');
+                        ylabel('Latitudine', 'Interpreter', 'latex');
                     else
                         xlabel(obj.stem_grid.unit);
                         ylabel(obj.stem_grid.unit);
                     end
+                    
+                    ax1 = gca();
+                    ax1.XAxis.TickLabelInterpreter = 'latex';
+                    ax1.YAxis.TickLabelInterpreter = 'latex';
 
                     geoshow(obj.stem_grid_sites.coordinate(:,1),obj.stem_grid_sites.coordinate(:,2),...
-                        'DisplayType','multipoint','Marker','*','MarkerEdgeColor','k');
+                        'DisplayType', 'multipoint', 'Marker', 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'w');
 
                     if min(surface1(:))*max(surface1(:))>0
-                        colormap(ax1,flipud(stem_misc.get_s_colormap()))
+                        colormap(ax1, "default")
+                        caxis([0 4]);
                         cl = colorbar;
-                        cl.Limits=[min(surface1(:)) max(surface1(:))]; 
+                        cl.Limits=[min(surface1(:)) max(surface1(:))];
+                        cl.TickLabelInterpreter = "latex";
                     else
-                        colormap(ax1,stem_misc.get_d_colormap())
-                        colorbar;
+                        colormap(ax1, stem_misc.get_d_colormap())
+                        colorbar(ax1, "eastoutside", 'TickLabelInterpreter', 'latex');
                         caxis( [-max(abs(surface1(:))) max(abs(surface1(:)))] ); 
                     end
                     
+                    %{
                     grid on;
                     box on;
                     set(gca,'FontSize',14);
                     set(gcf, 'renderer', 'zbuffer');
-
-                    ax2=subplot(1,2,2);
+                    
+                    figure
+                    ax2=subplot(1,1,1);
                     hold on
 
                     temp=sqrt(v);
@@ -722,6 +729,8 @@ classdef stem_krig_result < handle
                     box on;
                     set(gca,'FontSize',14);
                     set(gcf, 'renderer', 'zbuffer');
+                    %}
+                    
                 end
          
             end
