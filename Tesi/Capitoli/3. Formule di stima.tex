@@ -1,6 +1,6 @@
 \chapter[Stima EM del modello fp-HDGM]{Stima EM del modello fp-HDGM}
 
-Dopo aver presentato nel capitolo precedente il modello fp-HDGM, in questo vengono illustrate le formule di stima. Innanzitutto viene derivata la funzione di verosimiglianza $L(\boldsymbol{\psi})$, poi la componente $\Omega(t)$ dell'aspettativa condizionale $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$; essa è l'oggetto dell'ottimizzazione svolta nel passo M per stimare il nuovo parametro $\rho$. Per la nomenclatura si rimanda alla sezione \ref{equazioni_modello_base}.
+Dopo aver presentato nel capitolo precedente il modello fp-HDGM, in questo vengono illustrate le formule di stima. Innanzitutto viene derivata la funzione di verosimiglianza $L(\boldsymbol{\psi})$, poi la componente $\Omega(t)$ del valore atteso condizionato $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$; essa è l'oggetto dell'ottimizzazione svolta nel passo M per stimare il nuovo parametro $\rho$. Per la nomenclatura si rimanda alla sezione \ref{equazioni_modello_base}.
 
 \section[La funzione di verosimiglianza]{La funzione di verosimiglianza}
 La stima dei parametri $\boldsymbol{\psi}$ e dalla variabile latente spazio-temporale $\mathbf{z}(\mathbf{s}, t)$ è basata sull'approccio a massima verosimiglianza (o MLE)~\cite{paper_f_HDGM}.
@@ -107,22 +107,22 @@ e
 I termini $T(n\cdot q)\ln 2\pi$, $(n\cdot n_z)\ln 2\pi$ e $T(n\cdot n_z)\ln 2\pi$ sono stati rimossi poiché sono costanti, quindi non influenzano la ricerca di $\hat{\boldsymbol{\psi}}=\text{arg}\,\min\limits_{\boldsymbol{\psi}} -2\ln L(\boldsymbol{\psi}; Y, Z, X)$. \par Riassumendo ed esplicitando i singoli termini di $\boldsymbol{\psi}$ (in arancione), si ottiene:
 \begin{equation}
 	\begin{split}
-		-2\ln L(\boldsymbol{\psi}; Y, Z, X) & =  T\ln|\Sigma_\epsilon\left(\textcolor{orange}{\mathbf{c}_\epsilon^\top}\right)| \\
-		& + \sum_{t=1}^{T} \left(H^{-1}(\textcolor{orange}{\rho})\cdot\mathbf{y}_t - \boldsymbol{\mu}_t(\textcolor{orange}{\mathbf{c}_\beta^\top})\right)^\top\Sigma_\epsilon^{-1}\left(H^{-1}(\textcolor{orange}{\rho})\cdot\mathbf{y}_t - \boldsymbol{\mu}_t(\textcolor{orange}{\mathbf{c}_\beta^\top}\right) \\
+		-2\ln L(\boldsymbol{\psi}; Y, Z, X) & =  T\ln|\Sigma_\epsilon\left(\textcolor{black}{\mathbf{c}_\epsilon^\top}\right)| \\
+		& + \sum_{t=1}^{T} \left(H^{-1}(\textcolor{black}{\rho})\cdot\mathbf{y}_t - \boldsymbol{\mu}_t(\textcolor{black}{\mathbf{c}_\beta^\top})\right)^\top\Sigma_\epsilon^{-1}\left(H^{-1}(\textcolor{black}{\rho})\cdot\mathbf{y}_t - \boldsymbol{\mu}_t(\textcolor{black}{\mathbf{c}_\beta^\top}\right) \\
 		& + \ln|\Sigma_0| \\
 		& + (\mathbf{z}_0 - \boldsymbol{\mu}_0)^\top\Sigma_0^{-1}(\mathbf{z}_0 - \boldsymbol{\mu}_0) \\
-		& + T\ln |\Sigma_\eta(\textcolor{orange}{\mathbf{v}^\top,\boldsymbol{\theta}^\top})| \\
-		& + \sum_{t=1}^{T}\left(\mathbf{z_t}-\tilde{G}(\textcolor{orange}{\mathbf{g}^\top})\cdot\mathbf{z}_{t-1}\right)^\top\Sigma_\eta^{-1}(\textcolor{orange}{\mathbf{v}^\top,\boldsymbol{\theta}^\top})\left(\mathbf{z_t}-\tilde{G}(\textcolor{orange}{\mathbf{g}^\top})\cdot\mathbf{z}_{t-1}\right).
+		& + T\ln |\Sigma_\eta(\textcolor{black}{\mathbf{v}^\top,\boldsymbol{\theta}^\top})| \\
+		& + \sum_{t=1}^{T}\left(\mathbf{z_t}-\tilde{G}(\textcolor{black}{\mathbf{g}^\top})\cdot\mathbf{z}_{t-1}\right)^\top\Sigma_\eta^{-1}(\textcolor{black}{\mathbf{v}^\top,\boldsymbol{\theta}^\top})\left(\mathbf{z_t}-\tilde{G}(\textcolor{black}{\mathbf{g}^\top})\cdot\mathbf{z}_{t-1}\right).
 	\end{split}
 	\label{eq_fin_verosimiglianza}
 \end{equation}
 Il secondo addendo è quello che dev'essere minimizzato per determinare $\rho$.
 
-\section[L'aspettativa condizionale]{L'aspettativa condizionale}
-L'aspettativa condizionale $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$ è l'oggetto della massimizzazione\footnote{minimizzazione se viene applicato il logaritmo naturale negato alla funzione di verosimiglianza.} compiuta dal passo M per determinare $\boldsymbol{\psi}_n$, ossia la stima all'iterazione $n$ dei parametri da identificare. Il ricorso all'algoritmo EM è necessario poiché nel modello compaiono delle variabili latenti $\mathbf{z}$ che devono essere ricostruite, di conseguenza non si può minimizzare direttamente la funzione~\ref{eq_fin_verosimiglianza}.
+\section[Il valore atteso condizionato]{Il valore atteso condizionato}
+Il valore atteso condizionato $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$ è l'oggetto della massimizzazione\footnote{minimizzazione se viene applicato il logaritmo naturale negato alla funzione di verosimiglianza.} compiuta dal passo M per determinare $\boldsymbol{\psi}_n$, ossia la stima all'iterazione $n$ dei parametri da identificare. Il ricorso all'algoritmo EM è necessario poiché nel modello compaiono delle variabili latenti $\mathbf{z}$ che devono essere ricostruite, di conseguenza non si può minimizzare direttamente la funzione~\ref{eq_fin_verosimiglianza}.
 
 \subsection[Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$]{Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$}
-L'espressione dell'aspettativa condizionale è la seguente~\cite{paper_GRASPA}:
+L'espressione del valore atteso condizionato è la seguente~\cite{paper_GRASPA}:
 \begin{equation}
 	\begin{split}
 		Q(\boldsymbol{\psi},\boldsymbol{\psi}_n) & = \text{E}_{\boldsymbol{\psi}_n}\left\{T\ln|\Sigma_0| + \text{tr}\left(\Sigma_0^{-1}\left(\mathbf{z}_0 - \boldsymbol{\mu}_0\right)\left(\mathbf{z}_0 - \boldsymbol{\mu}_0\right)^\top\right)\bigg| Y^{(1)}\right\} \\
@@ -139,7 +139,7 @@ dove $\mathbf{e}_t = H^{-1}(\rho)\cdot\mathbf{y}_t - \boldsymbol{\mu}_t$ e $Y^{(
 		& = T\ln|\Sigma_\epsilon| + \text{tr}\left(\Sigma_\epsilon^{-1}\sum_{t=1}^{T}E_{\boldsymbol{\psi}_n}\left\{\mathbf{e}_t\cdot\mathbf{e}_t^\prime \ \bigg| Y^{(1)}\right\}\right).
 	\end{split}
 \end{equation}
-La quantità $f(\rho)$ dell'aspettativa condizionale $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$ è l'unica che dipende da $\rho$, l'unica che dev'essere ottimizzata per stimare il nuovo parametro.
+La quantità $f(\rho)$ del valore atteso condizionato $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$ è l'unica che dipende da $\rho$, l'unica che dev'essere ottimizzata per stimare il nuovo parametro.
 
 \subsection[Espressione della matrice $\Omega_t$]{Espressione della matrice $\Omega_t$}
 Sia $\text{E}_{\boldsymbol{\psi}_n}\left\{\mathbf{e}_t\cdot\mathbf{e}_t^\top \ \bigg|Y^{(1)}\right\} = \Omega_t\in\mathbb{R}^{(n\cdot q)\times(n\cdot q)}$, allora~\cite{paper_TS_book}:

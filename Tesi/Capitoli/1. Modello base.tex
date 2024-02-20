@@ -1,6 +1,6 @@
 \chapter[Il modello f-HDGM e l'algoritmo EM]{Introduzione all'analisi funzionale di dati spazio-tempo tramite il modello f-HDGM e cenni sull'algoritmo EM}
 
-In questo primo capitolo, dopo aver presentato il concetto di analisi funzionale (\textit{Functional Data Analysis}, o \textit{FDA}), viene illustrato il modello spazio-temporale oggetto dell'estensione presentata in questo studio, ossia il \textit{Functional Hidden Dynamic Geostatistical Model} (o \textit{f-HDGM}). Infine, vengono fornite alcune nozioni per comprendere il funzionamento e, in primis, l'idea su cui si basa l'\textit{algoritmo EM}.
+In questo primo capitolo, dopo aver presentato il concetto di analisi funzionale (\textit{Functional Data Analysis}, o \textit{FDA}), viene illustrato il modello spazio-temporale oggetto dell'estensione presentata in questo studio, ossia il \textit{Functional Hidden Dynamic Geostatistical Model} (\textit{f-HDGM}). Infine, vengono fornite alcune nozioni per comprendere il funzionamento e, in primis, l'idea su cui si basa l'\textit{algoritmo EM}.
 
 \section[Cenni sull'analisi funzionale dei dati]{Cenni sull'analisi funzionale dei dati}
 
@@ -39,7 +39,7 @@ $f$ è la frequenza, $n$ indica il numero di armoniche\footnote{il numero di bas
 \begin{figure}[htp]
 	\centering
 	\includegraphics[height=180px]{Immagini/1. Modello base/Spline Fourier con coefficienti non unitari}
-	\caption[Esempio di combinazione lineare con $n=2$ i cui coefficienti sono diversi da \num{1}]{esempio di combinazione lineare di basi di Fourier (in azzurro) con $n=2$ i cui coefficienti sono diversi da \num{1}. Nello specifico: $a_0 = 2$, $a_{1,\sin} = 4$, $a_{1,\cos} = 8$, $a_{2,\sin} = 1/2$ e $a_{2,\cos} = 2$.}
+	\caption[Esempio di combinazione lineare di basi di Fourier con $n=2$ i cui coefficienti sono diversi da \num{1}]{esempio di combinazione lineare di basi di Fourier (in azzurro) con $n=2$ i cui coefficienti sono diversi da \num{1}. Nello specifico: $a_0 = 2$, $a_{1,\sin} = 4$, $a_{1,\cos} = 8$, $a_{2,\sin} = 1/2$ e $a_{2,\cos} = 2$.}
 	\label{esempio_Fourier_coef_non_unitari}
 \end{figure}
 
@@ -73,7 +73,7 @@ Prima di entrare in medias res, è bene introdurre la nomenclatura che successiv
 	\item infine, $n_\epsilon$, $n_\beta$ ed $n_z$ indicano il numero di funzioni base utilizzate per modellare rispettivamente $\sigma_\epsilon (\mathbf{s}, l, t)$, ogni $\beta(l)$ e $\Phi(l)$ per $\mathbf{z}(\mathbf{s}, t)$.
 \end{itemize}
 
-\subsection[Rumore sull'uscita]{Errore di misura}
+\subsection[Errore di misura]{Errore di misura}
 Nell'equazione \ref{eq_rumore_uscita}, $\epsilon (\mathbf{s}, l, t)\in\mathbb{R}$ è una variabile causale con distribuzione gaussiana avente media nulla ($\mu_\epsilon = 0$), indipendente sia nello spazio sia nel tempo. La sua varianza $\sigma_\epsilon(\mathbf{s}, l, t)$ è \textit{eteroschedastica}\footnote{dato un campione di variabili casuali, al suo interno esistono delle sotto-popolazioni che hanno diverse varianze.} nel dominio $\mathcal{L}$; essa è modellata nel modo seguente:
 \[
 	\log(\sigma_\epsilon(\mathbf{s}, l, t)) = \Phi(l)^\top\cdot\mathbf{c}_\epsilon.
@@ -137,7 +137,7 @@ Alcuni di essi possono essere calcolati in forma chiusa, altri richiedono l'otti
 \section[Cenni sull'algoritmo EM]{Cenni sull'algoritmo EM}
 L'algoritmo EM (Expectation-Maximization) è una tecnica di ottimizzazione iterativa per determinare la stima a massima verosimiglianza (Maximum Likelihood Estimate, o MLE) \textbf{in presenza di dati mancanti o nascosti (variabili latenti)}. Nella stima ML si desidera determinare i parametri del modello per i quali i dati osservati risultano essere i più verosimili~\cite{paper_EM_algorithm}. \par Ogni iterazione dell'algoritmo EM consiste in due passi:
 \begin{itemize}
-	\item \textbf{passo E}: a partire dalla stima corrente dei parametri $\boldsymbol{\theta}_n$ e dai dati disponibili $\mathbf{y}$, quelli mancanti vengono prima stimati e poi impiegati per determinare l'\textit{valore atteso condizionato} $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$, una semplificazione della stima corrente della funzione di verosimiglianza $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$;
+	\item \textbf{passo E}: a partire dalla stima corrente dei parametri $\boldsymbol{\theta}_n$ e dai dati disponibili $\mathbf{y}$, quelli mancanti vengono prima stimati e poi impiegati per determinare il \textit{valore atteso condizionato} $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$, una semplificazione della stima corrente della funzione di verosimiglianza $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$;
 	\item \textbf{passo M}: $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$ viene ottimizzata per determinare $\boldsymbol{\theta}_{n+1}$, assumendo che i dati mancanti siano noti. Le stime di questi, ottenute precedentemente nel passo E, sono utilizzate al posto dei dati mancanti effettivi.
 \end{itemize}
 La convergenza dell'algoritmo è garantita dall'aumento della verosimiglianza a ogni iterazione~\cite{paper_EM_algorithm}.
