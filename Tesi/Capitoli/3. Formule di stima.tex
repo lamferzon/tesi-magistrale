@@ -3,7 +3,7 @@
 Dopo aver presentato nel capitolo precedente il modello fp-HDGM, in questo vengono illustrate le formule di stima. Innanzitutto viene derivata la funzione di verosimiglianza $L(\boldsymbol{\psi})$, poi la componente $\Omega(t)$ del valore atteso condizionato $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$; essa è l'oggetto dell'ottimizzazione svolta nel passo M per stimare il nuovo parametro $\rho$. Per la nomenclatura si rimanda alla sezione \ref{equazioni_modello_base}.
 
 \section[La funzione di verosimiglianza]{La funzione di verosimiglianza}
-La stima dei parametri $\boldsymbol{\psi}$ e dalla variabile latente spazio-temporale $\mathbf{z}(\mathbf{s}, t)$ è basata sull'approccio a massima verosimiglianza (o MLE)~\cite{paper_f_HDGM}.
+La stima dei parametri $\boldsymbol{\psi}$ e dalla variabile latente spazio-temporale $\mathbf{z}(\mathbf{s}, t)$ è basata sull'approccio a massima verosimiglianza (o MLE)~[\cite{paper_f_HDGM}].
 
 \subsection[Rappresentazione matriciale del modello fp-HDGM]{Rappresentazione matriciale del modello fp-HDGM}
 Si misuri la variabile $y(\mathbf{s}_i, l_j, t)$ per ogni valore $l_j\in \mathcal{L}$\footnote{per semplicità di notazione, si assume l'assenza di dati mancanti, ovvero $q$ osservazioni per ogni $\mathbf{s}_i$ e $t$.} in uno specifico punto nello spazio $\mathbf{s}_i\in\mathcal{S} = \{(s_{lon,1}, s_{lat,1}),\dots,(s_{lon,n}, s_{lat,n})\}$ e istante temporale $t$. Il vettore risultante è:
@@ -122,7 +122,7 @@ Il secondo addendo è quello che dev'essere minimizzato per determinare $\rho$.
 Il valore atteso condizionato $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$ è l'oggetto della massimizzazione\footnote{minimizzazione se viene applicato il logaritmo naturale negato alla funzione di verosimiglianza.} compiuta dal passo M per determinare $\boldsymbol{\psi}_n$, ossia la stima all'iterazione $n$ dei parametri da identificare. Il ricorso all'algoritmo EM è necessario poiché nel modello compaiono delle variabili latenti $\mathbf{z}$ che devono essere ricostruite, di conseguenza non si può minimizzare direttamente la funzione~\ref{eq_fin_verosimiglianza}.
 
 \subsection[Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$]{Derivazione di Q$(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$}
-L'espressione del valore atteso condizionato è la seguente~\cite{paper_GRASPA}:
+L'espressione del valore atteso condizionato è la seguente~[\cite{paper_GRASPA}]:
 \begin{equation}
 	\begin{split}
 		Q(\boldsymbol{\psi},\boldsymbol{\psi}_n) & = \text{E}_{\boldsymbol{\psi}_n}\left\{T\ln|\Sigma_0| + \text{tr}\left(\Sigma_0^{-1}\left(\mathbf{z}_0 - \boldsymbol{\mu}_0\right)\left(\mathbf{z}_0 - \boldsymbol{\mu}_0\right)^\top\right)\bigg| Y^{(1)}\right\} \\
@@ -142,7 +142,7 @@ dove $\mathbf{e}_t = H^{-1}(\rho)\cdot\mathbf{y}_t - \boldsymbol{\mu}_t$ e $Y^{(
 La quantità $f(\rho)$ del valore atteso condizionato $Q(\boldsymbol{\psi}, \boldsymbol{\psi}_n)$ è l'unica che dipende da $\rho$, l'unica che dev'essere ottimizzata per stimare il nuovo parametro.
 
 \subsection[Espressione della matrice $\Omega_t$]{Espressione della matrice $\Omega_t$}
-Sia $\text{E}_{\boldsymbol{\psi}_n}\left\{\mathbf{e}_t\cdot\mathbf{e}_t^\top \ \bigg|Y^{(1)}\right\} = \Omega_t\in\mathbb{R}^{(n\cdot q)\times(n\cdot q)}$, allora~\cite{paper_TS_book}:
+Sia $\text{E}_{\boldsymbol{\psi}_n}\left\{\mathbf{e}_t\cdot\mathbf{e}_t^\top \ \bigg|Y^{(1)}\right\} = \Omega_t\in\mathbb{R}^{(n\cdot q)\times(n\cdot q)}$, allora~[\cite{paper_TS_book}]:
 \begin{equation}
 	\begin{split}
 		\Omega_t & = \begin{bmatrix}
