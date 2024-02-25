@@ -160,12 +160,41 @@ classdef stem_krig < handle
             end
            
             if stem_krig_options.workers==1
+
+                % ONLY FOR FP-HDGM
+                if obj.stem_model.stem_data.stem_modeltype.flag_potential == 1
+                    
+                    % parameters
+                    T = size(obj.stem_model.stem_data.Y, 2);
+                    n = size(obj.stem_model.stem_data.stem_gridlist_p.grid{1, 1}.coordinate, 1);
+                    q = obj.stem_model.stem_par.q;
+                    Y = obj.stem_model.stem_data.Y;
+                    
+                    % removal of the interaction
+                    diag_H_inv = stem_misc.compute_H_inv(obj.stem_model.DistMat_rho, ...
+                        q, obj.stem_model.stem_par.rho);
+                    Y_pot = zeros(size(obj.stem_model.stem_data.Y));
+                    for t=1:T
+                        Y_pot(:, t) = diag_H_inv.*Y(:, t);
+                    end
+                    obj.stem_model.stem_data.stem_varset_p.Y = mat2cell(Y_pot, n.*ones(1, q));
+                    obj.stem_model.stem_data.Y = Y_pot;
+                end
+
                 if not(obj.stem_model.stem_par.stem_modeltype.is('f-HDGM'))||stem_krig_options.validation==1
                     st_krig_result = obj.kriging_core(stem_krig_options,idx_var);
                 else
                     st_krig_result = obj.kriging_spline_coeff_core(stem_krig_options);
                     st_krig_result.stem_par = obj.stem_model.stem_par;
                     st_krig_result.stem_fda = obj.stem_model.stem_data.stem_fda;
+                end
+                
+                % ONLY FOR FP-HDGM
+                if obj.stem_model.stem_data.stem_modeltype.flag_potential == 1
+                    
+                    % restoration of the original data
+                    obj.stem_model.stem_data.stem_varset_p.Y = mat2cell(Y, n.*ones(1, q));
+                    obj.stem_model.stem_data.Y = Y;
                 end
                
             else
@@ -632,7 +661,17 @@ classdef stem_krig < handle
                 blocks=cumsum(block_kept_size+block_krig_length);
                 
                 %kriging
-               [y_hat,diag_Var_y_hat,E_wp_y1,diag_Var_wp_y1,stem_kalmansmoother_result]=obj.E_step_kriging(stem_krig_options.no_varcov,stem_krig_options.validation);
+                [y_hat,diag_Var_y_hat,E_wp_y1,diag_Var_wp_y1,stem_kalmansmoother_result]=obj.E_step_kriging(stem_krig_options.no_varcov,stem_krig_options.validation);
+                
+                % ONLY FOR FP-HDGM
+                if obj.stem_model.stem_data.stem_modeltype.flag_potential == 1
+                    diag_H_inv = stem_misc.compute_H_inv(obj.stem_model.DistMat_rho, ...
+                        q, obj.stem_model.stem_par.rho);
+                    for t=1:size(y_hat, 2)
+                        y_hat(:, t) = (1./diag_H_inv).*y_hat(:, t);
+                    end
+                end
+
                 for j=idx_var
                     if not(obj.stem_model.stem_data.stem_modeltype.is('f-HDGM'))||stem_krig_options.validation==1
                         st_krig_result{j}.y_hat(idx_notnan(block_krig),:)=y_hat(blocks(j)-block_krig_length+1:blocks(j),:);
@@ -1054,33 +1093,7 @@ classdef stem_krig < handle
                     enable_varcov_computation=0;
                     partitions=0;
                     %note that, for kriging, partitioning is disabled despite what happened in model estimation
-                    
-                    % ONLY FOR FP-HDGM
-                    if obj.stem_model.stem_data.stem_modeltype.flag_potential == 1
-
-                        % parameters
-                        T = size(obj.stem_model.stem_data.Y, 2);
-                        n = size(obj.stem_model.stem_data.stem_gridlist_p.grid{1, 1}.coordinate, 1);
-                        q = obj.stem_model.stem_par.q;
-                        Y = obj.stem_model.stem_data.Y;
-                    
-                        % removal of the interaction
-                        diag_H_inv = stem_misc.compute_H_inv(obj.stem_model.DistMat_rho, ...
-                            q, obj.stem_model.stem_par.rho);
-                        Y_pot = zeros(size(obj.stem_model.stem_data.Y));
-                        for t=1:T
-                            Y_pot(:, t) = diag_H_inv.*Y(:, t);
-                        end
-                        obj.stem_model.stem_data.stem_varset_p.Y = mat2cell(Y_pot, n.*ones(1, q));
-                        obj.stem_model.stem_data.Y = Y_pot;
-                        [st_kalmansmoother_result,sigma_eps,sigma_W_b,sigma_W_p,sigma_Z,sigma_geo,aj_bp,M] = st_kalman.smoother(compute_logL,enable_varcov_computation,[],[],partitions);
-                        
-                        % restoration of the original data
-                        obj.stem_model.stem_data.stem_varset_p.Y = mat2cell(Y, n.*ones(1, q));
-                        obj.stem_model.stem_data.Y = Y;
-                    else
-                        [st_kalmansmoother_result,sigma_eps,sigma_W_b,sigma_W_p,sigma_Z,sigma_geo,aj_bp,M] = st_kalman.smoother(compute_logL,enable_varcov_computation,[],[],partitions);
-                    end
+                    [st_kalmansmoother_result,sigma_eps,sigma_W_b,sigma_W_p,sigma_Z,sigma_geo,aj_bp,M] = st_kalman.smoother(compute_logL,enable_varcov_computation,[],[],partitions);
 
                 else
                     [sigma_eps,sigma_W_b,sigma_W_p,sigma_geo,sigma_Z,~,~,aj_bp,M] = obj.stem_model.get_sigma();
@@ -1305,11 +1318,6 @@ classdef stem_krig < handle
                     %update E(e|y1)
                     temp=st_kalmansmoother_result.zk_s(:,t+1);
                     y_hat(:,t)=y_hat(:,t)+X_z_orlated*temp;
-                    
-                    % ONLY FOR FP-HDGM
-                    if obj.stem_model.stem_data.stem_modeltype.flag_potential == 1
-                        y_hat(:, t) = (1./diag_H_inv).*y_hat(:, t);
-                    end
 
                 end
 
