@@ -29,14 +29,14 @@ Le basi di Fourier sono una classe di funzioni che viene impiegata per descriver
 \]
 $f$ è la frequenza, $n$ indica il numero di armoniche\footnote{il numero di basi è $n\cdot 2 + 1$.}, $\omega_0 = 2\pi\cdot f$ rappresenta la pulsazione dell'armonica fondamentale, mentre $a_0, a_1,\dots a_n$ sono i coefficienti combinatori. Oltre alla parte costante, ciascuna funzione seno e coseno costituisce una base. Una volta scelto il valore di $n$ a seconda del livello di complessità desiderato, l'obiettivo dell'analisi funzionale è quello di calcolare i coefficienti. Nelle figure \ref{esempi_Fourier} e \ref{esempio_Fourier_coef_non_unitari} sono riportati degli esempi sia di basi di Fourier sia di alcune loro combinazioni lineari.
 
-\begin{figure}[htp]
+\begin{figure}[htb]
 	\centering
 	\subfigure[]{\label{}\includegraphics[height=158px]{Immagini/1. Modello base/Basi Fourier}}\quad
 	\subfigure[]{\label{}\includegraphics[height=158px]{Immagini/1. Modello base/Spline Fourier}}
-	\caption[Confronto tra funzioni base con $n=2$ e tra diverse combinazioni lineari]{confronto tra funzioni base con $n=2$ (a) e tra diverse combinazioni lineari (b) i cui coefficienti sono unitari. Da notare come all'aumentare di $n$ la funzione risultante tenda al livello basso di un'onda quadra.}
+	\caption[Confronto tra basi di Fourier con $n=2$ e tra diverse combinazioni lineari]{confronto tra basi di Fourier con $n=2$ (a) e tra diverse combinazioni lineari (b) i cui coefficienti sono unitari. Da notare come all'aumentare di $n$ la funzione risultante tenda al livello basso di un'onda quadra.}
 	\label{esempi_Fourier}
 \end{figure}
-\begin{figure}[htp]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[height=180px]{Immagini/1. Modello base/Spline Fourier con coefficienti non unitari}
 	\caption[Esempio di combinazione lineare di basi di Fourier con $n=2$ i cui coefficienti sono diversi da \num{1}]{esempio di combinazione lineare di basi di Fourier (in azzurro) con $n=2$ i cui coefficienti sono diversi da \num{1}. Nello specifico: $a_0 = 2$, $a_{1,\sin} = 4$, $a_{1,\cos} = 8$, $a_{2,\sin} = 1/2$ e $a_{2,\cos} = 2$.}
@@ -114,7 +114,7 @@ In un contesto spaziale, è possibile interpretare un processo gaussiano come un
 $D\in\mathbb{R}^{n\times n}$ è la matrice delle distanze, $N=n_z\cdot n = 2\cdot 10^4$ rappresenta il numero totale di variabili aleatorie.
 \par I coefficienti $\boldsymbol{\theta} = (\theta_1,\theta_2)^\top$ descrivono la velocità con la quale, fissato $\mathbf{s}$, le v.c. collocate nelle altre posizioni spaziali $\mathbf{s}'$ tendono ad assumere un valore diverso da quello assunto dal processo gaussiano in $\mathbf{s}$ all'aumentare della distanza $|\mathbf{s} - \mathbf{s}'|$. Nella figura \ref{sim_proc_gaussiano} è possibile notare come la variabilità del processo tenda a diminuire all'aumentare di $\theta$ a causa della maggiore correlazione esistente tra punti vicini, un comportamento osservabile anche nei valori assunti dalla densità di probabilità congiunta della normale bi-variata ottenuta scegliendo due variabili causali.
 
-\begin{figure}[h!]
+\begin{figure}[htb]
 	\centering
 	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/1. Modello base/Sim. proc. gaussiano, theta = 0.5}}\quad
 	\subfigure[]{\label{}\includegraphics[height=152px]{Immagini/1. Modello base/Sim. var. casuali, theta = 0.5}}\quad
@@ -172,7 +172,7 @@ per il corollario della disuguaglianza di Jensen\footnote{sia $f$ una funzione c
 \end{equation}
 La figura \ref{grafico_verosimiglianza} materializza il risultato appena ottenuto: l'approssimazione di $L(\boldsymbol{\theta})$ in un intorno di $\boldsymbol{\theta}_n$ non sovrastima la vera funzione di verosimiglianza, quindi ottimizzare l'approssimazione comporta la massimizzazione implicita anche di $L(\boldsymbol{\theta})$. Si ricorda, inoltre, che $\boldsymbol{\theta}_n = \text{arg}\,\max\limits_{\boldsymbol{\theta}} \ l(\boldsymbol{\theta}|\boldsymbol{\theta}_{n-1})$.
 
-\begin{figure}[htp]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[height=180px]{Immagini/1. Modello base/Grafico verosimiglianza}
 	\caption[Confronto tra la vera funzione di verosimiglianza $L(\theta)$ e la sua approssimazione in $\theta_n$.]{confronto tra la vera funzione di verosimiglianza $L(\theta)$ e la sua approssimazione in un intorno di $\theta_n$. Da notare che lo stimatore $l(\theta |\theta_n)$ non sovrastima la funzione reale.}
