@@ -97,7 +97,7 @@ In termini chiari, il parametro $\theta$ condiziona entrambi i geo-potenziali, v
 
 \subsection[Simulazione di una mappa di geo-potenziale]{Simulazione di una mappa di geo-potenziale}
 Al fine di concretizzare le nozioni riportate nel capitolo, con l'utilizzo del software MATLAB, è stata compiuta una simulazione della realizzazione di un processo descritto secondo un fp-HDGM. La simulazione è stata condotta nell'area della provincia di Bergamo. Per garantire la pertinenza del caso di studio con un contesto realistico, sono stati distribuiti i punti di misurazione in cluster localizzati in alcune aree urbane della provincia (figura~\ref{mappa_stazioni_simulate}). 
-\begin{figure}[htb]
+\begin{figure}[htpb]
 	\centering
 	\includegraphics[height=235px]{Immagini/2. Nuovo modello/Mappa stazioni simulate_png}
 	\caption[Collocazione spaziale dei punti di misura della simulazione.] {collocazione spaziale dei punti di misura della simulazione. Sono stati definiti 7 cluster di stazioni di misurazione nei comuni di Bergamo, Treviglio, San Pellegrino Terme, Sovere, Sorisole, Antegnate e Parzanica di numerosità pari a \num{15}, \num{10}, \num{5}, \num{2}, \num{3}, \num{5} e \num{5}, rispettivamente.}
@@ -124,7 +124,7 @@ Infine, si espongono i valori fissati del set di parametri:
 \end{itemize}
 Una volta eseguita la simulazione del processo, è stata applicata la tecnica di Kriging\footnote{metodo di regressione usato in geo-statistica che, minimizzando l'errore quadratico medio, permette di interpolare una grandezza nello spazio. In questo caso, consente di stimare il geo-potenziale.} allo scopo di rappresentare la mappa del potenziale condizionato al variare del parametro $\rho$. Da sottolineare la circostanza con $\rho = 0$, ossia il caso in cui il geo-potenziale condizionato è pari al geo-potenziale puro per le considerazioni fatte sul limite~\ref{limite_geo-potenziale_condizionato_rho_a_0}.
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 	\centering
 	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0}\label{sim_fp-HDGM_a}}\quad
 	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.005}\label{sim_fp-HDGM_b}}\quad
