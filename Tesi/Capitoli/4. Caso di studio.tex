@@ -20,8 +20,8 @@ Nelle città di tutto il mondo, l'inquinamento atmosferico rappresenta una sfida
 
 \begin{figure}[htpb]
 	\centering
-	\subfigure[]{\includegraphics[height=168px]{Immagini/4. Caso di studio/Stato dell'arte/Trend_feriale}\label{trend_feriale}}\quad
-	\subfigure[]{\includegraphics[height=168px]{Immagini/4. Caso di studio/Stato dell'arte/Trend_festivo}\label{trend_festivo}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Stato dell'arte/Trend_feriale}\label{trend_feriale}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Stato dell'arte/Trend_festivo}\label{trend_festivo}}\quad
 	\caption[Confronto tra l'andamento orario del numero medio di ritiri nei giorni feriali e nei weekend a Helsinki]{confronto tra l'andamento orario del numero medio di ritiri di biciclette nei giorni feriali (a) e nei weekend (b) nella città di Helsinki, Finlandia.}
 	\label{trend_paper_Otto}
 \end{figure}
@@ -38,7 +38,40 @@ Di seguito sono riportate le sorgenti dei dati utilizzati nel caso di studio:
 Da sottolineare, infine, che sono state processate le sole variabili d'interesse per il caso di studio; nello specifico è stato applicato un raggruppamento su base oraria, ove necessario.
 
 \section[Descrizione del dataset]{Descrizione del dataset}
-Di seguito sono riportate e descritte le variabili che compongono il dataset utilizzato per il caso di studio. Nello specifico 
+Di seguito sono riportate e descritte le variabili che compongono il dataset utilizzato per il caso di studio. Nello specifico la variabile dipendente $y(\mathbf{s}, l, t|\mathcal{S})$ è il numero di ritiri in una data ora $l$, in uno specifico giorno $t$, presso una determinata stazione di scambio di biciclette $\mathbf{s}$. Invece, le covariate possono essere suddivise in:
+\begin{itemize}
+	\item variabili meteorologiche $\mathbf{x}_{meteo}(t)$;
+	\item variabili spaziali $\mathbf{x}_{spazio}(\mathbf{s})$;
+	\item variabili dummy $\mathbf{x}_{dummy}(t)$.
+\end{itemize}
+Per completezza:
+\begin{itemize}
+	\item il numero di stazioni $n$ è pari a \num{51};
+	\item il numero massimo di osservazioni disponibili per il dominio funzionale (orario) è \num{24};
+	\item l'analisi è stata condotta su dati facenti riferimento all'anno \num{2020}, quindi $T=366$.
+\end{itemize}
+Infine, nel dataset non sono presenti record mancati.
+
+\subsection[Numero di ritiri]{Variabile dipendente}
+In figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio di ritiri giornaliero di biciclette presso le stazioni della rete di bike sharing cambi da stagione a stagione. Questa variazione è influenzata da diversi fattori legati alle condizioni meteorologiche, agli schemi di mobilità delle persone e alle attività ricreative. In estate, quando le giornate sono più lunghe e il clima è più gradevole, si verifica un generale aumento dell'utilizzo della bicicletta, figura~\ref{mappa_ritiri_estate}; le persone sono più propense a utilizzarla per spostarsi o fare gite. In autunno, invece, il numero di noleggi diminuisce leggermente poiché le giornate diventano più corte e il clima meno favorevole, figura~\ref{mappa_ritiri_autunno}. In inverno il numero medio di ritiri giornaliero tende a essere il più basso dell'anno, figura~\ref{mappa_ritiri_inverno}; le condizioni meteorologiche avverse, come il freddo, la pioggia e la neve, rendono meno attraente l'utilizzo della bicicletta. La primavera, infine, rispecchia la straordinarietà del \num{2020}; il lockdown ha limitato gli spostamenti dei cittadini newyorkesi, quindi l'utilizzo della bicicletta ha subito un brusco calo. Da notare, inoltre, l'assenza di uniformità nell'utilizzo delle stazioni; quelle situate nel centro del quartiere Jersey vengono sfruttate maggiormente rispetto ai punti di scambio periferici.
+\par L'andamento orario del numero medio di noleggi in figura~\ref{ritiri_orari} conferma quanto detto precedentemente. Da sottolineare, inoltre, la presenza di picchi di utilizzo in concomitanza delle ore di punta.
+
+\begin{figure}[htpb]
+	\centering
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Mappe/Mappa ritiri, inverno}\label{mappa_ritiri_inverno}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Mappe/Mappa ritiri, primavera}\label{mappa_ritiri_primavera}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Mappe/Mappa ritiri, estate}\label{mappa_ritiri_estate}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Mappe/Mappa ritiri, autunno}\label{mappa_ritiri_autunno}}\quad
+	\caption[Distribuzione nel numero medio di ritiri giornaliero presso le stazioni al variare della stagione]{distribuzione nel numero medio di ritiri giornaliero presso le \num{51} stazioni di scambio in inverno (a), in primavera (b), in estate (c) e in autunno (d).}
+	\label{mappe_ritiri_per_stagione}
+\end{figure}
+
+\begin{figure}[htpb]
+	\centering
+	\includegraphics[height=180px]{Immagini/4. Caso di studio/Serie storiche/Ritiri orari}
+	\caption[Numero medio di ritiri al variare della stagione]{andamento orario del numero medio di ritiri al variare della stagione.}
+	\label{ritiri_orari}
+\end{figure}
 
 \subsection[Variabili meteorologiche]{Variabili meteorologiche}
 
@@ -60,7 +93,7 @@ Di seguito sono riportate e descritte le variabili che compongono il dataset uti
 		\textbf{Copert. nuvol.} & \si{\percent} & \num{0.08} & \num{39.45} & \num{37.29} & \num{100} & \num{29.71} & \num{0.36} & \num{1.96} \\
 		\hline
 	\end{tabular}
-	\caption[Statistiche principali riguardanti le variabili meteorologiche.]{statistiche principali riguardanti le variabili meteorologiche. Sui dati orari è stata eseguita un'aggregazione giornaliera, applicando la media a tutte le covariate, fatta eccezione per la pioggia (somma giornaliera).}
+	\caption[Statistiche principali riguardanti le variabili meteorologiche]{statistiche principali riguardanti le variabili meteorologiche. Sui dati orari è stata eseguita un'aggregazione giornaliera, applicando la media a tutte le covariate, fatta eccezione per la pioggia (somma giornaliera).}
 	\label{statistiche_variabili_meteo}
 \end{table}
 
@@ -78,13 +111,11 @@ Di seguito sono riportate e descritte le variabili che compongono il dataset uti
 		\textbf{Dens. dem.} & $\frac{\text{ab.}}{\unit{\kilo\meter\squared}}$ & \num{897} & \num{12215} & \num{11843} & \num{22834} & \num{4278} & \num{-0.15} & \num{2.80} \\
 		\hline
 	\end{tabular}
-	\caption[Statistiche principali riguardanti le variabili spaziali.]{statistiche principali riguardanti le variabili spaziali.}
+	\caption[Statistiche principali riguardanti le variabili spaziali]{statistiche principali riguardanti le variabili spaziali.}
 	\label{statistiche_variabili_spaziali}
 \end{table}
 
 \subsection[Variabili dummy]{Variabili dummy}
-
-\subsection[Numero di ritiri]{Numero di ritiri}
 
 \section{Sitografia}
 \label{sitografia_capitolo_4}
