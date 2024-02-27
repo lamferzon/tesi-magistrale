@@ -40,9 +40,9 @@ Da sottolineare, infine, che sono state processate le sole variabili d'interesse
 \section[Descrizione del dataset]{Descrizione del dataset}
 Di seguito sono riportate e descritte le variabili che compongono il dataset utilizzato per il caso di studio. Nello specifico la variabile dipendente $y(\mathbf{s}, l, t|\mathcal{S})$ è il numero di ritiri in una data ora $l$, in uno specifico giorno $t$, presso una determinata stazione di scambio di biciclette $\mathbf{s}$. Invece, le covariate possono essere suddivise in:
 \begin{itemize}
-	\item variabili meteorologiche $\mathbf{x}_{meteo}(t)$;
-	\item variabili spaziali $\mathbf{x}_{spazio}(\mathbf{s})$;
-	\item variabili dummy $\mathbf{x}_{dummy}(t)$.
+	\item \textbf{variabili meteorologiche} $\mathbf{x}_{meteo}(t)$;
+	\item \textbf{variabili spaziali} $\mathbf{x}_{spazio}(\mathbf{s})$;
+	\item \textbf{variabili dummy} $\mathbf{x}_{dummy}(t)$.
 \end{itemize}
 Per completezza:
 \begin{itemize}
@@ -54,7 +54,7 @@ Infine, nel dataset non sono presenti record mancati.
 
 \subsection[Numero di ritiri]{Variabile dipendente}
 In figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio di ritiri giornaliero di biciclette presso le stazioni della rete di bike sharing cambi da stagione a stagione. Questa variazione è influenzata da diversi fattori legati alle condizioni meteorologiche, agli schemi di mobilità delle persone e alle attività ricreative. In estate, quando le giornate sono più lunghe e il clima è più gradevole, si verifica un generale aumento dell'utilizzo della bicicletta, figura~\ref{mappa_ritiri_estate}; le persone sono più propense a utilizzarla per spostarsi o fare gite. In autunno, invece, il numero di noleggi diminuisce leggermente poiché le giornate diventano più corte e il clima meno favorevole, figura~\ref{mappa_ritiri_autunno}. In inverno il numero medio di ritiri giornaliero tende a essere il più basso dell'anno, figura~\ref{mappa_ritiri_inverno}; le condizioni meteorologiche avverse, come il freddo, la pioggia e la neve, rendono meno attraente l'utilizzo della bicicletta. La primavera, infine, rispecchia la straordinarietà del \num{2020}; il lockdown ha limitato gli spostamenti dei cittadini newyorkesi, quindi l'utilizzo della bicicletta ha subito un brusco calo. Da notare, inoltre, l'assenza di uniformità nell'utilizzo delle stazioni; quelle situate nel centro del quartiere Jersey vengono sfruttate maggiormente rispetto ai punti di scambio periferici.
-\par L'andamento orario del numero medio di noleggi in figura~\ref{ritiri_orari} conferma quanto detto precedentemente. Da sottolineare, inoltre, la presenza di picchi di utilizzo in concomitanza delle ore di punta.
+\par Infine, l'andamento orario del numero medio di noleggi in figura~\ref{ritiri_giornalieri_orari} conferma quanto detto precedentemente. Da sottolineare anche la presenza di picchi di utilizzo in concomitanza delle ore di punta.
 
 \begin{figure}[htpb]
 	\centering
@@ -68,12 +68,22 @@ In figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio
 
 \begin{figure}[htpb]
 	\centering
-	\includegraphics[height=180px]{Immagini/4. Caso di studio/Serie storiche/Ritiri orari}
-	\caption[Numero medio di ritiri al variare della stagione]{andamento orario del numero medio di ritiri al variare della stagione.}
-	\label{ritiri_orari}
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Serie storiche/Ritiri giornalieri}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Serie storiche/Ritiri orari}}\quad
+	\caption[Andamento giornaliero e orario del numero medio di ritiri al variare della stagione]{andamento giornaliero (a) e orario (b) del numero medio di ritiri al variare della stagione.}
+	\label{ritiri_giornalieri_orari}
 \end{figure}
 
 \subsection[Variabili meteorologiche]{Variabili meteorologiche}
+Le covariate meteorologiche che sono state utilizzate per l'analisi sono:
+\begin{itemize}
+	\item la \textbf{temperatura percepita}  [\unit{\degreeCelsius}];
+	\item la \textbf{pioggia} [\unit{\milli\meter}];
+	\item la \textbf{visibilità orizzontale} [\unit{\kilo\meter}];
+	\item la \textbf{velocità del vento} [\unit{\kilo\meter/\hour}];
+	\item la \textbf{copertura nuvolosa} [\unit{\percent}].
+\end{itemize}
+Da sottolineare che le variabili sopracitate sono spazio-invarianti e orarie, ovvero sono conseguenza della media eseguita sui campioni rilevati nell'ora da una stazione meteorologica di New York. Inoltre, nella tabella~\ref{statistiche_variabili_meteo} sono riportate le principali statistiche delle covariate in questione; degne di nota la scarsa variabilità della visibilità orizzontale e l'elevata dispersione della copertura nuvolosa nel \num{2020}.
 
 \begin{table}[htp]
 	\centering
@@ -93,11 +103,22 @@ In figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio
 		\textbf{Copert. nuvol.} & \si{\percent} & \num{0.08} & \num{39.45} & \num{37.29} & \num{100} & \num{29.71} & \num{0.36} & \num{1.96} \\
 		\hline
 	\end{tabular}
-	\caption[Statistiche principali riguardanti le variabili meteorologiche]{statistiche principali riguardanti le variabili meteorologiche. Sui dati orari è stata eseguita un'aggregazione giornaliera, applicando la media a tutte le covariate, fatta eccezione per la pioggia (somma giornaliera).}
+	\caption[Statistiche principali riguardanti le variabili meteorologiche]{statistiche principali riguardanti le variabili meteorologiche. Per la pioggia è stata eseguita la somma giornaliera.}
 	\label{statistiche_variabili_meteo}
 \end{table}
 
-\subsection[Variabili spaziali]{Variabili spaziali}
+\par Infine, è possibile osservare in figura~\ref{ritiri_vs_temperatura} la correlazione positiva esistente tra il numero medio di ritiri giornaliero e la temperatura percepita, mentre in figura~\ref{ritiri_vs_pioggia} l'impatto negativo nei confronti dello stesso da parte della pioggia; nei giorni uggiosi i cittadini newyorkesi prediligono mezzi di trasporto alternativi alla bicicletta.
+\par Per gli istogrammi, i box-plot e ulteriori grafici si rimanda all'appendice.
+
+\begin{figure}[htpb]
+	\centering
+	\subfigure[]{\includegraphics[height=152px]{Immagini/4. Caso di studio/Serie storiche/Ritiri giornalieri e temperatura percepita}\label{ritiri_vs_temperatura}}\quad
+	\subfigure[]{\includegraphics[height=152px]{Immagini/4. Caso di studio/Serie storiche/Ritiri giornalieri e pioggia}\label{ritiri_vs_pioggia}}\quad
+	\caption[Confronto tra il numero medio di noleggi giornaliero, la temperatura percepita e la pioggia]{confronto tra il numero medio di noleggi giornaliero, la temperatura percepita (a) e la pioggia (b).}
+	\label{ritiri_vs_variabili_meteo}
+\end{figure}
+
+\subsection[Variabili spaziali]{Variabili spaziali} 
 
 \begin{table}[htp]
 	\centering
