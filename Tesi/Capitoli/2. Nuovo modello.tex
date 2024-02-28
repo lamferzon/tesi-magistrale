@@ -97,10 +97,10 @@ In termini chiari, il parametro $\theta$ condiziona entrambi i geo-potenziali, v
 
 \subsection[Simulazione di una mappa di geo-potenziale]{Simulazione di una mappa di geo-potenziale}
 Al fine di concretizzare le nozioni riportate nel capitolo, con l'utilizzo del software MATLAB, è stata compiuta una simulazione della realizzazione di un processo descritto secondo un fp-HDGM. La simulazione è stata condotta nell'area della provincia di Bergamo. Per garantire la pertinenza del caso di studio con un contesto realistico, sono stati distribuiti i punti di misurazione in cluster localizzati in alcune aree urbane della provincia (figura~\ref{mappa_stazioni_simulate}). 
-\begin{figure}[htp]
+\begin{figure}[htpb]
 	\centering
-	\includegraphics[height=260px]{Immagini/2. Nuovo modello/Mappa stazioni simulate_png}
-	\caption[Collocazione spaziale dei punti di misura della simulazione.] {collocazione spaziale dei punti di misura della simulazione. Sono stati definiti 7 cluster di stazioni di misurazione nei comuni di Bergamo, Treviglio, San Pellegrino Terme, Sovere, Sorisole, Antegnate e Parzanica di numerosità pari a \num{15}, \num{10}, \num{5}, \num{2}, \num{3}, \num{5} e \num{5} rispettivamente.}
+	\includegraphics[height=235px]{Immagini/2. Nuovo modello/Mappa stazioni simulate_png}
+	\caption[Collocazione spaziale dei punti di misura della simulazione.] {collocazione spaziale dei punti di misura della simulazione. Sono stati definiti 7 cluster di stazioni di misurazione nei comuni di Bergamo, Treviglio, San Pellegrino Terme, Sovere, Sorisole, Antegnate e Parzanica di numerosità pari a \num{15}, \num{10}, \num{5}, \num{2}, \num{3}, \num{5} e \num{5}, rispettivamente.}
 	\label{mappa_stazioni_simulate}
 \end{figure}
 Di seguito è riportata la numerosità dei parametri scelti per la simulazione:
@@ -119,34 +119,20 @@ Infine, si espongono i valori fissati del set di parametri:
 	\item $\mathbf{c}_\epsilon = \begin{bmatrix} 2 & -2 & -10 & 0.5 & 2 \end{bmatrix}$;
 	\item $\mathbf{c}_\beta = \begin{bmatrix} 2 & 4 & 8 & 0.5 & 2 \end{bmatrix}$;
 	\item $\boldsymbol{\theta} = \begin{bmatrix} 0.05 & 0.05  & 0.05 & 0.05  & 0.05  \end{bmatrix}$;
-	\item $G = 
-	\begin{bmatrix}
-		0.26 & 0 & 0 & 0 & 0 \\
-		0 & 0.41 & 0 & 0 & 0 \\
-		0 & 0 & 0.6 & 0 & 0 \\
-		0 & 0 & 0 & 0.26 & 0 \\
-		0 & 0 & 0 & 0 & 0.6 \\
-	\end{bmatrix};
-	$
-	\item $V = 
-	\begin{bmatrix}
-		8 & 0 & 0 & 0 & 0 \\
-		0 & 3 & 0 & 0 & 0 \\
-		0 & 0 & 2 & 0 & 0 \\
-		0 & 0 & 0 & 3 & 0 \\
-		0 & 0 & 0 & 0 & 4 \\
-	\end{bmatrix}.
-	$
+	\item $G = \text{diag}(0.26,\ 0.41,\ 0.6,\ 0.26,\ 0.6)$;
+	\item $V = \text{diag}(8,\ 3,\ 2,\ 3,\ 4)$.
 \end{itemize}
-Una volta eseguita la simulazione del processo, è stata applicata la tecnica di Kriging\footnote{Il kriging è un metodo di regressione usato in geo-statistica che, minimizzando l'errore quadratico medio, permette di interpolare una grandezza nello spazio. In questo caso, consente di stimare il geo-potenziale.} allo scopo di rappresentare la mappa del potenziale condizionato al variare del parametro $\rho$. Da sottolineare la circostanza con $\rho = 0$, ossia il caso in cui il geo-potenziale condizionato è pari al geo-potenziale puro per le considerazioni fatte sul limite~\ref{limite_geo-potenziale_condizionato_rho_a_0}.
+Una volta eseguita la simulazione del processo, è stata applicata la tecnica di Kriging\footnote{metodo di regressione usato in geo-statistica che, minimizzando l'errore quadratico medio, permette di interpolare una grandezza nello spazio. In questo caso, consente di stimare il geo-potenziale.} allo scopo di rappresentare la mappa del potenziale condizionato al variare del parametro $\rho$. Da sottolineare la circostanza con $\rho = 0$, ossia il caso in cui il geo-potenziale condizionato è pari al geo-potenziale puro per le considerazioni fatte sul limite~\ref{limite_geo-potenziale_condizionato_rho_a_0}.
 
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0}\label{sim_fp-HDGM_a}}\quad
 	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.005}\label{sim_fp-HDGM_b}}\quad
 	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.01}\label{sim_fp-HDGM_c}}\quad
-	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.02}\label{sim_fp-HDGM_d}}\quad
-	\caption[Simulazione di un processo fp-HDGM al variare di $\rho$]{simulazione di un processo fp-HDGM, fissati gli indici $l$ e $t$, con $\rho=$ \SI{0}{\meter} (a), \SI{555}{\meter} (b), \SI{1100}{\meter} (c) e \SI{2200}{\meter} (d).}
+	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.015}\label{sim_fp-HDGM_d}}\quad
+	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.02}\label{sim_fp-HDGM_e}}\quad
+	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.025}\label{sim_fp-HDGM_f}}\
+	\caption[Kriging di un processo fp-HDGM al variare di $\rho$]{kriging di un processo fp-HDGM, fissati gli indici $l$ e $t$, con $\rho=$ \SI{0}{\meter} (a), \SI{500}{\meter} (b), \SI{1000}{\meter} (c), \SI{1500}{\meter}, \SI{2000}{\meter} e \SI{2500}{\meter} (d).}
 	\label{sim_fp-HDGM}
 \end{figure}
-Nella figura~\ref{sim_fp-HDGM} si osserva come il geo-potenziale condizionato diminuisca all'aumentare di $\rho$, specialmente nelle zone con una forte densità di stazioni di misurazione. Si prenda ora come ipotesi che le stazioni di misurazione possano rappresentare dei punti di vendita di un prodotto; valgono le considerazioni fatte riguardo al potenziale di mercato spaziale. Infatti, se si decidesse di aggiungere un punto di vendita nei pressi delle coordinate $(\SI{45.75}{\degree} \text{N}, \SI{9.70}{\degree} \text{W})$, il geo-potenziale puro previsto in questa area risulta essere promettente ma forviante in quanto vicino ad altri punti di vendita, figura~\ref{sim_fp-HDGM_a}. Con $\rho \geq \SI{555}{\meter}$, figure~\ref{sim_fp-HDGM_b}, \ref{sim_fp-HDGM_c} e \ref{sim_fp-HDGM_d}, è facile osservare che il geo-potenziale condizionato è previsto basso nell'area presa in esame, ovvero il punto di vendita verrebbe collocato in un'area caratterizzata da un basso potenziale di mercato spaziale.
+Nella figura~\ref{sim_fp-HDGM} si osserva come il geo-potenziale condizionato diminuisca all'aumentare di $\rho$, specialmente nelle zone con una forte densità di stazioni di misurazione. Si prenda ora come ipotesi che le stazioni di misurazione possano rappresentare dei punti di vendita di un prodotto; valgono le considerazioni fatte riguardo al potenziale di mercato spaziale. Infatti, se si decidesse di aggiungere un punto di vendita nei pressi delle coordinate $(\SI{45.75}{\degree} \text{N}, \SI{9.70}{\degree} \text{W})$, il geo-potenziale puro previsto in questa area risulta essere promettente ma forviante in quanto vicino ad altri punti di vendita, figura~\ref{sim_fp-HDGM_a}. Con $\rho \geq \SI{500}{\meter}$, figure~\ref{sim_fp-HDGM_b}, \ref{sim_fp-HDGM_c},  \ref{sim_fp-HDGM_d} e \ref{sim_fp-HDGM_e}, è facile osservare che il geo-potenziale condizionato è previsto basso nell'area presa in esame, ovvero il punto di vendita verrebbe collocato in un'area caratterizzata da un basso potenziale di mercato spaziale.
