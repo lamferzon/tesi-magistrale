@@ -118,9 +118,24 @@ Da sottolineare che le variabili sopracitate sono spazio-invarianti e orarie, ov
 	\label{ritiri_vs_variabili_meteo}
 \end{figure}
 
-\subsection[Variabili spaziali]{Variabili spaziali} 
+\subsection[Variabili spaziali]{Variabili spaziali}
+In questa categoria ricadono:
+\begin{itemize}
+	\item la \textbf{distanza dalla stazione del treno\footnote{o fermata della metropolitana poiché Jersey City è servita da entrambi i mezzi di trasporto pubblico.} più vicina} [\unit{\kilo\meter}];
+	\item la \textbf{densità demografica} nella zona alla quale appartiene il punto di ritiro [ab./\unit{\kilo\meter\squared}].
+\end{itemize}
+Da sottolineare che queste covariate sono spazio-varianti e tempo-invarianti.
+\par In figura~\ref{mappa_stazioni_metro} è rappresentata la distanza di ciascun punto di interscambio dalla stazione ferroviaria più vicina. Si osserva una densa concentrazione sia di stazioni ferroviarie che di punti di ritiro delle biciclette nel centro del quartiere, densità che diminuisce man mano che ci si sposta verso le zone limitrofe. Riguardo alla densità demografica, come evidenziato nella figura~\ref{mappa_densita_demografica}, si può notare una distribuzione omogenea su Jersey City. Questa osservazione è supportata dalla ridotta deviazione standard (\num{4278} ab./\unit{\kilo\meter\squared}) della covariata in oggetto (tabella~\ref{statistiche_variabili_spaziali}).
 
-\begin{table}[htp]
+\begin{figure}[htpb]
+	\centering
+	\subfigure[]{\includegraphics[height=152px]{Immagini/4. Caso di studio/Mappe/Mappa punti ritiro e stazioni treno}\label{mappa_stazioni_metro}}\quad
+	\subfigure[]{\includegraphics[height=161px]{Immagini/4. Caso di studio/Mappe/Mappa punti ritiro e densità abitativa}\label{mappa_densita_demografica}}\quad
+	\caption[Mappe delle distanze dei punti di interscambio dalla stazione ferroviaria più vicina e della densità abitativa nei pressi dei punti di ritiro]{mappe delle distanze dei punti di interscambio dalla stazione ferroviaria più vicina (a) e della densità abitativa nei pressi dei punti di ritiro (b).}
+	\label{mappe_variabili_spaziali}
+\end{figure}
+
+\begin{table}[htpb]
 	\centering
 	\renewcommand\arraystretch{1.5}
 	\begin{tabular}{c|c|c|c|c|c|c|c|c}
@@ -134,9 +149,24 @@ Da sottolineare che le variabili sopracitate sono spazio-invarianti e orarie, ov
 	\end{tabular}
 	\caption[Statistiche principali riguardanti le variabili spaziali]{statistiche principali riguardanti le variabili spaziali.}
 	\label{statistiche_variabili_spaziali}
-\end{table}
+\end{table} 
 
 \subsection[Variabili dummy]{Variabili dummy}
+Alla luce dei risultati ottenuti in~\cite{paper_bike_sharing_Otto}, non solo le condizioni meteorologiche e le covariate spaziali influenzano la domanda giornaliera di noleggi, ma anche altri fattori possono fornire il proprio contributo. In particolare:
+\begin{itemize}
+	\item il \textbf{lockdown} dovuto alla pandemia di COVID-\num{19};
+	\item la successiva \textbf{euforia} dovuta al ritorno alla vita quotidiana dopo mesi trascorsi in isolamento;
+	\item i \textbf{weekend} e le \textbf{festività} federali\footnote{giorno di festa ufficialmente riconosciuto a livello federale dal governo degli Stati Uniti.}.
+\end{itemize}
+Questi eventi sono stati modellati utilizzando \num{3} distinte variabili categoriche binarie (covariate dummy).
+\par Infine, la figura~\ref{ritiri_vs_dummy} conferma che, durante la primavera, il numero ridotto di noleggi coincide con il periodo di lockdown, mentre nei weekend si osserva una generale riduzione dell'utilizzo della bicicletta, a dimostrazione che il servizio di bike sharing viene essenzialmente sfruttato nei giorni feriali, probabilmente per i consueti spostamenti lavorativi.
+
+\begin{figure}[htpb]
+	\centering
+	\includegraphics[height=170px]{Immagini/4. Caso di studio/Serie storiche/Ritiri giornalieri e dummy}
+	\caption[Confronto tra il numero medio di prelievi giornaliero, il periodo di lockdowwn, i weekend e le festività federali.]{confronto tra il numero medio di prelievi giornaliero, il periodo di lockdowwn, i weekend e le festività federali.}
+	\label{ritiri_vs_dummy}
+\end{figure}
 
 \section{Sitografia}
 \label{sitografia_capitolo_4}
