@@ -36,7 +36,7 @@ end
 rho_to_test = 0:.002:.06;
 MSE_summary.not_round = zeros(length(rho_to_test), k);
 MSE_summary.round = zeros(length(rho_to_test), k);
-%%
+%% start cv
 for i=1:length(rho_to_test)
     
     for j=1:k
@@ -133,3 +133,48 @@ for i=1:length(rho_to_test)
     end
 
 end
+%% load the result
+addpath ..\Results\
+MSE_0_002_06=load("MSE_summary_0_002_06_SUBSET.mat")
+
+%% Compute the mean
+
+%%MSE_not_round=MSE_002.MSE_summary.not_round(1:31,:);
+MSE_round=MSE_0_002_06.MSE_summary.round;
+MSE_not_round=MSE_0_002_06.MSE_summary.not_round;
+
+MSE_mean_not_round = mean(MSE_not_round,2);
+MSE_mean_round = mean(MSE_round,2);
+
+%% plot not round result
+figure
+t = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+nexttile
+% definizine del vettore rho corrispondente in Km
+rho_values = [0:.002:.06];
+rho_values = rho_values.*111;
+
+% Grafico not round
+plot(rho_values, MSE_mean_not_round, '-O', 'LineWidth', 3,'MarkerFaceColor', 'black','Color', 'black');
+xlabel('$\rho$ [km]','Interpreter', 'latex');
+ylabel('MSE','Interpreter', 'latex');
+gx.LongitudeLabel.Interpreter = "latex";
+grid on;
+file_name = "..\..\Tesi\Immagini\4. Caso di studio\Cross_validazione\MSE_rho_not_round_subset.pdf";
+exportgraphics(t, file_name, 'BackgroundColor', 'none');
+%% plot round result
+figure
+t = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+nexttile
+% definizine del vettore rho corrispondente in Km
+rho_values = [0:.002:.06];
+rho_values = rho_values.*111;
+
+% Grafico not round
+plot(rho_values, MSE_mean_round, '-O', 'LineWidth', 3,'MarkerFaceColor', 'black','Color', 'black');
+xlabel('$\rho$ [km]','Interpreter', 'latex');
+ylabel('MSE','Interpreter', 'latex');
+gx.LongitudeLabel.Interpreter = "latex";
+grid on;
+file_name = "..\..\Tesi\Immagini\4. Caso di studio\Cross_validazione\MSE_rho_round_subset.pdf";
+exportgraphics(t, file_name, 'BackgroundColor', 'none');
