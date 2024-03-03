@@ -2205,21 +2205,25 @@ classdef stem_model < handle
                     if not(isempty(obj.stem_par.varcov))
                         for i = 1:length(obj.stem_data.stem_varset_p.X_beta_name{1,1})
                             nexttile
-                            covariate = ['$\beta_{',obj.stem_data.stem_varset_p.X_beta_name{1,1}{i}, '}(',obj.stem_data.stem_varset_p.X_h_name,')$'];
+                            covariate = ['$\beta_{',obj.stem_data.stem_varset_p.X_beta_name{1,1}{i}, '}(h)$'];
                             basis = full(getbasismatrix(h,obj.stem_data.stem_fda.spline_basis_beta));
                             beta = obj.stem_par.beta((i-1)*k+(1:k));
                             beta_h = basis*beta;
-                            plot(h, beta_h);
+                            plot(h, beta_h, 'Color', 'blue', 'LineWidth', 1.5);
                             for j=1:3
                                 beta_h_up = beta_h + coef(j)*sqrt(diag(basis*obj.stem_par.varcov((i-1)*k+(1:k),(i-1)*k+(1:k))*basis'));
                                 beta_h_low = beta_h - coef(j)*sqrt(diag(basis*obj.stem_par.varcov((i-1)*k+(1:k),(i-1)*k+(1:k))*basis'));
 
-                                patch([h fliplr(h)],[beta_h_up' fliplr(beta_h_low')],'r','FaceAlpha',0.15,'EdgeAlpha',0)
+                                patch([h fliplr(h)],[beta_h_up' fliplr(beta_h_low')],'b','FaceAlpha',0.15,'EdgeAlpha',0)
                             end
-                            title(covariate,'FontSize',14);
-                            set(gca,'FontSize',14);
-                            xlabel(obj.stem_data.stem_varset_p.X_h_name,'FontSize',14);
+                            title(covariate, 'FontSize', 14, 'Interpreter', 'latex');
+                            set(gca, 'FontSize', 14);
+                            xlabel('Tempo (ora)', 'FontSize', 14, 'Interpreter', 'latex');
                             xlim([h(1),h(end)]);
+                            axs = gca;
+                            axs.XAxis.TickLabelInterpreter = 'latex';
+                            axs.YAxis.TickLabelInterpreter = 'latex';
+                            axs.YGrid = 'on';
                         end
                         counter = counter + length(obj.stem_data.X_beta_name{1,1});
                     else
@@ -2254,7 +2258,7 @@ classdef stem_model < handle
                     k = obj.stem_par.k_sigma;
                     if not(isempty(obj.stem_par.varcov))
                         nexttile
-                        covariate = ['\sigma_{\epsilon}^2(',obj.stem_data.stem_varset_p.X_h_name,')'];
+                        covariate = '$\sigma_{\epsilon}^2(h)$';
                         basis = full(getbasismatrix(h,obj.stem_data.stem_fda.spline_basis_sigma));
                         sigma_eps = obj.stem_par.sigma_eps;
                         if obj.stem_par.flag_logsigma==1
@@ -2262,21 +2266,20 @@ classdef stem_model < handle
                             Varcov_eps = obj.stem_par.varcov(counter+(1:k),counter+(1:k));
                             Varcov = diag(basis*Varcov_eps*basis');
                             Varcov1 = (exp(Varcov)-ones(length(Varcov),1)).*((sigma_eps_h).^2).*(exp(Varcov));
-                            if obj.stem_par.flag_beta_spline==1
-                                subplot(nrow,ncol,length(obj.stem_data.stem_varset_p.X_beta_name{1,1})+1);
-                            else
-                                subplot(nrow,ncol,1);
-                            end
-                            plot(h, sigma_eps_h,'k');
+                            plot(h, sigma_eps_h, 'Color', 'red', 'LineWidth', 2);
                             for j=1:3
                                 sigma_eps_h_up = sigma_eps_h + coef(j)*sqrt(Varcov1);
                                 sigma_eps_h_low = sigma_eps_h - coef(j)*sqrt(Varcov1);  
-                                patch([h fliplr(h)],[sigma_eps_h_up' fliplr(sigma_eps_h_low')],'r','FaceAlpha',0.15,'EdgeAlpha',0)
+                                patch([h fliplr(h)],[sigma_eps_h_up' fliplr(sigma_eps_h_low')],'red','FaceAlpha',0.15,'EdgeAlpha',0)
                             end
                             xlim([h(1), h(end)]);
-                            title(covariate,'FontSize',14);
-                            set(gca,'FontSize',14);
-                            xlabel(obj.stem_data.stem_varset_p.X_h_name,'FontSize',14);
+                            title(covariate, 'FontSize', 14, 'Interpreter', 'latex');
+                            set(gca, 'FontSize', 14);
+                            xlabel('Tempo (ora)', 'FontSize', 14, 'Interpreter', 'latex');
+                            axs = gca;
+                            axs.XAxis.TickLabelInterpreter = 'latex';
+                            axs.YAxis.TickLabelInterpreter = 'latex';
+                            axs.YGrid = 'on';
                         else 
                             %Currently sigma_eps(h) is estimated by log
                             %transmission to enfore the positive value of
@@ -2285,18 +2288,11 @@ classdef stem_model < handle
                         end 
                     else
                         nexttile
-                        covariate = ['$\mathbf{\sigma_{\epsilon}^2(h)}$'];
+                        covariate = '$\mathbf{\sigma_{\epsilon}^2(h)}$';
                         basis = full(getbasismatrix(h,obj.stem_data.stem_fda.spline_basis_sigma));
                         sigma_eps = obj.stem_par.sigma_eps;
                         if obj.stem_par.flag_logsigma==1
                             sigma_eps_h = exp(basis*sigma_eps);
-                            %{
-                            if obj.stem_par.flag_beta_spline==1
-                                subplot(nrow,ncol,length(obj.stem_data.stem_varset_p.X_beta_name{1,1})+1);
-                            else
-                                subplot(nrow,ncol,1);
-                            end
-                            %}
                             plot(h, sigma_eps_h, 'Color', 'red', 'LineWidth', 2);
                             xlim([h(1), h(end)]);
                             title(covariate, 'FontSize', 14, 'Interpreter', 'latex');
