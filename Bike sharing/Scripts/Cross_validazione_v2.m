@@ -33,7 +33,7 @@ if k*l - n ~= 0
     partitions{k} = [partitions{k} S_val(1, k*l+1:end)];
 end
 %%
-rho_to_test = 0:.002:.06;
+rho_to_test = 0:.0001:.003;
 MSE_summary.not_round = zeros(length(rho_to_test), k);
 MSE_summary.round = zeros(length(rho_to_test), k);
 %% start cv
@@ -136,6 +136,7 @@ end
 %% load the result
 addpath ..\Results\
 MSE_0_002_06=load("MSE_summary_0_002_06_SUBSET.mat")
+MSE_0_0001_003=load("MSE_summary_0_0001_003_SUBSET.mat")
 
 %% Compute the mean
 
@@ -143,38 +144,81 @@ MSE_0_002_06=load("MSE_summary_0_002_06_SUBSET.mat")
 MSE_round=MSE_0_002_06.MSE_summary.round;
 MSE_not_round=MSE_0_002_06.MSE_summary.not_round;
 
+MSE_round_0001=MSE_0_0001_003.MSE_summary.round;
+MSE_not_round_0001=MSE_0_0001_003.MSE_summary.not_round;
+
 MSE_mean_not_round = mean(MSE_not_round,2);
 MSE_mean_round = mean(MSE_round,2);
+
+MSE_mean_not_round_0001 = mean(MSE_not_round_0001,2);
+MSE_mean_round_0001 = mean(MSE_round_0001,2);
+
 
 %% plot not round result
 figure
 t = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
 nexttile
 % definizine del vettore rho corrispondente in Km
-rho_values = [0:.002:.06];
+rho_values = 0:.002:.06;
 rho_values = rho_values.*111;
 
 % Grafico not round
-plot(rho_values, MSE_mean_not_round, '-O', 'LineWidth', 3,'MarkerFaceColor', 'black','Color', 'black');
+plot(rho_values, MSE_mean_not_round, '-o', 'LineWidth', 2,'MarkerFaceColor','auto');
+hold on;
 xlabel('$\rho$ [km]','Interpreter', 'latex');
-ylabel('MSE','Interpreter', 'latex');
-gx.LongitudeLabel.Interpreter = "latex";
+ylabel('MSE $[\mathbf{(\frac{ritiri}{ora})^2}]$','Interpreter', 'latex');
+axs=gca;
+axs.XAxis.TickLabelInterpreter="latex";
+axs.YAxis.TickLabelInterpreter="latex";
 grid on;
-file_name = "..\..\Tesi\Immagini\4. Caso di studio\Cross_validazione\MSE_rho_not_round_subset.pdf";
+hold on
+
+% Trova il valore minimo nel vettore
+best_MSE= min(MSE_mean_round);
+
+% Trova l'indice del valore minimo nel vettore
+best_rho = rho_values(MSE_mean_round == best_MSE);
+
+% Grafico not round
+plot(rho_values, MSE_mean_round, '-o', 'LineWidth', 2,'MarkerFaceColor','auto','Color','black');
+hold on;
+xline(best_rho,'Color','r', 'LineStyle','-.','LineWidth', 2)
+
+legend('Senza arrotondamento','Con arrotondamento','Interpreter','latex','Location','southeast')
+
+file_name = "..\..\Tesi\Immagini\4. Caso di studio\Cross_validazione\MSE_rho_subset_macro.pdf";
 exportgraphics(t, file_name, 'BackgroundColor', 'none');
-%% plot round result
+%% plot not round result
 figure
 t = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
 nexttile
 % definizine del vettore rho corrispondente in Km
-rho_values = [0:.002:.06];
+rho_values = 0:.0001:.003;
 rho_values = rho_values.*111;
 
 % Grafico not round
-plot(rho_values, MSE_mean_round, '-O', 'LineWidth', 3,'MarkerFaceColor', 'black','Color', 'black');
+plot(rho_values, MSE_mean_not_round_0001, '-o', 'LineWidth', 2,'MarkerFaceColor','auto');
+hold on;
 xlabel('$\rho$ [km]','Interpreter', 'latex');
-ylabel('MSE','Interpreter', 'latex');
-gx.LongitudeLabel.Interpreter = "latex";
+ylabel('MSE $[\mathbf{(\frac{ritiri}{ora})^2}]$','Interpreter', 'latex');
+axs=gca;
+axs.XAxis.TickLabelInterpreter="latex";
+axs.YAxis.TickLabelInterpreter="latex";
 grid on;
-file_name = "..\..\Tesi\Immagini\4. Caso di studio\Cross_validazione\MSE_rho_round_subset.pdf";
+hold on
+
+% Trova il valore minimo nel vettore
+best_MSE= min(MSE_mean_round_0001);
+
+% Trova l'indice del valore minimo nel vettore
+best_rho = rho_values(MSE_mean_round_0001 == best_MSE);
+
+% Grafico not round
+plot(rho_values, MSE_mean_round_0001, '-o', 'LineWidth', 2,'MarkerFaceColor','auto','Color','black');
+hold on;
+xline(best_rho,'Color','r', 'LineStyle','-.','LineWidth', 2)
+
+legend('Senza arrotondamento','Con arrotondamento','Interpreter','latex','Location','southeast')
+
+file_name = "..\..\Tesi\Immagini\4. Caso di studio\Cross_validazione\MSE_rho_subset_focus.pdf";
 exportgraphics(t, file_name, 'BackgroundColor', 'none');
