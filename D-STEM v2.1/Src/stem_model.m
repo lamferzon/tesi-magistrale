@@ -2053,7 +2053,7 @@ classdef stem_model < handle
             end            
         end
         
-        function plot_par(obj,vertical)
+        function t = plot_par(obj,vertical)
             %DESCRIPTION: plot the beta(h) and sigma_eps2(h) when modeltype is f-HDGM
             %
             %INPUT
@@ -2091,8 +2091,11 @@ classdef stem_model < handle
             coef = -norminv(quant,0,1);
 
             counter = 0;
-            
+
+            % EDIT
             figure
+            t = tiledlayout(nrow, ncol, 'TileSpacing', 'Compact', 'Padding', 'Compact');
+            
             if vertical
                 if obj.stem_par.flag_beta_spline==1
                     disp('****************');
@@ -2195,17 +2198,18 @@ classdef stem_model < handle
                     disp('****************');
                     disp('\Beta_(f) plot');
                     disp('****************');
+
                     range = obj.stem_data.stem_fda.spline_range;
                     h = range(1):0.1:range(2);
                     k = obj.stem_par.k_beta;
                     if not(isempty(obj.stem_par.varcov))
                         for i = 1:length(obj.stem_data.stem_varset_p.X_beta_name{1,1})
-                            covariate = ['\beta_{',obj.stem_data.stem_varset_p.X_beta_name{1,1}{i}, '}(',obj.stem_data.stem_varset_p.X_h_name,')'];
+                            nexttile
+                            covariate = ['$\beta_{',obj.stem_data.stem_varset_p.X_beta_name{1,1}{i}, '}(',obj.stem_data.stem_varset_p.X_h_name,')$'];
                             basis = full(getbasismatrix(h,obj.stem_data.stem_fda.spline_basis_beta));
                             beta = obj.stem_par.beta((i-1)*k+(1:k));
                             beta_h = basis*beta;
-                            subplot(nrow,ncol,i);
-                            plot(h, beta_h, 'k');
+                            plot(h, beta_h);
                             for j=1:3
                                 beta_h_up = beta_h + coef(j)*sqrt(diag(basis*obj.stem_par.varcov((i-1)*k+(1:k),(i-1)*k+(1:k))*basis'));
                                 beta_h_low = beta_h - coef(j)*sqrt(diag(basis*obj.stem_par.varcov((i-1)*k+(1:k),(i-1)*k+(1:k))*basis'));
@@ -2220,16 +2224,20 @@ classdef stem_model < handle
                         counter = counter + length(obj.stem_data.X_beta_name{1,1});
                     else
                         for i = 1:length(obj.stem_data.stem_varset_p.X_beta_name{1,1})
-                            covariate = ['\beta_{',obj.stem_data.stem_varset_p.X_beta_name{1,1}{i}, '}(',obj.stem_data.stem_varset_p.X_h_name,')'];
+                            nexttile
+                            covariate = ['$\mathbf{\beta_{',obj.stem_data.stem_varset_p.X_beta_name{1,1}{i}, '}(h)}$'];
                             basis = full(getbasismatrix(h,obj.stem_data.stem_fda.spline_basis_beta));
                             beta = obj.stem_par.beta((i-1)*k+(1:k));
                             beta_h = basis*beta;
-                            subplot(nrow,ncol,i);
-                            plot(h, beta_h,'k');
-                            title(covariate,'FontSize',14);
+                            plot(h, beta_h, 'LineWidth', 2);
+                            title(covariate, 'FontSize', 14, 'Interpreter', 'latex');
                             set(gca,'FontSize',14);
-                            xlabel(obj.stem_data.stem_varset_p.X_h_name,'FontSize',14);
+                            xlabel('Tempo (ora)','FontSize',14, 'Interpreter', 'latex');
                             xlim([h(1),h(end)]);
+                            axs = gca;
+                            axs.XAxis.TickLabelInterpreter = 'latex';
+                            axs.YAxis.TickLabelInterpreter = 'latex';
+                            axs.YGrid = 'on';
                         end
                         counter = counter + length(obj.stem_data.X_beta_name{1,1});
                     end 
@@ -2245,6 +2253,7 @@ classdef stem_model < handle
                     h = range(1):0.1:range(2);
                     k = obj.stem_par.k_sigma;
                     if not(isempty(obj.stem_par.varcov))
+                        nexttile
                         covariate = ['\sigma_{\epsilon}^2(',obj.stem_data.stem_varset_p.X_h_name,')'];
                         basis = full(getbasismatrix(h,obj.stem_data.stem_fda.spline_basis_sigma));
                         sigma_eps = obj.stem_par.sigma_eps;
@@ -2275,28 +2284,34 @@ classdef stem_model < handle
                             %Nothing to do here.
                         end 
                     else
-                        covariate = ['\sigma_{\epsilon}^2(',obj.stem_data.stem_varset_p.X_h_name,')'];
+                        nexttile
+                        covariate = ['$\mathbf{\sigma_{\epsilon}^2(h)}$'];
                         basis = full(getbasismatrix(h,obj.stem_data.stem_fda.spline_basis_sigma));
                         sigma_eps = obj.stem_par.sigma_eps;
                         if obj.stem_par.flag_logsigma==1
                             sigma_eps_h = exp(basis*sigma_eps);
+                            %{
                             if obj.stem_par.flag_beta_spline==1
                                 subplot(nrow,ncol,length(obj.stem_data.stem_varset_p.X_beta_name{1,1})+1);
                             else
                                 subplot(nrow,ncol,1);
                             end
-                            plot(h, sigma_eps_h,'k');
+                            %}
+                            plot(h, sigma_eps_h, 'Color', 'red', 'LineWidth', 2);
                             xlim([h(1), h(end)]);
-                            title(covariate,'FontSize',14);
-                            set(gca,'FontSize',14);
-                            xlabel(obj.stem_data.stem_varset_p.X_h_name,'FontSize',14);
+                            title(covariate, 'FontSize', 14, 'Interpreter', 'latex');
+                            set(gca, 'FontSize', 14);
+                            xlabel('Tempo (ora)', 'FontSize', 14, 'Interpreter', 'latex');
+                            axs = gca;
+                            axs.XAxis.TickLabelInterpreter = 'latex';
+                            axs.YAxis.TickLabelInterpreter = 'latex';
+                            axs.YGrid = 'on';
                         else
                             %Nothing to do here.
                         end 
                     end
                 end
             end
-           
         end 
         
         function plot_validation(obj,vertical,variable_name)
