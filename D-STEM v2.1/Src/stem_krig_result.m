@@ -664,17 +664,11 @@ classdef stem_krig_result < handle
                     geoshow(obj.stem_grid_sites.coordinate(:,1),obj.stem_grid_sites.coordinate(:,2),...
                         'DisplayType', 'multipoint', 'Marker', 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'w');
 
-                    if min(surface1(:))*max(surface1(:))>0
-                        colormap(ax1, "default")
-                        caxis([0 4]);
-                        cl = colorbar;
-                        cl.Limits=[min(surface1(:)) max(surface1(:))];
-                        cl.TickLabelInterpreter = "latex";
-                    else
-                        colormap(ax1, stem_misc.get_d_colormap())
-                        colorbar(ax1, "eastoutside", 'TickLabelInterpreter', 'latex');
-                        caxis( [-max(abs(surface1(:))) max(abs(surface1(:)))] ); 
-                    end
+                    colormap(ax1, "default")
+                    caxis([0 10]);
+                    cl = colorbar;
+                    cl.Limits=[0 10];
+                    cl.TickLabelInterpreter = "latex";
                     
                     %{
                     grid on;
