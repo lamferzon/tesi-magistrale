@@ -47,7 +47,7 @@ Di seguito sono riportate e descritte le variabili che compongono il dataset uti
 Per completezza:
 \begin{itemize}
 	\item il numero di stazioni $n$ è pari a \num{51};
-	\item il numero massimo di osservazioni disponibili per il dominio funzionale (orario) è \num{24};
+	\item il numero massimo di osservazioni disponibili per il dominio funzionale (orario) $q$ è \num{24};
 	\item l'analisi è stata condotta su dati facenti riferimento all'anno \num{2020}, quindi $T=366$.
 \end{itemize}
 Infine, nel dataset non sono presenti record mancati.
@@ -167,6 +167,34 @@ Questi eventi sono stati modellati utilizzando \num{3} distinte variabili catego
 	\caption[Confronto tra il numero medio di prelievi giornaliero, il periodo di lockdowwn, i weekend e le festività federali.]{confronto tra il numero medio di prelievi giornaliero, il periodo di lockdowwn, i weekend e le festività federali.}
 	\label{ritiri_vs_dummy}
 \end{figure}
+
+\section{Metodologia}
+L'iter seguito per costruire, stimare e validare il modello fp-HDGM sul dataset del caso di studio è il seguente:
+\begin{enumerate}
+	\item \textbf{cross-validazione per determinare il valore ottimale del parametro $\boldsymbol{\rho}$}. Nello specifico, dopo aver suddiviso il dataset in $k=5$ gruppi di stazioni di ritiro, iterativamente $k-1$ sono stati utilizzati per stimare il modello, mentre il $k$-esimo per validarlo. Inoltre, per ridurre sia l'onere computazionale sia il numero di osservazioni nulle, sono stati considerati soltanto i dati dei mesi di giugno e luglio, quando l'utilizzo del bike sharing è più frequente; infatti, limitando l'analisi a questi periodi, si minimizza il numero di ore in cui non sono state prelevate biciclette, aumentando così il numero di osservazioni significative per la stima del modello. Infine, come metrica è stato impiegato il $MSE$ così definito:
+	\begin{equation}
+		\begin{aligned}
+			MSE &= \frac{1}{P}\sum_{i=1}^{k=5}\frac{1}{\text{card}(\mathcal{S}_{val})_i}\sum_{\mathbf{s}\in\mathcal{S}_{val}}^{}\sum_{t=1}^{T}\sum_{l\in\mathcal{H}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2; \\
+			P &= k\cdot T\cdot q;
+		\end{aligned}
+	\end{equation}
+	dove $\text{card}(\mathcal{S}_{val})_i$ rappresenta il numero di punti di ritiro utilizzati per la validazione disponibili per l'$i$-esimo gruppo;
+	\item \textbf{scelta delle covariate più significative} (\textbf{model selection}). Dopo aver individuato nel passo precedente il $\rho$ ottimo, è stato stimato un nuovo modello utilizzando tutti i dati e tutte le covariate. L'obiettivo è visualizzare le spline per i parametri $\boldsymbol{\beta}$ e i relativi intervalli di confidenza al fine di escludere i regressori poco significativi; se presenti, allora vengono rimossi e viene rieseguito il passo \num{1}.
+	\item \textbf{validazione del modello finale tramite LOOCV\footnote{Leave-one-out cross-validation}}. Oltre a utilizzare il $MSE$ come metrica per descrivere la bontà complessiva del modello definitivo, è stato calcolato anche il $MSE_\mathbf{s}$~\citep{paper_f_HDGM}, ossia:
+	\begin{equation}
+		MSE_\mathbf{s} = \frac{1}{T\cdot q}\sum_{t=1}^{T}\sum_{l\in\mathcal{H}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2.
+	\end{equation}
+	Grazie all'approccio LOOCV, questo indice può essere calcolato per tutte le stazioni, fornendo così un'indicazione dei punti di scambio per i quali il modello mostra le prestazioni migliori.
+	\item \textbf{previsione spaziale utilizzando il kriging}.
+\end{enumerate}
+
+\section{Analisi dei risultati}
+\subsection{Scelta del parametro $\boldsymbol{\rho}$ tramite la cross-validazione}
+\subsection{Scelta delle covariate $\boldsymbol{\beta}$}
+\subsection{Validazione del modello definitivo mediante la LOOCV}
+\subsection{Previsione spaziale utilizzando il kriging}
+
+\section{Conclusioni}
 
 \section{Sitografia}
 \label{sitografia_capitolo_4}
