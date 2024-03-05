@@ -12,11 +12,11 @@ Dopo aver descritto il modello fp-HDGM da un punto di vista matematico e metodol
 
 \section[Stato dell'arte]{Stato dell'arte}
 Nelle città di tutto il mondo, l'inquinamento atmosferico rappresenta una sfida sempre più urgente e complessa. Samantha Burgess, Deputy Director del Copernicus Climate Change Service, ha affermato che il 2023 non solo è stato l'anno più caldo mai registrato, ma è anche il primo in cui tutti i giorni le temperature hanno fatto registrare valori superiori di almeno \SI{1}{\degreeCelsius} rispetto al periodo preindustriale~[\ref{sitografia_capitolo_4}].
-\par L'aumento del traffico veicolare, in particolare, contribuisce in modo significativo alla diffusione di gas nocivi (es. CO$_2$ ed NO$_\text{X}$) e particolato nell'aria (es. PM\num{2.5} e PM\num{10}), compromettendo la salute pubblica e l'ambiente. In questo contesto, il bike sharing emerge come una soluzione innovativa e sostenibile per affrontare l'inquinamento urbano. Attraverso la condivisione delle biciclette, questo sistema offre un'alternativa efficace al trasporto privato a motore, riducendo le emissioni di gas serra, i consumi energetici e migliorando la qualità dell'aria nelle città~[\cite{paper_bike_sharing_e_ambiente}].
-\par Per modellare il fenomeno del bike sharing le condizioni del tempo atmosferico risultano essere appropriate. Infatti, le variabili meteorologiche come pioggia, temperatura e vento, giocano un ruolo cruciale nel determinare la frequenza e la disponibilità delle biciclette per gli utenti, nonché la percezione stessa dell'attrattività del bike sharing come mezzo di trasporto. Inoltre, risulta interessante capire se la vicinanza di un punto di ritiro dalla più vicina fermata del treno o metropolitana incentiva l'utilizzo di quest'ultima piuttosto che della bicicletta, soprattutto in condizioni di maltempo~[\cite{paper_bike_sharing_e_meteo}].
-\par In generale, anche gli aspetti urbanistici e demografici possono aiutare nella descrizione del fenomeno. Infatti, la densità abitativa, la disposizione delle infrastrutture ciclabili, la distribuzione della popolazione, la vicinanza ad alberghi e ai punti di interesse possono influenzare l'adozione della bicicletta a noleggio come mezzo di trasporto urbano~[\cite{paper_bike_sharing_e_popolazione}].
-\par Infine, anche gli eventi straordinari possono avere un impatto significativo sul comportamento degli utenti e sulla dinamica del sistema. Uno di questi eventi straordinari è rappresentato dal lockdown imposto a causa della pandemia di COVID-\num{19}. Il lockdown ha comportato una serie di cambiamenti radicali nelle abitudini di spostamento delle persone, con effetti tangibili sull'utilizzo del bike sharing nelle metropoli di tutto il mondo. Pertanto, è essenziale comprendere come la chiusura obbligata abbia influenzato il fenomeno in oggetto, considerando sia gli aspetti legati alla riduzione del trasporto pubblico che quelli associati alla promozione di modalità di spostamento individuali e sicure~[\cite{paper_bike_sharing_e_covid}].
-\par In questo contesto, l'impiego di un modello spazio-temporale funzionale si presenta come una soluzione promettente per catturare la dinamica complessa che governa il noleggio e scambio di biciclette. Tale famiglia di modelli consente di considerare non solo le variazioni spaziali dell'utilizzo delle biciclette all'interno di una città, ma anche come queste variazioni si evolvono nel tempo, consentendo una comprensione più approfondita dei pattern di utilizzo e dei fattori che li influenzano. Altresì, la modellazione funzionale permette di descrivere l'evoluzione oraria del numero di ritiri durante il giorno. Infatti, quest'ultimo non rimane costante nel corso della giornata, ma presenta un andamento periodico che raggiunge i propri massimi nelle ore di punta. I trend periodici, inoltre, sono influenzati dalla tipologia di giorno, ovvero feriale o weekend (figura~\ref{trend_paper_Otto}), quindi tenere in considerazione quest'aspetto nella modellazione è fondamentale~[\cite{paper_bike_sharing_Otto}].
+\par L'aumento del traffico veicolare, in particolare, contribuisce in modo significativo alla diffusione di gas nocivi (es. CO$_2$ ed NO$_\text{X}$) e particolato nell'aria (es. PM\num{2.5} e PM\num{10}), compromettendo la salute pubblica e l'ambiente. In questo contesto, il bike sharing emerge come una soluzione innovativa e sostenibile per affrontare l'inquinamento urbano. Attraverso la condivisione delle biciclette, questo sistema offre un'alternativa efficace al trasporto privato a motore, riducendo le emissioni di gas serra, i consumi energetici e migliorando la qualità dell'aria nelle città~\citep{paper_bike_sharing_e_ambiente}.
+\par Per modellare il fenomeno del bike sharing le condizioni del tempo atmosferico risultano essere appropriate. Infatti, le variabili meteorologiche come pioggia, temperatura e vento, giocano un ruolo cruciale nel determinare la frequenza e la disponibilità delle biciclette per gli utenti, nonché la percezione stessa dell'attrattività del bike sharing come mezzo di trasporto. Inoltre, risulta interessante capire se la vicinanza di un punto di ritiro dalla più vicina fermata del treno o metropolitana incentiva l'utilizzo di quest'ultima piuttosto che della bicicletta, soprattutto in condizioni di maltempo~\citep{paper_bike_sharing_e_meteo}.
+\par In generale, anche gli aspetti urbanistici e demografici possono aiutare nella descrizione del fenomeno. Infatti, la densità abitativa, la disposizione delle infrastrutture ciclabili, la distribuzione della popolazione, la vicinanza ad alberghi e ai punti di interesse possono influenzare l'adozione della bicicletta a noleggio come mezzo di trasporto urbano~\citep{paper_bike_sharing_e_popolazione}.
+\par Infine, anche gli eventi straordinari possono avere un impatto significativo sul comportamento degli utenti e sulla dinamica del sistema. Uno di questi eventi straordinari è rappresentato dal lockdown imposto a causa della pandemia di COVID-\num{19}. Il lockdown ha comportato una serie di cambiamenti radicali nelle abitudini di spostamento delle persone, con effetti tangibili sull'utilizzo del bike sharing nelle metropoli di tutto il mondo. Pertanto, è essenziale comprendere come la chiusura obbligata abbia influenzato il fenomeno in oggetto, considerando sia gli aspetti legati alla riduzione del trasporto pubblico che quelli associati alla promozione di modalità di spostamento individuali e sicure~\citep{paper_bike_sharing_e_covid}.
+\par In questo contesto, l'impiego di un modello spazio-temporale funzionale si presenta come una soluzione promettente per catturare la dinamica complessa che governa il noleggio e scambio di biciclette. Tale famiglia di modelli consente di considerare non solo le variazioni spaziali dell'utilizzo delle biciclette all'interno di una città, ma anche come queste variazioni si evolvono nel tempo, consentendo una comprensione più approfondita dei pattern di utilizzo e dei fattori che li influenzano. Altresì, la modellazione funzionale permette di descrivere l'evoluzione oraria del numero di ritiri durante il giorno. Infatti, quest'ultimo non rimane costante nel corso della giornata, ma presenta un andamento periodico che raggiunge i propri massimi nelle ore di punta. I trend periodici, inoltre, sono influenzati dalla tipologia di giorno, ovvero feriale o weekend (figura~\ref{trend_paper_Otto}), quindi tenere in considerazione quest'aspetto nella modellazione è fondamentale~\citep{paper_bike_sharing_Otto}.
 
 \begin{figure}[htpb]
 	\centering
@@ -152,7 +152,7 @@ Da sottolineare che queste covariate sono spazio-varianti e tempo-invarianti.
 \end{table} 
 
 \subsection[Variabili dummy]{Variabili dummy}
-Alla luce dei risultati ottenuti in~\cite{paper_bike_sharing_Otto}, non solo le condizioni meteorologiche e le covariate spaziali influenzano la domanda giornaliera di noleggi, ma anche altri fattori possono fornire il proprio contributo. In particolare:
+Alla luce dei risultati ottenuti in~\citep{paper_bike_sharing_Otto}, non solo le condizioni meteorologiche e le covariate spaziali influenzano la domanda giornaliera di noleggi, ma anche altri fattori possono fornire il proprio contributo. In particolare:
 \begin{itemize}
 	\item il \textbf{lockdown} dovuto alla pandemia di COVID-\num{19};
 	\item la successiva \textbf{euforia} dovuta al ritorno alla vita quotidiana dopo mesi trascorsi in isolamento;
@@ -185,12 +185,34 @@ L'iter seguito per costruire, stimare e validare il modello fp-HDGM sul dataset 
 		MSE_\mathbf{s} = \frac{1}{T\cdot q}\sum_{t=1}^{T}\sum_{l\in\mathcal{H}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2.
 	\end{equation}
 	Grazie all'approccio LOOCV, questo indice può essere calcolato per tutte le stazioni, fornendo così un'indicazione dei punti di scambio per i quali il modello mostra le prestazioni migliori.
-	\item \textbf{previsione spaziale utilizzando il kriging}.
+	\item \textbf{previsione spaziale utilizzando il kriging}. Dopo aver previsto il numero di ritiri orario per ogni punto spaziale dell'area urbana di Jersey City per ogni giorno dei mesi di giugno e luglio eseguendo il kriging sul modello finale, è stato calcolato il volume di noleggi orario così definito:
+	\begin{equation}
+		v(\mathbf{s}, l|\mathcal{T}) = \sum_{t}^{\mathcal{T}} \hat{y}(\mathbf{s}, l, t), \ \forall \mathbf{s}\in\mathcal{D}, \ \forall l\in\mathcal{H};
+	\end{equation}
+	con $\mathcal{T} = [152, 213]\subset [1, 366]$, ovvero i giorni del periodo preso in esame, e $\mathcal{D}$ rappresentante i punti spaziali del quartiere Jersey. Da sottolineare che per definire la griglia di coordinate spaziali in cui fare predizione è stata scelta una risoluzione pari a \num{111}~\unit{\meter}.
 \end{enumerate}
 
 \section{Analisi dei risultati}
 \subsection{Scelta del parametro $\boldsymbol{\rho}$ tramite la cross-validazione}
+In figura~\ref{MSE_cv} si nota che il $MSE$ sia con sia senza arrotondamento\footnote{i valori previsti dal modello vengono arrotondati all'intero più vicino poiché il numero di ritiri è una grandezza intera.} assume il valore minimo a $\rho=100$~\unit{\meter}. Tale risultato è in linea con l'ordine di grandezza della media delle distanze medie tra una stazione e le \num{3} stazioni più vicine a essa, ossia \num{397}~\unit{\meter} con una deviazione standard pari a \num{189}~\unit{\meter}. La decisione di impiegare questa metrica per valutare la coerenza del valore di $\rho$ ottenuto attraverso la cross-validazione, anziché la media delle distanze medie tra una stazione di ritiro e tutte le altre, è motivata dalla distribuzione non omogenea dei punti di noleggio su una vasta area urbana. Questa metrica non è influenzata da tale dispersione, consentendo così una migliore descrizione dell'intensità dell'interazione tra i punti di ritiro che si trovano nelle vicinanze.
+
+\begin{figure}[htpb]
+	\centering
+	\includegraphics[height=170px]{Immagini/4. Caso di studio/Cross_validazione/MSE_rho_full_focus}
+	\caption[Andamento del $MSE$ in cross-validazione con e senza arrotondamento al variare del parametro $\rho$]{andamento del $MSE$ in cross-validazione ($k=5$) con e senza arrotondamento al variare del parametro $\rho$.}
+	\label{MSE_cv}
+\end{figure}
+
 \subsection{Scelta delle covariate $\boldsymbol{\beta}$}
+ciao
+
+\begin{figure}[htpb]
+	\centering
+	\includegraphics[height=215px]{Immagini/4. Caso di studio/Model selection/Trend spline, rho=100m}
+	\caption[Andamento del $MSE$ con e senza arrotondamento in cross-validazione al variare del parametro $\rho$]{andamento del $MSE$ in cross-validazione ($k=5$) con e senza arrotondamento al variare del parametro $\rho$.}
+	\label{trend_beta}
+\end{figure}
+
 \subsection{Validazione del modello definitivo mediante la LOOCV}
 \subsection{Previsione spaziale utilizzando il kriging}
 
