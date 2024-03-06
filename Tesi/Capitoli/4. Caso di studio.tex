@@ -179,12 +179,12 @@ L'iter seguito per costruire, stimare e validare il modello fp-HDGM sul dataset 
 		\end{aligned}
 	\end{equation}
 	dove $\text{card}(\mathcal{S}_{val})_i$ rappresenta il numero di punti di ritiro utilizzati per la validazione disponibili per l'$i$-esimo gruppo;
-	\item \textbf{scelta delle covariate più significative} (\textbf{model selection}). Dopo aver individuato nel passo precedente il $\rho$ ottimo, è stato stimato un nuovo modello utilizzando tutti i dati e tutte le covariate. L'obiettivo è visualizzare le spline per i parametri $\boldsymbol{\beta}$ e i relativi intervalli di confidenza al fine di escludere i regressori poco significativi; se presenti, allora vengono rimossi e viene rieseguito il passo \num{1}.
-	\item \textbf{validazione del modello finale tramite LOOCV\footnote{Leave-one-out cross-validation}}. Oltre a utilizzare il $MSE$ come metrica per descrivere la bontà complessiva del modello definitivo, è stato calcolato anche il $MSE_\mathbf{s}$~\citep{paper_f_HDGM}, ossia:
+	\item \textbf{scelta delle covariate più significative} (\textbf{model selection}). Dopo aver individuato nel passo precedente il $\rho$ ottimo, è stato stimato un nuovo modello utilizzando tutti i dati e tutte le covariate. L'obiettivo è visualizzare le spline per i parametri $\boldsymbol{\beta}$ e i relativi intervalli di confidenza al fine di escludere i regressori poco significativi; se presenti, allora vengono rimossi e viene rieseguito il passo \num{1}. Da evidenziare che i dati sono stati standardizzati così da consentire un confronto diretto e adimensionale tra gli andamenti $\boldsymbol{\beta}(h)$ al fine di comprendere con facilità quali regressori hanno un potere esplicativo maggiore.
+	\item \textbf{validazione del modello finale tramite LOOCV\footnote{Leave-one-out cross-validation}}. Oltre a utilizzare il $RMSE$ come metrica per descrivere la bontà complessiva del modello definitivo, è stato calcolato anche il $RMSE_\mathbf{s}$~\citep{paper_f_HDGM}, ossia:
 	\begin{equation}
-		MSE_\mathbf{s} = \frac{1}{T\cdot q}\sum_{t=1}^{T}\sum_{l\in\mathcal{H}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2.
+		RMSE_\mathbf{s} = \sqrt{\frac{1}{T\cdot q}\sum_{t=1}^{T}\sum_{l\in\mathcal{H}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2}.
 	\end{equation}
-	Grazie all'approccio LOOCV, questo indice può essere calcolato per tutte le stazioni, fornendo così un'indicazione dei punti di scambio per i quali il modello mostra le prestazioni migliori.
+	Grazie all'approccio LOOCV, questo indice può essere calcolato per tutte le stazioni, fornendo così un'indicazione dei punti di scambio per i quali il modello mostra le prestazioni migliori. 
 	\item \textbf{previsione spaziale utilizzando il kriging}. Dopo aver previsto il numero di ritiri orario per ogni punto spaziale dell'area urbana di Jersey City per ogni giorno dei mesi di giugno e luglio eseguendo il kriging sul modello finale, è stato calcolato il volume di noleggi orario così definito:
 	\begin{equation}
 		v(\mathbf{s}, l|\mathcal{T}) = \sum_{t}^{\mathcal{T}} \hat{y}(\mathbf{s}, l, t), \ \forall \mathbf{s}\in\mathcal{D}, \ \forall l\in\mathcal{H};
@@ -204,16 +204,51 @@ In figura~\ref{MSE_cv} si nota che il $MSE$ sia con sia senza arrotondamento\foo
 \end{figure}
 
 \subsection{Scelta delle covariate $\boldsymbol{\beta}$}
-ciao
+Osservando gli andamenti delle spline di Fourier in figura~\ref{trend_beta} è possibile trarre le seguenti considerazioni:
+\begin{itemize}
+	\item i dati sono stati standardizzati, pertanto è corretto che l'intercetta $\beta_{const}$ assuma valori vicini a \num{0};
+	\item per nessuna covariata il valore \num{0} permane negli intervalli di confidenza per una frazione significativa del dominio funzionale $\mathcal{H}$, quindi tutti i regressori risultano essere rilevanti;
+	\item la temperatura $\beta_{temp}$, la visibilità $\beta_{visib}$, l'euforia successiva al lockdown $\beta_{euf}$ e la densità abitativa $\beta_{pop}$ contribuiscono positivamente nella descrizione del fenomeno del bike sharing, mentre la pioggia $\beta_{pioggia}$, il vento $\beta_{vento}$, il lockdown $\beta_{lockdown}$ e la copertura nuvolosa $\beta_{copert}$ negativamente;
+	\item la distanza dalla stazione del treno più vicina $\beta_{dist}$ ha un trend negativo durante le ore lavorative;
+	\item l'andamento orario di $\beta_{week}$ è poco incerto ed è la covariata che contribuisce maggiormente nello spiegare il numero di noleggi;
+	\item il comportamento di $\sigma_\epsilon^2$ suggerisce una maggiore incertezza nelle notturne e serali.
+\end{itemize}
 
 \begin{figure}[htpb]
 	\centering
 	\includegraphics[height=215px]{Immagini/4. Caso di studio/Model selection/Trend spline, rho=100m}
-	\caption[Andamento del $MSE$ con e senza arrotondamento in cross-validazione al variare del parametro $\rho$]{andamento del $MSE$ in cross-validazione ($k=5$) con e senza arrotondamento al variare del parametro $\rho$.}
+	\caption[Spline di Fourier per i coefficienti $\boldsymbol{\beta}$ e rispettivi intervalli di confidenza]{spline di Fourier per i coefficienti $\boldsymbol{\beta}$ e rispettivi intervalli di confidenza al $90\%$, $95\%$ e $99\%$. I dati sono stati standardizzati.}
 	\label{trend_beta}
 \end{figure}
 
 \subsection{Validazione del modello definitivo mediante la LOOCV}
+I punti di noleggio periferici vengono utilizzati meno rispetto a quelli situati in centro, figura~\ref{mappe_ritiri_per_stagione}, quindi è lecito aspettarsi che il modello goda di capacità predittive migliori sui primi piuttosto che sui secondi grazie alla minor variabilità sia oraria che giornaliera del numero di ritiri. Tale assunzione viene confermata in figura~\ref{mappa_RMSE_s}.
+
+\begin{figure}[htpb]
+	\centering
+	\includegraphics[height=215px]{Immagini/4. Caso di studio/LOOCV/RMSE_s}
+	\caption[Mappa della distribuzione del $RMSE_\mathbf{s}$]{mappa della distribuzione del $RMSE_\mathbf{s}$.}
+	\label{mappa_RMSE_s}
+\end{figure}
+
+Inoltre, nella tabella~\ref{statistiche_RMSE_s} si può notare che i risultati in validazione ottenuti con l'arrotondamento sono leggermente peggiori rispetto a quelli conseguiti senza, tuttavia i primi sono più coerenti al contesto del bike sharing in quanto non avrebbe significato frazionare una bicicletta. Infine, i ridotti valori assunti dalla media e dalla deviazione standard evidenziano le buone capacità predittive del modello spazio-temporale stimato.
+
+\begin{table}[htpb]
+	\centering
+	\renewcommand\arraystretch{1.5}
+	\begin{tabular}{c|c|c|c|c|c|c|c|c}
+		\hline
+		\textit{Variabile} & \textit{UM} & \textit{Min.} & \textit{Media} & \textit{Med.} & \textit{Mas.} & \textit{Dev.} & \textit{Simm.}  & \textit{Curt.} \\
+		\hline
+		\textbf{Con arrot.} & $\frac{\text{ritiri}}{\text{ora}}$ & \num{0.53} & \num{1.29} & \num{1.01} & \num{4.09} & \num{0.71} & \num{2.10} & \num{7.90} \\
+		\hline
+		\textbf{Senza arrot.} & $\frac{\text{ritiri}}{\text{ora}}$ & \num{0.49} & \num{1.25} & \num{0.97} & \num{4.08} & \num{0.71} & \num{2.07} & \num{7.75} \\
+		\hline
+	\end{tabular}
+	\caption[Statistiche principali riguardanti il $RMSE_\mathbf{s}$ con e senza arrotondamento]{statistiche principali riguardanti il $RMSE_\mathbf{s}$ con e senza arrotondamento.}
+	\label{statistiche_RMSE_s}
+\end{table} 
+
 \subsection{Previsione spaziale utilizzando il kriging}
 
 \section{Conclusioni}
