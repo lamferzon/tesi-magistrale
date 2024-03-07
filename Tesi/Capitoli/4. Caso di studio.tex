@@ -1,4 +1,4 @@
-\chapter[Caso di studio]{Caso di studio}
+[Caso di studio]{Caso di studio}
 
 Dopo aver descritto il modello fp-HDGM da un punto di vista matematico e metodologico, in questo capitolo esso viene applicato al fenomeno del bike sharing. L'obiettivo iniziale del caso di studio è descrivere, sia nel tempo sia nello spazio, il numero di ritiri di biciclette presso una serie di stazioni (o punti di ritiro) dislocati nel quartiere Jersey della città di New York, figura ~\ref{presentazione_Jersey_City}. Dopodiché, si vuole costruire una mappa di potenziale di mercato spaziale per capire dove conviene aprire una nuova stazione al fine di aumentare il numero di ritiri e il bacino d'utenza del servizio, tenendo conto dell'iterazione concorrenziale esistente tra le stazioni.
 
@@ -188,6 +188,7 @@ L'iter seguito per costruire, stimare e validare il modello fp-HDGM sul dataset 
 	\item \textbf{previsione spaziale utilizzando il kriging}. Dopo aver previsto il numero di ritiri orario per ogni punto spaziale dell'area urbana di Jersey City per ogni giorno dei mesi di giugno e luglio eseguendo il kriging sul modello finale, è stato calcolato il volume di noleggi orario così definito:
 	\begin{equation}
 		v(\mathbf{s}, l|\mathcal{T}) = \sum_{t}^{\mathcal{T}} \hat{y}(\mathbf{s}, l, t), \ \forall \mathbf{s}\in\mathcal{D}, \ \forall l\in\mathcal{H};
+		\label{equazioine_kriging_t}
 	\end{equation}
 	con $\mathcal{T} = [152, 213]\subset [1, 366]$, ovvero i giorni del periodo preso in esame, e $\mathcal{D}$ rappresentante i punti spaziali del quartiere Jersey. Da sottolineare che per definire la griglia di coordinate spaziali in cui fare predizione è stata scelta una risoluzione pari a \num{111}~\unit{\meter}.
 \end{enumerate}
@@ -250,9 +251,26 @@ Inoltre, nella tabella~\ref{statistiche_RMSE_s} si può notare che i risultati i
 \end{table} 
 
 \subsection{Previsione spaziale utilizzando il kriging}
-
+Il volume di noleggi su base oraria previsto per i mesi di giugno e luglio, calcolato con l'equazione ~\ref{equazioine_kriging_t}, é stato raggruppato in 6 fasce orarie ugualmente suddivise nell'arco della giornata, figura  ~\ref{Krignig_giugno_e_lugio}. Nella fascia oraria che va delle ore 00:01 alle 08:00, figure ~\ref{Krignig_giugno_e_lugio_a_} e ~\ref{Krignig_giugno_e_lugio_b_}, si osserva una diminuzione significativa della domanda di ritiri, viceversa la fascia oraria inclusa nelle ore 12:01 alle 20:00 risulta essere quella più promettente, figure ~\ref{Krignig_giugno_e_lugio_d_} e ~\ref{Krignig_giugno_e_lugio_e_}. Sempre in queste condizioni si nota come nei pressi delle coordinate $(\SI{40.71}{\degree} \text{N}, \SI{-74.05}{\degree} \text{W})$ e $(\SI{40.73}{\degree} \text{N}, \SI{-74.03}{\degree} \text{W})$, il geo-potenziale condizionato previsto in questa area risulta essere favorevole. Inoltre, nelle prossimità delle stazioni di ritiro, si percepisce un calo tangibile del potenziale di mercato, in particolare nella zona del centro di Jersey City, dove la distanza tra le stazioni di ritiro risulta essere confrontabile con il valore del parametro $\rho$ stimato. Queste osservazioni sono fattori rilevanti da considerare per ottimizzare le strategie di gestione del servizio di bike sharing.
+\begin{figure}[htpb]
+	\centering
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 1}\label{Krignig_giugno_e_lugio_a_}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 2}\label{Krignig_giugno_e_lugio_b_}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 3}\label{Krignig_giugno_e_lugio_c_}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 4}\label{Krignig_giugno_e_lugio_d_}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 5}\label{Krignig_giugno_e_lugio_e_}}\quad
+	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 6}\label{Krignig_giugno_e_lugio_f_}}\quad
+	\caption[Mappa del volume del numero di ritiri di biciclette previsti nei mesi di giugno e luglio raggruppati per fasce orarie]{mappa del volume del numero di ritiri di biciclette previsti nei mesi di giugno e luglio, raggruppati per fasce orarie: da 00:01 a 04:00 (a), da 04:01 a 08:00 (b), da 08:01 a 12:00 (c), da 12:01 a 16:00 (d), da 16:01 a 20:00 (e), da 20:01 a 00:00 (f).}
+	\label{Krignig_giugno_e_lugio}
+\end{figure}
 \section{Conclusioni}
-
+L'analisi svolta sulla scelta del parametro $\rho$ attraverso la cross-validazione evidenzia che il valore ottimale è stato raggiunto con $\rho = 100 m$.
+\par La selezione delle covariate $\boldsymbol{\beta}$, basata dall'osservazione delle spline di Fourier, mostra che i consigli derivati da studi precedenti sono risultati estremamente utili in questo contesto, poiché tutte le variabili considerate sono significative. In particolare, si osserva come il meteo giochi un ruolo cruciale nel descrivere il fenomeno del bike sharing, positivamente influenzato da condizioni meteorologiche favorevoli, mentre è impattato negativamente da circostanze avverse~\citep{paper_bike_sharing_e_meteo}. Per esempio, é ragionevole pensare che un individuo sia più propenso a utilizzare la bicicletta quando la temperatura aumenta e meno nelle giornate uggiose, ovvero quando il cielo é coperto.
+\par Il forte contributo e la scarsa incertezza della variabile $\beta_{week}$ evidenzia che tenere in considerazione la tipologia di giorno, feriale o non, aumenta notevolmente la capacita del modello di prevedere $y(\mathbf{s}, l, t| \mathcal{S})$ ~\citep{paper_bike_sharing_Otto}. Nello specifico, la correzione apportata dalla variabile in oggetto nei weekend e nei giorni festivi, fa si che nelle ore di punta mattutine e serali il numero di ritiri previsti sia inferiore rispetto a quello nei giorni lavorativi, viceversa un incremento in quelle pomeridiane; ciò é probabilmente dovuto al cambio di abitudini dei cittadini newyorchesi quando non devono lavorare e possono quindi dedicarsi alle proprie attività ricreative.
+\par  In contrasto con i risultati di~\cite{paper_bike_sharing_e_meteo}, le analisi portano a concludere che la distanza dalla stazione del treno più vicina ha un impatto negativo sul numero orario di noleggi, sopratutto negli orari lavorativi. Questa discrepanza potrebbe essere attribuita al fatto che nel centro di Jersey City, fulcro dell'attività economica della città, si ha una forte concentrazione di stazioni sia del treno che del bike sharing. In questo contesto l'individuo alle prese con una frenetica giornata lavorativa potrebbe preferire l' utilizzo della metropolitana alla bicicletta.
+\par Per quanto concerne, invece, il periodo di lockdown, il trend della rispettiva covariata sottolinea una generale riduzione dell'utilizzo del servizio a causa dell'impossibilita da parte dei cittadini di uscire dalle proprie abitazioni. Questo comportamento si ribalta nei primi mesi successivi al lockdown. L'andamento positivo della variabile $\beta_{euf}$, testimonia come la fase post-lockdown sia caratterizzata da un incremento della voglia da parte della popolazione a svolgere attività all'aria aperta.
+\par La validazione del modello, tramite LOOCV, conferma le buone capacità predittive del modello stimato, con delle prestazioni superiori per le stazioni periferiche rispetto a quelle centrali. 
+\par Infine, l'applicazione del kriging per la previsione spaziale del volume di noleggi evidenzia un'interessante variazione della domanda durante il giorno, con una significativa diminuzione nelle prime ore del mattino e un picco di interesse nelle ore pomeridiane.
 \section{Sitografia}
 \label{sitografia_capitolo_4}
 Di seguito sono riportati i riferimenti alle risorse citate in questo capitolo:
