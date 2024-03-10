@@ -125,7 +125,7 @@ Infine, si espongono i valori fissati del set di parametri:
 	\item $G = \text{diag}(0.26,\ 0.41,\ 0.6,\ 0.26,\ 0.6)$;
 	\item $V = \text{diag}(8,\ 3,\ 2,\ 3,\ 4)$.
 \end{itemize}
-Una volta eseguita la simulazione del processo, è stata applicata la tecnica di Kriging allo scopo di rappresentare la mappa del potenziale condizionato al variare del parametro $\rho$. Da sottolineare la circostanza con $\rho = 0$, ossia il caso in cui il geo-potenziale condizionato è pari al geo-potenziale puro per le considerazioni fatte sul limite~\ref{limite_geo-potenziale_condizionato_rho_a_0}.
+Una volta eseguita la simulazione del processo, è stata applicata la tecnica di Kriging allo scopo di rappresentare la mappa del potenziale condizionato al variare del parametro $\rho$. Da sottolineare la circostanza con $\rho = 0$, ossia il caso in cui il geo-potenziale condizionato è pari al geo-potenziale.
 
 \begin{figure}[htbp]
 	\centering
@@ -135,7 +135,7 @@ Una volta eseguita la simulazione del processo, è stata applicata la tecnica di
 	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.015}\label{sim_fp-HDGM_d}}\quad
 	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.02}\label{sim_fp-HDGM_e}}\quad
 	\subfigure[]{\includegraphics[height=150px]{Immagini/2. Nuovo modello/Mappa potenziale, rho = 0.025}\label{sim_fp-HDGM_f}}\
-	\caption[Kriging di un processo fp-HDGM al variare di $\rho$]{kriging di un processo fp-HDGM, fissati gli indici $l$ e $t$, con $\rho=$ \SI{0}{\meter} (a), \SI{500}{\meter} (b), \SI{1000}{\meter} (c), \SI{1500}{\meter} (d), \SI{2000}{\meter} (e) e \SI{2500}{\meter} (f).}
+	\caption[Previsione spaziale tramite Kriging di un processo fp-HDGM al variare di $\rho$]{previsione spaziale tramite Kriging di un processo fp-HDGM, fissati gli indici $l$ e $t$, con $\rho=$ \SI{0}{\meter} (a), \SI{500}{\meter} (b), \SI{1000}{\meter} (c), \SI{1500}{\meter} (d), \SI{2000}{\meter} (e) e \SI{2500}{\meter} (f).}
 	\label{sim_fp-HDGM}
 \end{figure}
 Nella Figura~\ref{sim_fp-HDGM} si osserva come il geo-potenziale condizionato diminuisca all'aumentare di $\rho$, specialmente nelle zone con una forte densità di stazioni di misurazione. Si prenda ora come ipotesi che le punti di misura possano rappresentare dei punti di vendita di un prodotto; valgono le considerazioni fatte riguardo al potenziale di mercato spaziale. Infatti, se si decidesse di aggiungere un punto di vendita nei pressi delle coordinate $(\SI{45.75}{\degree} \text{N}, \SI{9.70}{\degree} \text{W})$, il geo-potenziale previsto in quest'area risulta essere promettente ma forviante in quanto vicino ad altri punti di vendita, Figura~\ref{sim_fp-HDGM_a}. Con $\rho \geq \SI{500}{\meter}$, Figure~\ref{sim_fp-HDGM_b}, \ref{sim_fp-HDGM_c},  \ref{sim_fp-HDGM_d} e \ref{sim_fp-HDGM_e}, è facile osservare che il geo-potenziale condizionato è previsto basso nell'area presa in esame, ovvero il punto di vendita verrebbe collocato in un'area caratterizzata da un basso potenziale di mercato spaziale.
