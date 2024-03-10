@@ -1,6 +1,6 @@
 \chapter[Caso di studio]{Caso di studio}
 
-Dopo aver descritto il modello fp-HDGM da un punto di vista matematico e metodologico, in questo capitolo esso viene applicato al fenomeno del bike sharing. L'obiettivo iniziale del caso di studio è descrivere, sia nel tempo sia nello spazio, il numero di ritiri di biciclette presso una serie di stazioni (o punti di ritiro) dislocati nel quartiere Jersey della città di New York, Figura ~\ref{presentazione_Jersey_City}. Dopodiché, si vuole costruire una mappa di potenziale di mercato spaziale per capire dove conviene aprire una nuova stazione al fine di aumentare il numero di ritiri e il bacino d'utenza del servizio, tenendo conto dell'iterazione concorrenziale esistente tra le stazioni.
+Dopo aver descritto il modello fp-HDGM da un punto di vista matematico e metodologico, in questo capitolo esso viene applicato al fenomeno del bike sharing. L'obiettivo iniziale del caso di studio è descrivere, sia nel tempo sia nello spazio, il numero di ritiri di biciclette presso una serie di stazioni (o punti di ritiro) dislocati nel quartiere Jersey della città di New York (Figura~\ref{presentazione_Jersey_City}). Dopodiché, si vuole costruire una mappa di potenziale di mercato spaziale per capire dove conviene aprire una nuova stazione al fine di aumentare il numero di ritiri e il bacino d'utenza del servizio, tenendo conto dell'iterazione concorrenziale esistente tra le stazioni.
 
 \begin{figure}[b!]
 	\centering
@@ -11,18 +11,18 @@ Dopo aver descritto il modello fp-HDGM da un punto di vista matematico e metodol
 \end{figure}
 
 \section[Stato dell'arte]{Stato dell'arte}
-Nelle città di tutto il mondo, l'inquinamento atmosferico rappresenta una sfida sempre più urgente e complessa. Samantha Burgess, Deputy Director del Copernicus Climate Change Service, ha affermato che il 2023 non solo è stato l'anno più caldo mai registrato, ma è anche il primo in cui tutti i giorni le temperature hanno fatto registrare valori superiori di almeno \SI{1}{\degreeCelsius} rispetto al periodo preindustriale~[\ref{sitografia_capitolo_4}].
+Nelle città di tutto il mondo l'inquinamento atmosferico rappresenta una sfida sempre più urgente e complessa. Samantha Burgess, Deputy Director del Copernicus Climate Change Service, ha affermato che il 2023 non solo è stato l'anno più caldo mai registrato, ma è anche il primo in cui tutti i giorni le temperature hanno fatto registrare valori superiori di almeno \SI{1}{\degreeCelsius} rispetto al periodo preindustriale~[\ref{sitografia_capitolo_4}].
 \par L'aumento del traffico veicolare, in particolare, contribuisce in modo significativo alla diffusione di gas nocivi (es. CO$_2$ ed NO$_\text{X}$) e particolato nell'aria (es. PM\num{2.5} e PM\num{10}), compromettendo la salute pubblica e l'ambiente. In questo contesto, il bike sharing emerge come una soluzione innovativa e sostenibile per affrontare l'inquinamento urbano. Attraverso la condivisione delle biciclette, questo sistema offre un'alternativa efficace al trasporto privato a motore, riducendo le emissioni di gas serra, i consumi energetici e migliorando la qualità dell'aria nelle città~\citep{paper_bike_sharing_e_ambiente}.
 \par Per modellare il fenomeno del bike sharing le condizioni del tempo atmosferico risultano essere appropriate. Infatti, le variabili meteorologiche come pioggia, temperatura e vento, giocano un ruolo cruciale nel determinare la frequenza e la disponibilità delle biciclette per gli utenti, nonché la percezione stessa dell'attrattività del bike sharing come mezzo di trasporto. Inoltre, risulta interessante capire se la vicinanza di un punto di ritiro dalla più vicina fermata del treno o metropolitana incentiva l'utilizzo di quest'ultima piuttosto che della bicicletta, soprattutto in condizioni di maltempo~\citep{paper_bike_sharing_e_meteo}.
 \par In generale, anche gli aspetti urbanistici e demografici possono aiutare nella descrizione del fenomeno. Infatti, la densità abitativa, la disposizione delle infrastrutture ciclabili, la distribuzione della popolazione, la vicinanza ad alberghi e ai punti di interesse possono influenzare l'adozione della bicicletta a noleggio come mezzo di trasporto urbano~\citep{paper_bike_sharing_e_popolazione}.
 \par Infine, anche gli eventi straordinari possono avere un impatto significativo sul comportamento degli utenti e sulla dinamica del sistema. Uno di questi eventi straordinari è rappresentato dal lockdown imposto a causa della pandemia di COVID-\num{19}. Il lockdown ha comportato una serie di cambiamenti radicali nelle abitudini di spostamento delle persone, con effetti tangibili sull'utilizzo del bike sharing nelle metropoli di tutto il mondo. Pertanto, è essenziale comprendere come la chiusura obbligata abbia influenzato il fenomeno in oggetto, considerando sia gli aspetti legati alla riduzione del trasporto pubblico che quelli associati alla promozione di modalità di spostamento individuali e sicure~\citep{paper_bike_sharing_e_covid}.
-\par In questo contesto, l'impiego di un modello spazio-temporale funzionale si presenta come una soluzione promettente per catturare la dinamica complessa che governa il noleggio e scambio di biciclette. Tale famiglia di modelli consente di considerare non solo le variazioni spaziali dell'utilizzo delle biciclette all'interno di una città, ma anche come queste variazioni si evolvono nel tempo, consentendo una comprensione più approfondita dei pattern di utilizzo e dei fattori che li influenzano. Altresì, la modellazione funzionale permette di descrivere l'evoluzione oraria del numero di ritiri durante il giorno. Infatti, quest'ultimo non rimane costante nel corso della giornata, ma presenta un andamento periodico che raggiunge i propri massimi nelle ore di punta. I trend periodici, inoltre, sono influenzati dalla tipologia di giorno, ovvero feriale o weekend, Figura~\ref{trend_paper_Otto}, quindi tenere in considerazione quest'aspetto nella modellazione è fondamentale~\citep{paper_bike_sharing_Otto}.
+\par In questo contesto, l'impiego di un modello spazio-temporale funzionale si presenta come una soluzione promettente per catturare la dinamica complessa che governa il noleggio e scambio di biciclette. Tale famiglia di modelli consente di considerare non solo le variazioni spaziali dell'utilizzo delle biciclette all'interno di una città, ma anche come queste variazioni si evolvono nel tempo, consentendo una comprensione più approfondita dei pattern di utilizzo e dei fattori che li influenzano. Altresì, la modellazione funzionale permette di descrivere l'evoluzione oraria del numero di ritiri durante il giorno. Infatti, quest'ultimo non rimane costante nel corso della giornata, ma presenta un andamento periodico che raggiunge i propri massimi nelle ore di punta. I trend periodici, inoltre, sono influenzati dalla tipologia di giorno, ovvero feriale o weekend (Figura~\ref{trend_paper_Otto}), quindi tenere in considerazione quest'aspetto nella modellazione è fondamentale~\citep{paper_bike_sharing_Otto}.
 
 \begin{figure}[htpb]
 	\centering
 	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Stato dell'arte/Trend_feriale}\label{trend_feriale}}\quad
 	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Stato dell'arte/Trend_festivo}\label{trend_festivo}}\quad
-	\caption[Confronto tra l'andamento orario delle spline di Fourier per i coefficienti $\hat{\beta}_{Work}$ (a) e $\hat{\beta}_{Home}$ (b)]{confronto tra l'andamento orario delle spline di Fourier per i coefficienti $\hat{\beta}_{Work}$ (a) e $\hat{\beta}_{Home}$ (b). In~\cite{paper_bike_sharing_Otto} l'analisi è stata condotta sui dati del servizio di bike sharing della città di Helsinki, Finlandia.}
+	\caption[Confronto tra l'andamento orario delle spline di Fourier per i coefficienti $\hat{\beta}_{Work}$ (a) e $\hat{\beta}_{Home}$ (b)]{confronto tra l'andamento orario delle spline di Fourier per i coefficienti $\hat{\beta}_{Work}$ (a) e $\hat{\beta}_{Home}$ (b)~\citep{paper_bike_sharing_Otto}. L'analisi è stata condotta sui dati del servizio di bike sharing della città di Helsinki, Finlandia.}
 	\label{trend_paper_Otto}
 \end{figure}
 
@@ -31,17 +31,17 @@ Di seguito sono riportate le sorgenti dei dati utilizzati nel caso di studio:
 \begin{itemize}
 	\item \textbf{dati riguardanti il bike sharing}: provengono dal sito web Kaggle~[\ref{sitografia_capitolo_4}] e contengono le informazioni sul noleggio di biciclette nel \num{2020} dell'azienda Citi Bile a Jersey City. Citi Bike è un sistema di bike sharing pubblico di proprietà privata che serve i distretti di New York City, nello specifico Bronx, Brooklyn, Manhattan e Queens, oltre a Jersey City;
 	\item \textbf{dati meteorologici}: contengono le serie storiche delle variabili meteorologiche più significative per la città di New York nel \num{2020}. Il provider di questi dati è Visual Crossing~[\ref{sitografia_capitolo_4}], un fornitore che offre una vasta gamma di soluzioni per l'accesso ai dati meteorologici storici e in tempo reale, nonché per la generazione di previsioni meteo;
-	\item \textbf{dati inerenti le stazioni del treno/metropolitana}: dopo aver recuperato i nomi delle stazioni del treno e della metropolitana dalla mappa dei mezzi pubblici newyorkesi~[\ref{sitografia_capitolo_4}], le loro coordinate sono state reperite tramite Google Maps;
+	\item \textbf{dati inerenti le stazioni del treno/metropolitana}: dopo aver recuperato i nomi delle stazioni ferroviarie e della metropolitana dalla mappa dei mezzi pubblici newyorkesi~[\ref{sitografia_capitolo_4}], le loro coordinate sono state reperite tramite Google Maps;
 	\item \textbf{dati demografici}: il fornitore è il SEDAC~[\ref{sitografia_capitolo_4}] (Socioeconomic Data and Applications Center), un data center che fa parte del programma Earth Observing System Data and Information System (EOSDIS) della NASA. La missione principale dell'ente è quella di fornire accesso a dati socioeconomici e ambientali globali, nonché a strumenti e risorse per facilitare la ricerca e la comprensione dei cambiamenti ambientali e delle dinamiche sociali.
 	\item \textbf{dati riguardanti i giorni di festività e di lockdown}: per i primi è stato fatto riferimento al sito web OfficeHolidays~[\ref{sitografia_capitolo_4}], mentre per i secondi a Wikipedia~[\ref{sitografia_capitolo_4}].
 \end{itemize}
 Da sottolineare, infine, che sono state processate le sole variabili d'interesse per il caso di studio; nello specifico è stato applicato un raggruppamento su base oraria, ove necessario.
 
 \section[Descrizione del dataset]{Descrizione del dataset}
-Di seguito sono riportate e descritte le variabili che compongono il dataset utilizzato per il caso di studio. Nello specifico, la variabile dipendente $y(\mathbf{s}, l, t|\mathcal{S})$ è il numero di ritiri in una data ora $l$, in uno specifico giorno $t$, presso una determinata stazione di scambio di biciclette $\mathbf{s}$. Invece, le covariate possono essere suddivise in: \textbf{variabili meteorologiche} $\mathbf{x}_{meteo}(t)$, \textbf{variabili spaziali} $\mathbf{x}_{spazio}(\mathbf{s})$ e \textbf{variabili dummy} $\mathbf{x}_{dummy}(t)$. Inoltre, per completezza, il numero di stazioni $n$ è pari a \num{51}, il numero massimo di osservazioni disponibili per il dominio funzionale (orario) $q$ è \num{24} e l'analisi è stata condotta su dati facenti riferimento all'anno \num{2020}, quindi $T=366$. Infine, nel dataset non sono presenti record mancati.
+Di seguito sono riportate e descritte le variabili che compongono il dataset utilizzato per il caso di studio. Nello specifico, la variabile dipendente $y(\mathbf{s}, l, t|\mathcal{S})$ è il numero di ritiri in una data ora $l$, in uno specifico giorno $t$, presso una determinata stazione di scambio di biciclette $\mathbf{s}$. Invece, le covariate possono essere suddivise in: \textbf{variabili meteorologiche} $\mathbf{x}_{meteo}(t)$, \textbf{variabili spaziali} $\mathbf{x}_{spazio}(\mathbf{s})$ e \textbf{variabili dummy} $\mathbf{x}_{dummy}(t)$. Inoltre, per completezza, il numero di stazioni $n$ è pari a \num{51}, il numero massimo di osservazioni disponibili per il dominio funzionale (orario) $q$ è \num{24} e l'analisi è stata condotta su dati facenti riferimento all'anno \num{2020}, quindi $T=366$. Infine, nel dataset non sono presenti dati mancati.
 
 \subsection[Numero di ritiri]{Variabile dipendente}
-In Figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio di ritiri giornaliero di biciclette presso le stazioni della rete di bike sharing cambi da stagione a stagione. Questa variazione è influenzata da diversi fattori legati alle condizioni meteorologiche, agli schemi di mobilità delle persone e alle attività ricreative. In estate, quando le giornate sono più lunghe e il clima è più gradevole, si verifica un generale aumento dell'utilizzo della bicicletta, Figura~\ref{mappa_ritiri_estate}; le persone sono più propense a utilizzarla per spostarsi o fare gite. In autunno, invece, il numero di noleggi diminuisce leggermente poiché le giornate diventano più corte e il clima meno favorevole, Figura~\ref{mappa_ritiri_autunno}. In inverno il numero medio di ritiri giornaliero tende a essere il più basso dell'anno, Figura~\ref{mappa_ritiri_inverno}; le condizioni meteorologiche avverse, come il freddo, la pioggia e la neve, rendono meno attraente l'utilizzo della bicicletta. La primavera, infine, rispecchia la straordinarietà del \num{2020}; il lockdown ha limitato gli spostamenti dei cittadini newyorkesi, quindi l'utilizzo della bicicletta ha subito un brusco calo. Da notare, inoltre, l'assenza di uniformità nell'utilizzo delle stazioni; quelle situate nel centro del quartiere Jersey vengono sfruttate maggiormente rispetto ai punti di scambio periferici.
+In Figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio di ritiri giornaliero di biciclette presso le stazioni della rete di bike sharing cambi da stagione a stagione. Questa variazione è influenzata da diversi fattori legati alle condizioni meteorologiche, agli schemi di mobilità delle persone e alle attività ricreative. In estate, quando le giornate sono più lunghe e il clima è più gradevole, si verifica un generale aumento dell'utilizzo della bicicletta (Figura~\ref{mappa_ritiri_estate}); le persone sono più propense a utilizzarla per spostarsi o fare gite. In autunno, invece, il numero di noleggi diminuisce leggermente poiché le giornate diventano più corte e il clima meno favorevole (Figura~\ref{mappa_ritiri_autunno}). In inverno, il numero medio di ritiri giornaliero tende a essere il più basso dell'anno (Figura~\ref{mappa_ritiri_inverno}); le condizioni meteorologiche avverse, come il freddo, la pioggia e la neve, rendono meno attraente l'utilizzo della bicicletta. La primavera, infine, rispecchia la straordinarietà del \num{2020}; il lockdown ha limitato gli spostamenti dei cittadini newyorkesi, quindi l'utilizzo della bicicletta ha subito un brusco calo. Da notare, inoltre, l'assenza di uniformità nell'utilizzo delle stazioni; quelle situate nel centro del quartiere Jersey vengono sfruttate maggiormente rispetto ai punti di scambio periferici.
 \par Infine, l'andamento orario del numero medio di noleggi in Figura~\ref{ritiri_giornalieri_orari} conferma quanto detto precedentemente. Da sottolineare anche la presenza di picchi di utilizzo in concomitanza delle ore di punta.
 
 \begin{figure}[htpb]
@@ -50,7 +50,7 @@ In Figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio
 	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Mappe/Mappa ritiri, primavera}\label{mappa_ritiri_primavera}}\quad
 	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Mappe/Mappa ritiri, estate}\label{mappa_ritiri_estate}}\quad
 	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Mappe/Mappa ritiri, autunno}\label{mappa_ritiri_autunno}}\quad
-	\caption[Distribuzione spaziale nel numero medio di ritiri giornaliero presso le stazioni al variare della stagione, anno \num{2020}]{distribuzione spaziale nel numero medio di ritiri giornaliero presso le \num{51} stazioni di scambio in inverno (a), in primavera (b), in estate (c) e in autunno (d), anno \num{2020}.}
+	\caption[Distribuzione spaziale del numero medio di ritiri giornaliero presso le stazioni al variare della stagione, anno \num{2020}]{distribuzione spaziale del numero medio di ritiri giornaliero presso le \num{51} stazioni di scambio in inverno (a), in primavera (b), in estate (c) e in autunno (d), anno \num{2020}.}
 	\label{mappe_ritiri_per_stagione}
 \end{figure}
 
@@ -58,7 +58,7 @@ In Figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio
 	\centering
 	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Serie storiche/Ritiri giornalieri}}\quad
 	\subfigure[]{\includegraphics[height=156px]{Immagini/4. Caso di studio/Serie storiche/Ritiri orari}}\quad
-	\caption[Andamento giornaliero e orario del numero medio di ritiri al variare della stagione]{andamento giornaliero (a) e orario (b) del numero medio di ritiri al variare della stagione.}
+	\caption[Andamento giornaliero e orario del numero medio di noleggi al variare della stagione]{andamento giornaliero (a) e orario (b) del numero medio di noleggi al variare della stagione.}
 	\label{ritiri_giornalieri_orari}
 \end{figure}
 
@@ -66,12 +66,12 @@ In Figura~\ref{mappe_ritiri_per_stagione} si può osservare come il numero medio
 Le covariate meteorologiche che sono state utilizzate per l'analisi sono:
 \begin{itemize}
 	\item la \textbf{temperatura percepita}  [\unit{\degreeCelsius}];
-	\item la \textbf{pioggia} [\unit{\milli\meter}];
+	\item la \textbf{piovosità} [\unit{\milli\meter}];
 	\item la \textbf{visibilità orizzontale} [\unit{\kilo\meter}];
 	\item la \textbf{velocità del vento} [\unit{\kilo\meter/\hour}];
 	\item la \textbf{copertura nuvolosa} [\unit{\percent}].
 \end{itemize}
-Da sottolineare che le variabili sopracitate sono spazio-invarianti e orarie, ovvero sono conseguenza della media eseguita sui campioni rilevati nell'ora da una stazione meteorologica di New York. Inoltre, nella Tabella~\ref{statistiche_variabili_meteo} sono riportate le principali statistiche delle covariate in questione; degne di nota la scarsa variabilità della visibilità orizzontale e l'elevata dispersione della copertura nuvolosa nel \num{2020}. Infine, da segnalare che  per la variabile pioggia è stata eseguita la somma giornaliera delle precipitazioni.
+Da sottolineare che le variabili sopracitate sono spazio-invarianti e orarie, ovvero sono conseguenza della media eseguita sui campioni rilevati nell'ora da una stazione meteorologica di New York. Inoltre, nella Tabella~\ref{statistiche_variabili_meteo} sono riportate le principali statistiche delle covariate in questione; degne di nota la scarsa variabilità della visibilità orizzontale e l'elevata dispersione della copertura nuvolosa nel \num{2020}.
 
 \begin{table}[htp]
 	\centering
@@ -82,7 +82,7 @@ Da sottolineare che le variabili sopracitate sono spazio-invarianti e orarie, ov
 		\hline
 		\textbf{Temp. percep.} & \unit{\degreeCelsius} & \num{-7.66} & \num{13.80} & \num{13.93} & \num{33.33} & \num{9.80} & \num{-0.04} & \num{1.96} \\
 		\hline
-		\textbf{Pioggia} & \unit{\milli\meter} & \num{0} & \num{1.11} & \num{0} & \num{31.03} & \num{3.44} & \num{5.42} & \num{38.86} \\
+		\textbf{Piovosità} & \unit{\milli\meter} & \num{0} & \num{1.11} & \num{0} & \num{31.03} & \num{3.44} & \num{5.42} & \num{38.86} \\
 		\hline
 		\textbf{Visibilità} & \si{\kilo\meter} & \num{6.48} & \num{15.28} & \num{15.99} & \num{16} & \num{1.54} & \num{-2.99} & \num{12.71} \\
 		\hline
@@ -95,24 +95,24 @@ Da sottolineare che le variabili sopracitate sono spazio-invarianti e orarie, ov
 	\label{statistiche_variabili_meteo}
 \end{table}
 
-\par Infine, è possibile osservare in Figura~\ref{ritiri_vs_temperatura} la correlazione positiva esistente tra il numero medio di ritiri giornaliero e la temperatura percepita, mentre in Figura~\ref{ritiri_vs_pioggia} l'impatto negativo nei confronti dello stesso da parte della pioggia; nei giorni uggiosi i cittadini newyorkesi prediligono mezzi di trasporto alternativi alla bicicletta.
+\par Infine, è possibile osservare in Figura~\ref{ritiri_vs_temperatura} la correlazione positiva esistente tra il numero medio di ritiri giornaliero e la temperatura percepita, mentre in Figura~\ref{ritiri_vs_pioggia} l'impatto negativo nei confronti dello stesso da parte della piovosità; nei giorni uggiosi i cittadini newyorkesi prediligono mezzi di trasporto alternativi alla bicicletta.
 \par Per gli istogrammi, i box-plot e ulteriori grafici si rimanda all'appendice.
 
 \begin{figure}[htpb]
 	\centering
 	\subfigure[]{\includegraphics[height=152px]{Immagini/4. Caso di studio/Serie storiche/Ritiri giornalieri e temperatura percepita}\label{ritiri_vs_temperatura}}\quad
 	\subfigure[]{\includegraphics[height=152px]{Immagini/4. Caso di studio/Serie storiche/Ritiri giornalieri e pioggia}\label{ritiri_vs_pioggia}}\quad
-	\caption[Confronto tra il numero medio di noleggi giornaliero, la temperatura percepita e la pioggia]{confronto tra il numero medio di noleggi giornaliero, la temperatura percepita (a) e la pioggia (b).}
+	\caption[Confronto tra il numero medio di noleggi giornaliero, la temperatura percepita e la piovosità]{confronto tra il numero medio di noleggi giornaliero, la temperatura percepita (a) e la piovosità (b).}
 	\label{ritiri_vs_variabili_meteo}
 \end{figure}
 
 \subsection[Variabili spaziali]{Variabili spaziali}
 In questa categoria ricadono:
 \begin{itemize}
-	\item la \textbf{distanza dalla stazione del treno\footnote{o fermata della metropolitana poiché Jersey City è servita da entrambi i mezzi di trasporto pubblico.} più vicina} [\unit{\kilo\meter}];
+	\item la \textbf{distanza dalla stazione ferroviaria\footnote{o fermata della metropolitana poiché Jersey City è servita da entrambi i mezzi di trasporto pubblico.} più vicina} [\unit{\kilo\meter}];
 	\item la \textbf{densità demografica} nella zona alla quale appartiene il punto di ritiro [ab./\unit{\kilo\meter\squared}].
 \end{itemize}
-Da sottolineare che queste covariate sono spazio-varianti e tempo-invarianti.
+Da evidenziare che queste covariate sono spazio-varianti e tempo-invarianti.
 \par In Figura~\ref{mappa_stazioni_metro} è rappresentata la distanza di ciascun punto di interscambio dalla stazione ferroviaria più vicina. Si osserva una densa concentrazione sia di stazioni ferroviarie che di punti di ritiro delle biciclette nel centro del quartiere, densità che diminuisce man mano che ci si sposta verso le zone limitrofe. Riguardo alla densità demografica, come evidenziato nella Figura~\ref{mappa_densita_demografica}, si può notare una distribuzione omogenea su Jersey City. Questa osservazione è supportata dalla ridotta deviazione standard (\num{4278} ab./\unit{\kilo\meter\squared}) della covariata in oggetto, Tabella~\ref{statistiche_variabili_spaziali}.
 
 \begin{figure}[htpb]
@@ -140,7 +140,7 @@ Da sottolineare che queste covariate sono spazio-varianti e tempo-invarianti.
 \end{table} 
 
 \subsection[Variabili dummy]{Variabili dummy}
-Alla luce dei risultati ottenuti in~\citep{paper_bike_sharing_Otto}, non solo le condizioni meteorologiche e le covariate spaziali influenzano la domanda giornaliera di noleggi, ma anche altri fattori possono fornire il proprio contributo. In particolare:
+Alla luce dei risultati ottenuti in~\cite{paper_bike_sharing_Otto}, non solo le condizioni meteorologiche e le covariate spaziali influenzano la domanda giornaliera di noleggi, ma anche altri fattori possono fornire il proprio contributo. In particolare:
 \begin{itemize}
 	\item il \textbf{lockdown} dovuto alla pandemia di COVID-\num{19};
 	\item la successiva \textbf{euforia} dovuta al ritorno alla vita quotidiana dopo mesi trascorsi in isolamento;
@@ -157,20 +157,21 @@ Questi eventi sono stati modellati utilizzando \num{3} distinte variabili catego
 \end{figure}
 
 \section{Metodologia}
+\label{metodologia}
 L'iter seguito per costruire, stimare e validare il modello fp-HDGM sul dataset del caso di studio è il seguente:
 \begin{enumerate}
-	\item \textbf{cross-validazione per determinare il valore ottimale del parametro $\boldsymbol{\rho}$}. Nello specifico, dopo aver suddiviso il dataset in $k=5$ gruppi di stazioni di ritiro, iterativamente $k-1$ sono stati utilizzati per stimare il modello, mentre il $k$-esimo per validarlo. Inoltre, per ridurre sia l'onere computazionale sia il numero di osservazioni nulle, sono stati considerati soltanto i dati dei mesi di giugno e luglio, quando l'utilizzo del bike sharing è più frequente. Infatti, limitando l'analisi a questi periodi, si minimizza il numero di ore in cui non sono state prelevate biciclette; ciò consente di cross-validare il modello su un dataset più bilanciato. Infine, come metrica è stato impiegato il \textit{Mean Squared Error} ($MSE$) così definito:
+	\item \textbf{cross-validazione per determinare il valore del parametro $\boldsymbol{\rho}$}. Attualmente la modifica dell'implementazione dell'algoritmo EM in D-STEM per consentire la stima anche di $\rho$ non è stata ancora conclusa, quindi è stata impiegata la cross-validazione per determinare il suo valore. Nello specifico, dopo aver suddiviso il dataset in $k=5$ gruppi di stazioni di interscambio, iterativamente $k-1$ sono stati utilizzati per stimare il modello, mentre il $k$-esimo per validarlo. Inoltre, per ridurre sia l'onere computazionale sia il numero di osservazioni nulle, sono stati considerati soltanto i dati dei mesi di giugno e luglio, quando l'utilizzo del bike sharing è più frequente. Infatti, limitando l'analisi a questi periodi, si minimizza il numero di ore in cui non sono state prelevate biciclette; ciò consente di cross-validare il modello su un dataset più informativo. Infine, come metrica è stato impiegato il \textit{Mean Squared Error} ($MSE$) così definito:
 	\begin{equation}
 		\begin{aligned}
-			MSE &= \frac{1}{P}\sum_{i=1}^{k=5}\frac{1}{\text{card}(\mathcal{S}_{val})_i}\sum_{\mathbf{s}\in\mathcal{S}_{val}}^{}\sum_{t=1}^{T}\sum_{l\in\mathcal{H}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2; \\
+			MSE &= \frac{1}{P}\sum_{i=1}^{k=5}\frac{1}{\text{card}(\mathcal{S}_{val})_i}\sum_{\mathbf{s}\in\mathcal{S}_{val}}^{}\sum_{t=1}^{T}\sum_{l\in\mathcal{L}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2; \\
 			P &= k\cdot T\cdot q;
 		\end{aligned}
 	\end{equation}
 	dove $\text{card}(\mathcal{S}_{val})_i$ rappresenta il numero di punti di ritiro utilizzati per la validazione disponibili per l'$i$-esimo gruppo;
 	\item \textbf{scelta delle covariate più significative} (\textbf{model selection}). Dopo aver individuato nel passo precedente il $\rho$ ottimo, è stato stimato un nuovo modello utilizzando tutti i dati e tutte le covariate. L'obiettivo è visualizzare le spline per i parametri $\boldsymbol{\beta}$ e i relativi intervalli di confidenza al fine di escludere i regressori poco significativi; se presenti, allora vengono rimossi e viene rieseguito il passo \num{1}. Da evidenziare che i dati sono stati standardizzati così da consentire un confronto diretto e adimensionale tra gli andamenti $\boldsymbol{\beta}(h)$ al fine di comprendere con facilità quali regressori hanno un potere esplicativo maggiore.
-	\item \textbf{validazione del modello finale tramite LOOCV\footnote{Leave-one-out cross-validation}}. Come metrica per valutare la bontà complessiva del modello definitivo è stato utilizzato il \textit{Root Mean Squared Error} ($RMSE$). In aggiunta, è stato calcolato anche il $RMSE_\mathbf{s}$~\citep{paper_f_HDGM}, ossia:
+	\item \textbf{validazione del modello finale tramite LOOCV\footnote{Leave-one-out cross-validation}}. Come metrica per valutare la bontà complessiva del modello definitivo, è stato utilizzato il \textit{Root Mean Squared Error} ($RMSE$). In aggiunta, è stato calcolato anche il $RMSE_\mathbf{s}$~\citep{paper_f_HDGM}, ossia:
 	\begin{equation}
-		RMSE_\mathbf{s} = \sqrt{\frac{1}{T\cdot q}\sum_{t=1}^{T}\sum_{l\in\mathcal{H}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2}.
+		RMSE_\mathbf{s} = \sqrt{\frac{1}{T\cdot q}\sum_{t=1}^{T}\sum_{l\in\mathcal{L}}^{} (y(\mathbf{s}, l, t) - \hat{y}(\mathbf{s}, l, t))^2}.
 	\end{equation}
 	Grazie all'approccio LOOCV, questo indice può essere calcolato per tutte le stazioni, fornendo così un'indicazione dei punti di scambio per i quali il modello mostra le prestazioni migliori. 
 	\item \textbf{previsione spaziale utilizzando il kriging}. Dopo aver previsto il numero di ritiri orario per ogni punto spaziale dell'area urbana di Jersey City per ogni giorno dei mesi di giugno e luglio eseguendo il kriging sul modello finale, ergo il geo-potenziale condizionato $p(\mathbf{s}, l, t)$, è stato computato il volume di noleggi orario così definito:
@@ -178,11 +179,11 @@ L'iter seguito per costruire, stimare e validare il modello fp-HDGM sul dataset 
 		v(\mathbf{s}, l|\mathcal{T}) = \sum_{t}^{\mathcal{T}} \hat{y}(\mathbf{s}, l, t), \ \forall \mathbf{s}\in\mathcal{D}, \ \forall l\in\mathcal{H};
 		\label{equazioine_kriging_t}
 	\end{equation}
-	con $\mathcal{T} = [152, 213]\subset [1, 366]$, ovvero i giorni del periodo preso in esame, e $\mathcal{D}$ rappresentante i punti spaziali del quartiere Jersey. Dopodiché i \num{24} valori di $v(\mathbf{s}, l|\mathcal{T})$ sono stati così raggruppati:
+	con $\mathcal{T} = [152, 213]\subset [1, 366]$, ovvero i giorni del periodo preso in esame, e $\mathcal{D}$ rappresentante i punti spaziali del quartiere Jersey. Dopodiché, i \num{24} valori di $v(\mathbf{s}, l|\mathcal{T})$ sono stati così raggruppati:
 	\begin{equation}
 		\bar{v}(\mathbf{s}, l|\mathcal{T})_i = \frac{1}{\text{card}(\mathcal{R}_i)}\sum_{j\in\mathcal{R}_i}^{}v(\mathbf{s}, j|\mathcal{T}), \ i=1\dots 6;
 	\end{equation}
-	dove $\mathcal{R}_i\subset\mathcal{H}$ rappresenta la $i$-esima delle \num{6} fasce orarie in cui è stata suddivisa la giornata; così facendo si perde ovviamente la dimensione oraria del volume, ciononostante si evita di riportare un numero eccessivo di mappe all'interno del capitolo. Da sottolineare, infine, che per definire la griglia di coordinate spaziali in cui fare predizione è stata scelta una risoluzione pari a \num{111}~\unit{\meter}.
+	dove $\mathcal{R}_i\subset\mathcal{H}$ rappresenta la $i$-esima delle \num{6} fasce orarie in cui è stata suddivisa la giornata; così facendo si perde ovviamente la dimensione oraria del volume, ciononostante si evita di riportare un numero eccessivo di mappe all'interno del capitolo. Da sottolineare, infine, che per definire la griglia di coordinate spaziali in cui fare predizione è stata scelta una risoluzione pari a \num{55}~\unit{\meter}.
 \end{enumerate}
 
 \section{Analisi dei risultati}
@@ -200,11 +201,11 @@ In Figura~\ref{MSE_cv} si nota che il $MSE$ sia con sia senza arrotondamento\foo
 Osservando gli andamenti delle spline di Fourier in Figura~\ref{trend_beta}, si possono trarre le seguenti considerazioni:
 \begin{itemize}
 	\item i dati sono stati standardizzati, pertanto è corretto che l'intercetta $\beta_{const}$ assuma dei valori vicini a \num{0};
-	\item per nessuna covariata il valore \num{0} permane negli intervalli di confidenza per una frazione rilevante del dominio funzionale $\mathcal{H}$, di conseguenza tutti i regressori sono significativi;
+	\item per nessuna covariata il valore \num{0} permane negli intervalli di confidenza per una frazione rilevante del dominio funzionale $\mathcal{L}$, di conseguenza tutti i regressori sono significativi;
 	\item la temperatura $\beta_{temp}$, la visibilità $\beta_{visib}$, l'euforia successiva al lockdown $\beta_{euf}$ e la densità abitativa $\beta_{pop}$ contribuiscono positivamente alla descrizione del fenomeno del bike sharing, viceversa la pioggia $\beta_{pioggia}$, la velocità del vento $\beta_{vento}$, il lockdown $\beta_{lockdown}$ e la copertura nuvolosa $\beta_{copert}$ negativamente;
-	\item la distanza dalla stazione del treno più vicina $\beta_{dist}$ ha un andamento negativo durante le ore lavorative;
+	\item la distanza dalla stazione ferroviaria più vicina $\beta_{dist}$ ha un andamento negativo durante le ore lavorative;
 	\item la spline di $\beta_{week}$ ha bassa incertezza ed è quella che contribuisce maggiormente alla spiegazione del numero di noleggi;
-	\item infine, il comportamento di $\sigma_\epsilon^2$ suggerisce una maggiore incertezza nelle notturne e serali. 
+	\item infine, il comportamento di $\sigma_\epsilon^2$ suggerisce una maggiore incertezza nelle ore notturne e serali. 
 \end{itemize}
 
 \begin{figure}[htpb]
@@ -215,7 +216,7 @@ Osservando gli andamenti delle spline di Fourier in Figura~\ref{trend_beta}, si 
 \end{figure}
 
 \subsection{Validazione del modello definitivo mediante la LOOCV}
-I punti di ritiro periferici vengono utilizzati meno rispetto a quelli situati in centro ( Figura~\ref{mappe_ritiri_per_stagione}),  quindi è lecito aspettarsi che il modello spazio-temporale goda di capacità predittive migliori sui primi piuttosto che sui secondi grazie alla minor variabilità sia oraria che giornaliera del numero di noleggi. Tale assunzione viene confermata in Figura~\ref{mappa_RMSE_s}; si osserva, infatti, che il più alto errore viene commesso presso i punti a elevato utilizzo, ossia quelli in centro al quartiere Jersey.
+I punti di ritiro periferici vengono utilizzati meno rispetto a quelli situati in centro (Figura~\ref{mappe_ritiri_per_stagione}),  quindi è lecito aspettarsi che il modello spazio-temporale goda di capacità predittive migliori sui primi piuttosto che sui secondi grazie alla minor variabilità sia oraria che giornaliera del numero di noleggi. Tale assunzione viene confermata in Figura~\ref{mappa_RMSE_s}; si osserva, infatti, che il più alto $MSE_\mathbf{s}$ viene commesso presso i punti a elevato utilizzo, ossia quelli in centro al quartiere Jersey.
 
 \begin{figure}[htpb]
 	\centering
@@ -243,7 +244,7 @@ Inoltre, in Tabella~\ref{statistiche_RMSE_s} si può notare che i risultati in v
 \end{table} 
 
 \subsection{Previsione spaziale utilizzando il kriging}
-Nella fascia oraria che va delle ore 00:01 alle ore 08:00, Figure ~\ref{Krignig_giugno_e_lugio_a_} e ~\ref{Krignig_giugno_e_lugio_b_}, si nota una diminuzione significativa della domanda di ritiri; viceversa, la fascia oraria compresa tra le ore 12:01 alle ore 20:00 è quella più promettente, Figure ~\ref{Krignig_giugno_e_lugio_d_} e ~\ref{Krignig_giugno_e_lugio_e_}. Sempre in queste condizioni si osserva come nei pressi delle coordinate $(\SI{40.71}{\degree} \text{N}, \SI{-74.05}{\degree} \text{W})$ e $(\SI{40.73}{\degree} \text{N}, \SI{-74.03}{\degree} \text{W})$ il valore di $\bar{v}(\mathbf{s}, l |\mathcal{T})$ in questa area appare favorevole.
+Nella fascia oraria che va delle ore 00:01 alle ore 08:00, Figure ~\ref{Krignig_giugno_e_lugio_a_} e ~\ref{Krignig_giugno_e_lugio_b_}, si nota una diminuzione significativa della domanda di ritiri; viceversa, la fascia oraria compresa tra le ore 12:01 alle ore 20:00 è quella più promettente, Figure ~\ref{Krignig_giugno_e_lugio_d_} e ~\ref{Krignig_giugno_e_lugio_e_}. Sempre in queste condizioni, si osserva come nei pressi delle coordinate $(\SI{40.71}{\degree} \text{N}, \SI{-74.05}{\degree} \text{W})$ e $(\SI{40.73}{\degree} \text{N}, \SI{-74.03}{\degree} \text{W})$ il valore di $\bar{v}(\mathbf{s}, l |\mathcal{T})$ in quest'area appaia favorevole.
 \par Infine, in prossimità delle stazioni di ritiro si percepisce un calo tangibile del potenziale di mercato, in particolare nella zona del centro di Jersey City, area in cui la distanza media tra i punti di scambio è confrontabile con il valore del parametro $\rho$ stimato, ossia $100$~\unit{\meter}. Queste osservazioni sono fattori che meritano di essere presi in considerazione per ottimizzare le strategie di gestione del servizio di bike sharing.
 \begin{figure}[htpb]
 	\centering
@@ -253,32 +254,19 @@ Nella fascia oraria che va delle ore 00:01 alle ore 08:00, Figure ~\ref{Krignig_
 	\subfigure[]{\includegraphics[height=175px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 4}\label{Krignig_giugno_e_lugio_d_}}\quad
 	\subfigure[]{\includegraphics[height=175px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 5}\label{Krignig_giugno_e_lugio_e_}}\quad
 	\subfigure[]{\includegraphics[height=175px]{Immagini/4. Caso di studio/Kriging/Mappa volume, 6}\label{Krignig_giugno_e_lugio_f_}}\quad
-	\caption[Mappa del volume del numero di ritiri di biciclette previsti nei mesi di giugno e luglio, raggruppati per fasce orarie]{mappa del volume del numero di ritiri di biciclette previsti nei mesi di giugno e luglio, raggruppati per fasce orarie: da 00:01 a 04:00 (a), da 04:01 a 08:00 (b), da 08:01 a 12:00 (c), da 12:01 a 16:00 (d), da 16:01 a 20:00 (e), da 20:01 a 00:00 (f).}
+	\caption[Mappa del volume del numero di ritiri di biciclette previsti nei mesi di giugno e luglio, raggruppati per fasce orarie]{mappa del volume del numero di ritiri di biciclette previsti nei mesi di giugno e luglio, raggruppati per fasce orarie: da 00:01 a 04:00 (a), da 04:01 a 08:00 (b), da 08:01 a 12:00 (c), da 12:01 a 16:00 (d), da 16:01 a 20:00 (e) e da 20:01 a 00:00 (f).}
 	\label{Krignig_giugno_e_lugio}
 \end{figure}
 
 \section[Discussione sui risultati]{Discussione sui risultati}
-La scelta delle covariate $\boldsymbol{\beta}$, fondata sull'analisi degli intervalli di confidenza delle spline di Fourier, mostra che i suggerimenti forniti dagli studi sopracitati sono risultati utili in quanto tutte le variabili prese in esame sono significative. \par In particolare, si osserva come le variabili meteorologiche giochino un ruolo cruciale nel descrivere il fenomeno del bike sharing; esso è influenzato positivamente da condizioni favorevoli, mentre è impattato negativamente da circostanze avverse~\citep{paper_bike_sharing_e_meteo}. Per esempio, é ragionevole supporre che un individuo sia più propenso a utilizzare la bicicletta quando la temperatura aumenta e meno nelle giornate uggiose, ovvero quando il cielo é coperto.
+La scelta delle covariate $\boldsymbol{\beta}$, fondata sull'analisi degli intervalli di confidenza delle spline di Fourier, mostra che i suggerimenti forniti dagli studi sopracitati sono risultati utili in quanto tutte le variabili prese in esame sono significative. \par In particolare, si osserva come le covariate meteorologiche giochino un ruolo cruciale nel descrivere il fenomeno del bike sharing; esso è influenzato positivamente da condizioni favorevoli, mentre è impattato negativamente da circostanze avverse~\citep{paper_bike_sharing_e_meteo}. Per esempio, é ragionevole supporre che un individuo sia più propenso a utilizzare la bicicletta quando la temperatura aumenta e meno nelle giornate uggiose, ovvero quando il cielo é coperto.
 \par Il forte contributo e la scarsa incertezza della variabile $\beta_{week}$ sottolinea che il prendere in considerazione la tipologia di giorno, feriale o meno, aumenta la capacita del modello di prevedere $y(\mathbf{s}, l, t| \mathcal{S})$ ~\citep{paper_bike_sharing_Otto}. Nello specifico, la correzione apportata dalla variabile in oggetto nei weekend e nei giorni festivi fa si che nelle ore di punta mattutine e serali il numero di ritiri previsti sia inferiore rispetto a quello nei giorni lavorativi, viceversa in quelle pomeridiane; ciò é probabilmente dovuto al cambio di abitudini dei cittadini newyorchesi quando non devono lavorare e possono quindi dedicarsi alle proprie attività ricreative.
-\par In contrasto con i risultati di~\cite{paper_bike_sharing_e_meteo}, le analisi svolte portano ad affermare che la distanza dalla stazione del treno più vicina ha un impatto negativo sul numero orario di noleggi, sopratutto nelle ore lavorative. Questa discrepanza si potrebbe attribuire al fatto che nel centro del quartiere Jersey, il cuore delle attività economiche della città, si ha un'elevata concentrazione di stazioni sia del treno che di noleggio. In questo contesto, l'individuo alle prese con una frenetica giornata lavorativa potrebbe preferire l' utilizzo della metropolitana alla bicicletta.
-\par Per quanto concerne, invece, il periodo di lockdown, il trend della rispettiva covariata evidenzia una generale riduzione dell'utilizzo del servizio a causa dell'impossibilita da parte dei cittadini di uscire dalle proprie abitazioni. Questo comportamento subisce un ribaltamento nei primi mesi successivi alla chiusura generale; infatti, l'andamento positivo della variabile $\beta_{euf}$, testimonia come il periodo post-lockdown sia stato caratterizzato da un generale incremento della voglia da parte della popolazione di svolgere attività all'aria aperta.
+\par In contrasto con i risultati di~\cite{paper_bike_sharing_e_meteo}, le analisi svolte portano ad affermare che la distanza dalla stazione ferroviaria più vicina ha un impatto negativo sul numero orario di noleggi, sopratutto nelle ore lavorative. Questa discrepanza si potrebbe attribuire al fatto che nel centro del quartiere Jersey, il cuore delle attività economiche della città, si ha un'elevata concentrazione di stazioni sia ferroviarie che di noleggio. In questo contesto, l'individuo alle prese con una frenetica giornata lavorativa potrebbe preferire l'utilizzo della metropolitana alla bicicletta.
+\par Per quanto concerne, invece, il periodo di lockdown, il trend della rispettivo $\beta$ evidenzia una generale riduzione dell'utilizzo del servizio a causa dell'impossibilita da parte dei cittadini di uscire dalle proprie abitazioni. Questo comportamento subisce un ribaltamento nei primi mesi successivi alla chiusura generale; infatti, l'andamento positivo della variabile $\beta_{euf}$, testimonia come il periodo post-lockdown sia stato caratterizzato da un generale incremento della voglia da parte della popolazione di svolgere attività all'aria aperta.
 \par Altresì, la validazione tramite LOOCV conferma le buone capacità predittive del modello stimato, con delle prestazioni migliori per le stazioni periferiche rispetto a quelle centrali. 
-\par Infine, l'applicazione della previsione spaziale per determinare il volume di noleggi orario evidenzia un'interessante variazione della domanda durante il giorno, con una significativa diminuzione nelle prime ore del mattino e un picco di interesse nelle ore pomeridiane. Da sottolineare la rilevanza del parametro $\rho$; la sua significatività consente di modellare l'interazione esistente tra punti di ritiro, permettendo così di indicare due aree potenzialmente interessanti per la collocazione di una nuova stazione, rispettivamente a nord e a sud-est del centro. I denominatori comuni tra queste due zone sono:
+\par Infine, l'applicazione della previsione spaziale per determinare il volume di noleggi orario evidenzia un'interessante variazione della domanda durante il giorno, con una significativa diminuzione nelle prime ore del mattino e un picco di interesse nelle ore pomeridiane. Da evidenziare l'importanza del parametro $\rho$; la sua rilevanza consente di modellare l'interazione esistente tra punti di ritiro, permettendo così di indicare due aree potenzialmente interessanti per la collocazione di una nuova stazione, rispettivamente a nord e a sud-est del centro. I denominatori comuni tra queste due zone sono:
 \begin{itemize}
 	\item la vicinanza alla zona più demograficamente ed economicamente vivace;
 	\item il sufficiente distanziamento dall'agglomerato di punti di ritiro del centro del quartiere Jersey.
 \end{itemize}
-Ovviamente queste conclusioni sono limitate dal fatto che il kriging è stato eseguito solo per i mesi di giugno e luglio. Per avere una visione completa è necessario estendere lo studio anche ai restanti mesi dell'anno.
-
-\section{Sitografia}
-\label{sitografia_capitolo_4}
-Di seguito sono riportati i riferimenti alle risorse citate in questo capitolo:
-\begin{itemize}
-	\item \textit{https://climate.copernicus.eu/copernicus-2023-hottest-year-record};
-	\item \textit{https://www.kaggle.com/datasets/vineethakkinapalli/citibike-bike-sharingnewyork-cityjan-to-apr-2021};
-	\item \textit{https://www.visualcrossing.com/weather-api};
-	\item \textit{https://stewartmader.com/subwaynynj/};
-	\item \textit{https://sedac.ciesin.columbia.edu/data/set/gpw-v4-population-density-adjusted-to-2015-unwpp-country-totals-rev11};
-	\item \textit{https://www.officeholidays.com/countries/usa/new-york/2020};
-	\item \textit{https://en.wikipedia.org/wiki/COVID-19\_pandemic\_in\_New\_York\_City}.
-\end{itemize}
+Ovviamente queste conclusioni sono limitate dal fatto che il kriging è stato eseguito solo per i mesi di giugno e luglio. Per avere una visione completa, è necessario estendere lo studio anche ai restanti mesi dell'anno.
