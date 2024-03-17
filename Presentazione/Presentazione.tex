@@ -1,0 +1,46 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Berlin}
+\usecolortheme{whale}
+\usepackage{amsmath}
+\usepackage{ragged2e}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage{pdfpages}
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{adjustbox}
+\justifying 
+
+\setbeamercolor{block title}{fg=black, bg=green!50!black}
+\setbeamercolor{block body}{fg=green!50!black, bg=green!50!black!30!white}
+\setbeamercolor{block title alerted}{fg=black, bg=orange!50!white}
+\setbeamercolor{block body alerted}{fg=orange, bg=orange!30!white}
+\setbeamercolor{block title example}{fg=black, bg=blue!50!white}
+\setbeamercolor{block body example}{fg=blue, bg=blue!30!white}
+
+\title{Un modello statistico funzionale per la stima di potenziali spazio-temporali in presenza di interazione tra le misure}
+\author[L. Leoni, N. Zambelli]{Lorenzo LEONI \and Nicola ZAMBELLI}
+\institute[Università degli Studi di Bergamo]{Dipartimento di Ingegneria Gestionale, delll'Informazione e della Produzione}
+\titlegraphic{\includegraphics[width=125px]{../Tesi/Immagini/Frontespizio/logo.pdf}}
+\date{27 marzo 2024}
+
+\begin{document}
+	
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	\input{Sezioni/Introduzione.tex}
+	\input{Sezioni/Modello.tex}
+	\input{Sezioni/Caso di studio.tex}
+	\input{Sezioni/Conclusioni.tex}
+	
+\end{document}
