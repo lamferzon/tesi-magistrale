@@ -47,49 +47,12 @@
 \usepackage{caption}
 \captionsetup[figure]{format=plain}
 \captionsetup[table]{format=plain}
-\usepackage[signatures,swapnames,sans]{frontespizio}
 
 \begin{document}
 	\FloatBarrier
 	\frontmatter
 	\pagenumbering{Roman}
 	\setcounter{page}{1}
-	
-	\begin{frontespizio}
-		\Margini{3cm}{3cm}{3cm}{3cm}
-		\Universita{Bergamo}
-		\Logo[43.332mm]{Immagini/Frontespizio/unibg-mark-monochrome}
-		\Divisione{Dip. di Ingegneria Gestionale, dell'Informazione e della Produzione}
-		\Corso[Laurea Magistrale]{Ingegneria Informatica\\L-32 --- Classe delle Lauree in Ingegneria dell'Informazione (D.M. 270/04)}
-		\Titolo{Un modello statistico funzionale per la stima di potenziali spazio-temporali in presenza di interazione tra le misure }
-		\Punteggiatura{}
-		%\NCandidato{Tesi di Laurea Magigrale}
-		\Candidato[1053379]{Lorenzo LEONI}
-		\Candidato[1053015]{Nicola ZAMBELLI}
-		\Relatore{Prof.\ Francesco FINAZZI}
-		\Annoaccademico{2022--2023}
-		\begin{Preambolo*}
-			\usepackage[italian]{babel}
-			\usepackage[T1]{fontenc}
-			\usepackage[utf8]{inputenc}
-			\usepackage{microtype}
-			\usepackage{lmodern}
-			\graphicspath{{Immagini/Frontepizio/}}
-			% Commented lines are the default font settings:
-			% \renewcommand{\frontinstitutionfont}{\fontsize{14}{17}\bfseries}
-			\renewcommand{\frontinstitutionfont}{\fontsize{14}{17}\bfseries\scshape}
-			% \renewcommand{\frontdivisionfont}{\fontsize{12}{16}}
-			% \renewcommand{\frontpretitlefont}{\fontsize{10}{12}\scshape}
-			% \renewcommand{\fronttitlefont}{\fontsize{17}{21}\bfseries}
-			\renewcommand{\fronttitlefont}{\fontsize{17}{21}\bfseries\scshape}
-			% \renewcommand{\frontsubtitlefont}{\fontsize{12}{14}}
-			% \renewcommand{\frontfixednamesfont}{\fontsize{12}{14}}
-			% \renewcommand{\frontnamesfont}{\fontsize{12}{14}\bfseries}
-			% \renewcommand{\frontsmallfont}{\fontsize{9}{11}\bfseries}
-			% \renewcommand{\frontfootfont}{\fontsize{12}{14}\bfseries}
-			\renewcommand{\frontfootfont}{\fontsize{12}{14}\bfseries\scshape}
-		\end{Preambolo*}
-	\end{frontespizio}
 	
 	\tableofcontents
 	\listoffigures
@@ -123,5 +86,8 @@
 	\addcontentsline{toc}{chapter}{Bibliografia}
 	\bibliographystyle{apalike}
 	\bibliography{Capitoli/Bibliografia.bib}
+	
+	\include{Capitoli/Ringraziamenti di Lorenzo}
+	\include{Capitoli/Ringraziamenti di Nicola}
 
 \end{document}
