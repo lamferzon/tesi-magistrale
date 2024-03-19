@@ -221,7 +221,7 @@ classdef stem_krig_result < handle
             end
         end
         
-        function [map_fig, y_hat, diag_Var_y_hat] = surface_plot(obj,h,t,X_beta,rho)
+        function [y_hat, diag_Var_y_hat] = surface_plot(obj,h,t,X_beta,rho)
             %DESCRIPTION: surface plot of the kriged variable and its standard deviation 
             %
             %INPUT
@@ -296,7 +296,7 @@ classdef stem_krig_result < handle
                 lat=reshape(obj.stem_grid.coordinate(:,1),obj.stem_grid.grid_size(1),obj.stem_grid.grid_size(2));
                 lon=reshape(obj.stem_grid.coordinate(:,2),obj.stem_grid.grid_size(1),obj.stem_grid.grid_size(2));
                 
-                %map_fig = nan;
+                map_fig = nan;
                 if global_idx
 
                     f1=figure;
@@ -538,7 +538,8 @@ classdef stem_krig_result < handle
 
                 lat=reshape(obj.stem_grid.coordinate(:,1),obj.stem_grid.grid_size(1),obj.stem_grid.grid_size(2));
                 lon=reshape(obj.stem_grid.coordinate(:,2),obj.stem_grid.grid_size(1),obj.stem_grid.grid_size(2));
-
+                
+                %{
                 if global_idx
 
                     f1=figure;
@@ -629,7 +630,7 @@ classdef stem_krig_result < handle
                     set(gcf, 'renderer', 'zbuffer');
                 else
                     
-                    figure
+                    % figure
                     map_fig = tiledlayout(1, 1, 'TileSpacing', 'Compact', 'Padding', 'Compact');
                     nexttile
                     hold on
@@ -726,7 +727,7 @@ classdef stem_krig_result < handle
                     %}
                     
                 end
-         
+                %}
             end
         
         end
