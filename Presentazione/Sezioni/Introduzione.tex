@@ -1,9 +1,36 @@
 \section{Introduzione}
 
 \begin{frame}
-	\frametitle{I vantaggi di un modello funzionale}
+	\frametitle{Terminologia}
+	\centering
+	
+	\begin{itemize}
+		\justifying
+		\item \textbf{modello statistico funzionale}: l'oggetto della stima non sono i parametri $\boldsymbol{\theta}$ come accade per i modelli parametrici, ma una funzione $f$ continua. Le spline sono una delle classi di funzioni più utilizzate in Functional Data Analysis (FDA);
+		\item \textbf{potenziale spazio-temporale}: si ricorre ai modelli spazio-temporali quando si vogliono cogliere le relazioni e le dinamiche che sorgono ogniqualvolta le osservazioni sono influenzate sia dalla posizione spaziale sia dal tempo. Se il modello è funzionale, allora è in grado di calcolare il valore dell'uscita previsto, ossia il potenziale, anche laddove non è presente un punto di osservazione;
+		\item \textbf{interazione tra le misure}: i punti vendita, un esempio di punti di misura del potenziale di mercato in un'area geografica, possono farsi concorrenza se vengono collocati nella medesima zona.
+	\end{itemize}
+	
 \end{frame}
 
 \begin{frame}
-	\frametitle{Il concetto di interazione spaziale}
+	\frametitle{Il Functional Hidden Dynamic Geostatistical Model (f-HDGM)}
+	
+	\begin{equation*}
+		y(\mathbf{s}, l, t) = \mathbf{x}(\mathbf{s}, l, t)^\top\cdot\boldsymbol{\beta}(l) + \Phi_z(l)^\top\cdot \mathbf{z}(\mathbf{s}, t) + \epsilon(\mathbf{s}, l, t)
+	\end{equation*}
+	\begin{equation*}
+		z(\mathbf{s}, t) = G\cdot\mathbf{z}(\mathbf{s}, t-1) + \boldsymbol{\eta}(\mathbf{s}, t)
+	\end{equation*}
+	
+	dove:
+	\begin{itemize}
+		\justifying
+		\item $\mathbf{s}$ è un punto spaziale, $t$ è il tempo, mentre $l$ è l'indice del dominio funzionale;
+		\item $\epsilon\backsim \mathcal{N}(0, \sigma_\epsilon(l))$ con varianza $\sigma_\epsilon(l) = \Phi_\epsilon(l)^\top\cdot\mathbf{c}_\epsilon$ funzionale;
+		\item $\boldsymbol{\beta}(l) = \left[\beta_1(l)\cdots\beta_j(l)\cdots\beta_b(l)\right]^\top$ con $\beta_j(l) = \Phi_\beta(l)^\top\cdot\mathbf{c}_{\beta, j}$ funzionale, $\forall j\in[1, b]$;
+		\item $\boldsymbol{\eta}\backsim\mathcal{N}(\mathbf{0},\Gamma(\mathbf{s}, \mathbf{s}^\prime, \lambda))$ è un processo gaussiano, con $\Gamma(\mathbf{s}, \mathbf{s}^\prime, \lambda)$ matrice di correlazione spaziale diagonale a blocchi;
+		\item $G$ è la matrice di transizione diagonale della dinamica markoviana su $\mathbf{z}(\mathbf{s}, t)$.
+	\end{itemize}
+
 \end{frame}
