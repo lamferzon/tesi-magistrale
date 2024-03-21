@@ -1,1 +1,42 @@
-\section{title}
+\section{Stima EM del nuovo modello}
+
+\begin{frame}
+	\frametitle{Obiettivo della stima EM}
+	\justifying
+	
+	Sia:
+	\begin{equation*}
+		\boldsymbol{\theta} = \left[\boldsymbol{c}_\epsilon^\top \ \boldsymbol{c}_\beta^\top \ \mathbf{g}^\top \mathbf{v}^\top \ \boldsymbol{\lambda}^\top \ \textcolor{red}{\rho}\right]^\top
+	\end{equation*}
+	il vettore dei parametri. 
+	\newline \par L'obiettivo dell'\textbf{algoritmo Expectation-Maximization (EM)} è determinare, mediante un processo iterativo, la stima a massima verosimiglianza $\boldsymbol{\theta}_{MLE}$ \textbf{in presenza di dati mancanti o nascosti}, in questo caso la componente latente $\mathbf{z}(\mathbf{s}, t)$.
+\end{frame}
+
+\begin{frame}
+	\frametitle{I passi dell'algoritmo}
+	\justifying
+	
+	Ogni iterazione dell'algoritmo EM consiste in due passi:
+	\begin{itemize}
+		\justifying
+		\item \textbf{passo E}: a partire dalla stima corrente dei parametri $\boldsymbol{\theta}_n$ e dai dati disponibili $\mathbf{y}$, quelli mancanti vengono prima stimati e poi impiegati per determinare il \textit{valore atteso condizionato} $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$, una semplificazione della stima corrente della funzione di verosimiglianza $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$;
+		\item \textbf{passo M}: $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$ viene ottimizzata per determinare $\boldsymbol{\theta}_{n+1}$, assumendo che i dati mancanti siano noti. Le stime di questi, ottenute precedentemente nel passo E, sono utilizzate al posto dei dati mancanti effettivi.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{La funzione di verosimiglianza}
+	
+	\begin{equation*}
+		\begin{split}
+			-2\ln L(\boldsymbol{\theta}; Y, Z, X) & =  T\ln|\Sigma_\epsilon\left(\textcolor{black}{\mathbf{c}_\epsilon}\right)| \\
+			& + \textcolor{red}{\sum_{t=1}^{T} \left(H^{-1}(\rho)\cdot\mathbf{y}_t - \boldsymbol{\mu}_t(\mathbf{c}_\beta)\right)^\top\Sigma_\epsilon^{-1}\left(H^{-1}(\rho)\cdot\mathbf{y}_t - \boldsymbol{\mu}_t(\mathbf{c}_\beta)\right)} \\
+			& + \ln|\Sigma_0| \\
+			& + (\mathbf{z}_0 - \boldsymbol{\mu}_0)^\top\Sigma_0^{-1}(\mathbf{z}_0 - \boldsymbol{\mu}_0) \\
+			& + T\ln |\Sigma_\eta(\textcolor{black}{\mathbf{v},\boldsymbol{\lambda}})| \\
+			& + \sum_{t=1}^{T}\left(\mathbf{z_t}-\tilde{G}(\textcolor{black}{\mathbf{g}})\cdot\mathbf{z}_{t-1}\right)^\top\Sigma_\eta^{-1}(\textcolor{black}{\mathbf{v},\boldsymbol{\lambda}})\left(\mathbf{z_t}-\tilde{G}(\textcolor{black}{\mathbf{g}})\cdot\mathbf{z}_{t-1}\right)
+		\end{split}
+		\label{eq_fin_verosimiglianza}
+	\end{equation*}
+	
+\end{frame}
