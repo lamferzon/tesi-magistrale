@@ -1,4 +1,4 @@
-\section{Stima EM del nuovo modello}
+\section[Stima EM del modello fp-HDGM]{Stima EM del modello fp-HDGM}
 
 \begin{frame}
 	\frametitle{Obiettivo della stima EM}
@@ -6,10 +6,10 @@
 	
 	Sia:
 	\begin{equation*}
-		\boldsymbol{\theta} = \left[\boldsymbol{c}_\epsilon^\top \ \boldsymbol{c}_\beta^\top \ \mathbf{g}^\top \mathbf{v}^\top \ \boldsymbol{\lambda}^\top \ \textcolor{red}{\rho}\right]^\top
+		\boldsymbol{\theta} = \left(\boldsymbol{c}_\epsilon^\top, \boldsymbol{c}_\beta^\top, \mathbf{g}^\top, \mathbf{v}^\top, \boldsymbol{\lambda}^\top, \textcolor{red}{\rho}\right)^\top
 	\end{equation*}
 	il vettore dei parametri. 
-	\newline \par L'obiettivo dell'\textbf{algoritmo Expectation-Maximization (EM)} è determinare, mediante un processo iterativo, la stima a massima verosimiglianza $\boldsymbol{\theta}_{MLE}$ \textbf{in presenza di dati mancanti o nascosti}, in questo caso la componente latente $\mathbf{z}(\mathbf{s}, t)$.
+	\newline \par L'obiettivo dell'\textbf{algoritmo Expectation-Maximization (EM)} è determinare, mediante un processo iterativo, la stima a massima verosimiglianza $\boldsymbol{\theta}_{MLE}$ \textbf{in presenza di dati mancanti}, in questo caso la componente latente $\mathbf{z}(\mathbf{s}, t)$.
 \end{frame}
 
 \begin{frame}
@@ -19,7 +19,7 @@
 	Ogni iterazione dell'algoritmo EM consiste in due passi:
 	\begin{itemize}
 		\justifying
-		\item \textbf{passo E}: a partire dalla stima corrente dei parametri $\boldsymbol{\theta}_n$ e dai dati disponibili $\mathbf{y}$, quelli mancanti vengono prima stimati e poi impiegati per determinare il \textit{valore atteso condizionato} $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$, una semplificazione della stima corrente della funzione di verosimiglianza $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$;
+		\item \textbf{passo E}: a partire dalla stima corrente dei parametri $\boldsymbol{\theta}_n$ e dai dati disponibili $\mathbf{y}$, quelli mancanti vengono prima stimati e poi impiegati per determinare il \textit{valore atteso condizionato} $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$, una semplificazione della stima corrente della funzione di verosimiglianza $L(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$, ovvero $l(\boldsymbol{\theta}|\boldsymbol{\theta}_n)$;
 		\item \textbf{passo M}: $Q(\boldsymbol{\theta},\boldsymbol{\theta}_n)$ viene ottimizzata per determinare $\boldsymbol{\theta}_{n+1}$, assumendo che i dati mancanti siano noti. Le stime di questi, ottenute precedentemente nel passo E, sono utilizzate al posto dei dati mancanti effettivi.
 	\end{itemize}
 \end{frame}
